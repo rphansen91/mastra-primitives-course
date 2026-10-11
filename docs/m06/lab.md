@@ -1,16 +1,30 @@
+---
+pageClass: lesson
+aside: false
+---
+
+<script setup>
+const cmd1 = "npm run lab:signals\nnpm run lab:notifications\nnode --import tsx --test m06-signals/lab.test.ts"
+const cmd2 = "LAB_TARGET=exercises node --import tsx --test m06-signals/break-it.test.ts"
+const q_mid = [{"text": "In the first request, before the tool call", "why": "The first request was already sent before the signal existed."}, {"text": "In the second request, after the tool result, as a user-role notification", "correct": true, "why": "Cooperative delivery: the run drains it at the next safe point, after the tool result is folded in."}, {"text": "In a separate new run", "why": "That's what happens when the thread is **idle**. This one was active."}]
+</script>
+
 # Lab 6: Signals mid-run, wakes, and notifications
 
-**Code:** [`labs/m06-signals`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs/m06-signals) · **Runs against:** `@mastra/core@1.75.0` (and 1.76 alpha in CI) · **Runs in:** ~6 s
+<LabHeader module="06" folder="m06-signals" runs="~6 s" :tests="2" mood="happy">
 
-```bash
-npm run lab:signals
-npm run lab:notifications
-node --import tsx --test m06-signals/lab.test.ts
-```
+Signals delivered into a running loop, an idle thread woken, a signal persisted for later, and the notification pipeline from a custom provider to the dispatcher.
+
+</LabHeader>
+
+
+<TryIt :cmd="cmd1" />
 
 ## 6.1 Mid-run delivery, idle wake, persist
 
 [`signal-mid-run.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m06-signals/signal-mid-run.ts): a worker agent runs `push_branch` (400 ms). While the tool runs, an ops notice arrives.
+
+<Quiz kind="predict" module="06" id="lab-mid" question="An ops notice is sent while `push_branch` (400 ms) is running. Where does it appear in the model's prompts?" :options="q_mid" />
 
 ```text
 === 1) Signal while push_branch is executing ==============================
@@ -70,13 +84,12 @@ The urgent event woke the idle thread; everything after it arrived while the thr
 
 **File:** [`exercises/ex1-delivery-policy.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m06-signals/exercises/ex1-delivery-policy.ts)
 
-```bash
-LAB_TARGET=exercises node --import tsx --test m06-signals/break-it.test.ts
-```
+<TryIt :cmd="cmd2" />
 
 Requirements: calendar items always `deliver` (interject into an active run); low-priority chat `persist` (inbox only, never wake, never summarize); source `spam` `discard`; everything else uses the default. The test wakes the thread with an urgent item, then sends calendar/chat/spam while it's active, and checks record statuses and that spam never reached the model.
 
-::: details Solution
+<Reveal title="Show the solution">
+
 ```ts
 export const decide = ({ record }) => {
   if (record.source === 'spam') return 'discard';
@@ -86,7 +99,8 @@ export const decide = ({ record }) => {
 };
 ```
 Observed statuses on 1.75.0: `calendar-medium: delivered`, `chat-low: pending` (no `summaryAt`), `spam-high: discarded`.
-:::
+
+</Reveal>
 
 ## More tasks
 

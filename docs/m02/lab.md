@@ -1,12 +1,26 @@
+---
+pageClass: lesson
+aside: false
+---
+
+<script setup>
+const cmd1 = "npm run lab:anatomy"
+const cmd2 = "npm run lab:thread-reservation"
+const q_same = [{"text": "At 10 ms: runs are independent", "why": "On different threads, yes. On one thread, Mastra keeps one active run."}, {"text": "At ~300 ms, after the first finishes, with the first exchange in its prompt", "correct": true, "why": "The second waits for the first, then loads the thread history, which now includes answer 1."}, {"text": "Never: it throws \"thread busy\"", "why": "It waits instead of failing."}]
+</script>
+
 # Lab 2: Loop anatomy and thread reservation
 
-**Code:** [`labs/m02-agent-loop`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs/m02-agent-loop) · **Runs against:** published `@mastra/core@1.75.0` · **Runs in:** ~3 s
+<LabHeader module="02" folder="m02-agent-loop" runs="~3 s" :tests="3" mood="happy">
+
+Two experiments against the published package: the full hook order for one tool call, and what happens when two requests hit the same thread.
+
+</LabHeader>
+
 
 ## 2.1 Anatomy
 
-```bash
-npm run lab:anatomy
-```
+<TryIt :cmd="cmd1" />
 
 [`anatomy.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m02-agent-loop/anatomy.ts) builds an agent with one tool (`check_ci`), an input processor and an output processor that log every hook, plus `onStepFinish` and `onIterationComplete` callbacks. The mock model calls the tool, then answers.
 
@@ -31,9 +45,9 @@ The test ([`lab.test.ts`](https://github.com/rphansen91/mastra-primitives-course
 
 ## 2.2 Thread reservation
 
-```bash
-npm run lab:thread-reservation
-```
+<TryIt :cmd="cmd2" />
+
+<Quiz kind="predict" module="02" id="lab-same" question="Two `stream()` calls on the **same thread**, 10 ms apart, with a 300 ms model. When does the second one start?" :options="q_same" />
 
 Two `stream()` calls 10 ms apart, with a 300 ms model:
 

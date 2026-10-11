@@ -1,16 +1,29 @@
+---
+pageClass: lesson
+aside: false
+---
+
+<script setup>
+const cmd1 = "cd labs\nnpm run lab:loop-from-scratch\nnode --import tsx --test m01-first-principles/lab.test.ts"
+const q_fold = [{"text": "Oslo, then Lisbon: completion order", "why": "That would make the prompt depend on timing. Replays and tests would flake."}, {"text": "Lisbon, then Oslo: the order the model called them", "correct": true, "why": "Results are folded in **call** order (`c1`, `c2`), whatever order they finish in."}, {"text": "Whichever the model mentions first in its text", "why": "The fold is mechanical. It never reads the text."}]
+</script>
+
 # Lab 1: A loop and a journal from scratch
 
-**Code:** [`labs/m01-first-principles`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs/m01-first-principles) · **Runs in:** < 1 s · **Needs:** nothing but Node 22
+<LabHeader module="01" folder="m01-first-principles" runs="< 1 s" :tests="8" mood="happy">
+
+A 150-line agent loop and a 60-line journal, written from scratch, so you can see every moving part before Mastra hides them. Needs nothing but Node 22.
+
+</LabHeader>
+
 
 ## Run it
 
-```bash
-cd labs
-npm run lab:loop-from-scratch
-node --import tsx --test m01-first-principles/lab.test.ts
-```
+<TryIt :cmd="cmd1" />
 
-Expected output of the loop demo (two parallel tool calls; Oslo finishes first but is folded second):
+<Quiz kind="predict" module="01" id="lab-fold" question="Two parallel tool calls: Lisbon and Oslo. **Oslo finishes first.** In which order do the tool results appear in the next prompt?" :options="q_fold" />
+
+Expected output of the loop demo (look at the two `tool-result` lines):
 
 ```text
 {"type":"step-start","step":0}

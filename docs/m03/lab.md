@@ -1,11 +1,23 @@
+---
+pageClass: lesson
+aside: false
+---
+
+<script setup>
+const cmd1 = "npm run lab:processors\nnode --import tsx --test m03-processors/lab.test.ts"
+const q_trip = [{"text": "Nothing: a tripwire discards the whole response", "why": "Chunks already emitted are gone. There is no un-sending."}, {"text": "`\"hello \"`", "correct": true, "why": "The first delta was emitted before the guard saw the second. Plan for partial output."}, {"text": "`\"hello world\"`: the guard just drops the bad chunk", "why": "That would be returning `null` for one chunk. `abort()` stops the stream."}]
+</script>
+
 # Lab 3: Processor composition and tripwires
 
-**Code:** [`labs/m03-processors`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs/m03-processors) · **Runs in:** ~2 s
+<LabHeader module="03" folder="m03-processors" runs="~2 s" :tests="3" mood="thinking">
 
-```bash
-npm run lab:processors
-node --import tsx --test m03-processors/lab.test.ts
-```
+Processor order made visible, and two tripwires: one that stops a request before the model is called, and one that stops a stream halfway.
+
+</LabHeader>
+
+
+<TryIt :cmd="cmd1" />
 
 ## 3.1 Composition
 
@@ -25,6 +37,9 @@ final text: hi[X][Y]
 [`guardrails.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m03-processors/guardrails.ts):
 
 - **Input tripwire.** `processInput` calls `abort('possible SQL injection')`. Result: `tripwire: { reason, processorId: 'sql-guard' }`, empty text, and **zero model calls**.
+
+<Quiz kind="predict" module="03" id="lab-trip" question="The model streams `&quot;hello &quot;`, `&quot;forbidden &quot;`, `&quot;world&quot;`. The guard aborts on the second chunk. What text has the consumer received?" :options="q_trip" />
+
 - **Stream tripwire.** The model streams `"hello "`, `"forbidden "`, `"world"`. The guard aborts on the second chunk:
 
 ```text
