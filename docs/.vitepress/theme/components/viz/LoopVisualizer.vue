@@ -4,7 +4,7 @@ import { fmt, prefersReducedMotion } from '../../progress';
 
 /**
  * Step through one agent run, phase by phase. Three scenarios:
- *  - "one tool": the exact hook order Lab 2 verifies on @mastra/core 1.75.0
+ *  - "one tool": the exact hook order Lab 2 verifies on @mastra/core 1.75.0 and 1.76.0
  *  - "parallel": two tool calls in one step (toggle toolCallConcurrency)
  *  - "runaway": the model repeats itself (toggle a stopWhen condition)
  */

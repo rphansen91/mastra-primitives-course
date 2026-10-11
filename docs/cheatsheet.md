@@ -92,7 +92,7 @@ Every module's "when to choose something else" table in one place. **Bold** = th
 | Use when | Don't when | Alternatives |
 |---|---|---|
 | long runs must survive crashes, tools idempotent | un-keyable effects | durable-engine activities |
-| single instance or fencing store + claims | multi-replica on 1.75.x with auto recovery | leader election; `createInngestAgent` |
+| single instance or fencing store + claims | multi-replica on ≤1.75.x, or without a shared claim, with auto recovery | leader election; `createInngestAgent` |
 | portable agent code across engines | durable timers/signals/versioning needed today | Temporal, Restate, DBOS, Cloudflare/Vercel Workflows |
 
 ### M8 Multi-agent

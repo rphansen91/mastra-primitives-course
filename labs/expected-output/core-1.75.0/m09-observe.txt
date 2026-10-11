@@ -1,0 +1,36 @@
+
+=== 1) The trace of one agent run (model_chunk spans hidden) ==============
+  agent_run        agent run: 'ci-helper'
+    model_generation llm: 'mock'
+      model_step       step: 0
+        processor_run    llm request processor: provider-history-compat
+        model_inference  inference: 0
+        tool_call        tool: 'check_ci'
+      model_step       step: 1
+        processor_run    llm request processor: provider-history-compat
+        model_inference  inference: 1
+
+=== 2) Rule-based scorer over a 3-item dataset (runEvals) =================
+  Why did CI fail?         → 1 (names the failure reason)
+  Is CI green?             → 0 (does not name the failure reason)
+  What broke the build?    → 1 (names the failure reason)
+  average: 0.6666666666666666
+
+=== 3) LLM-judge scorer (the judge is a mock model too) ===================
+  score: 0 | unsupported: the build uses Rust
+  judge saw: system    You are a strict grader.
+  judge saw: user      Tool result: {"status":"failed","reason":"lint error in auth.ts"} Answer: CI failed because the build uses Rus
+
+=== 4) isTaskComplete: a scorer keeps the loop going ======================
+  model calls: 3
+  feedback the model saw: assistant #### Completion Check Results Overall: ❌ NOT COMPLETE **citations** (citations) Score: 0 ❌
+  result.text: Draft 1: Mastra is a TypeScript agent framework.Draft 2: Mastra is a TypeScript agent framework. Mastra is a TypeScript agent framework [1].
+
+=== 5) Record once, replay deterministically, catch prompt drift ==========
+  tape dc3ae83bd1 → tool check_ci
+  tape d95ce05e46 → text
+  replay, same code:      CI failed on PR 42: lint error in auth.ts. | misses: 0
+  replay, new instructions: [
+  'call 1: prompt fcdcb0443f not on tape (expected dc3ae83bd1)',
+  'call 2: prompt 0c8b68d71b not on tape (expected d95ce05e46)'
+]

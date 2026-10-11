@@ -5,7 +5,7 @@
 // Not stable: Date.now(), a random UUID, a per-process counter. Too coarse: the input alone
 // (two legitimate deploys with the same args would be merged).
 //
-// Version note (verified on @mastra/core 1.75.0): a regular Agent's tool context has
+// Version note (verified on @mastra/core 1.75.0 and 1.76.0): a regular Agent's tool context has
 // ctx.runId and ctx.agent.toolCallId; a DurableAgent's tool context has ctx.toolCallId and
 // no runId. phase-run.ts therefore also puts the run id in the RequestContext, which the
 // durable snapshot persists and recovery restores. That asymmetry is itself a finding:

@@ -227,12 +227,12 @@ In the from-scratch loop, `SignalQueue` is the mailbox and "top of each step" is
 
 <DeepDive title="Where these ideas live in Mastra">
 
-- [`loop/loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/loop-builder.ts#L83): Mastra's loop is a `dowhile` workflow. Compare it with your `for` loop.
-- [`loop/shared/continuation-core.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/shared/continuation-core.ts): `decideContinuation`, Mastra's version of your stop conditions.
-- [`workflows/default.ts` `wrapDurableOperation`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/default.ts#L173): the seam where a durable engine plugs in a journal (a no-op on the default engine).
-- [`agent/durable/execution-fence.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/execution-fence.ts#L36): run claims, TTL 30 s, renewed every 10 s.
-- [`stores/pg/.../run-fencing.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/stores/pg/src/storage/db/run-fencing.ts): fencing, implemented in the storage adapter where it belongs.
-- [`durable-operation-ids.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/durable-operation-ids.test.ts): how Mastra keys durable operations (run id + execution path + phase).
+- [`loop/loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L83): Mastra's loop is a `dowhile` workflow. Compare it with your `for` loop.
+- [`loop/shared/continuation-core.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/shared/continuation-core.ts): `decideContinuation`, Mastra's version of your stop conditions.
+- [`workflows/default.ts` `wrapDurableOperation`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/default.ts#L173): the seam where a durable engine plugs in a journal (a no-op on the default engine).
+- [`agent/durable/execution-fence.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/execution-fence.ts#L36): run claims, TTL 30 s, renewed every 10 s.
+- [`stores/pg/.../run-fencing.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/stores/pg/src/storage/db/run-fencing.ts): fencing, implemented in the storage adapter where it belongs.
+- [`durable-operation-ids.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/durable-operation-ids.test.ts): how Mastra keys durable operations (run id + execution path + phase).
 
 </DeepDive>
 

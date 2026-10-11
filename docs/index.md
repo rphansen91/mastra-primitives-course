@@ -77,8 +77,8 @@ See [Running the labs](/guide/labs) for the exercise workflow.
 
 ## Versions this course was verified against
 
-- Source links: `mastra-ai/mastra` at commit [`ebe143c4`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd) (2026-10-10, `@mastra/core` 1.76.0-alpha.8 on main).
-- Labs: published **`@mastra/core@1.75.0`** + `@mastra/libsql@1.25.1` (pinned). CI also runs the labs against the `1.76.0-alpha` pre-release so you can see behavior change between versions. Module 7 shows a real difference.
+- Source links: `mastra-ai/mastra` at commit [`81299c94`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae) (the `@mastra/core@1.76.0` release tag, published 2026-10-11).
+- Labs: published **`@mastra/core@1.76.0`** + `@mastra/libsql@1.26.0` (pinned, so the source links and the package match). CI also runs every lab on the previous stable, `1.75.0`, and on a floating `@latest`, so you can see behavior change between versions. Modules 6, 7 and 9 show real differences.
 
 ::: info Not an official Mastra project
 This is an independent course built from the public repository and public docs. Line references were correct at the pinned commit; on newer commits, search for the symbol name.

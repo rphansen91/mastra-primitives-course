@@ -4,10 +4,12 @@
     model_generation llm: 'mock'
       model_step       step: 0
         processor_run    llm request processor: provider-history-compat
+        processor_run    llm request processor: unsupported-file-handler
         model_inference  inference: 0
         tool_call        tool: 'check_ci'
       model_step       step: 1
         processor_run    llm request processor: provider-history-compat
+        processor_run    llm request processor: unsupported-file-handler
         model_inference  inference: 1
 
 === 2) Rule-based scorer over a 3-item dataset (runEvals) =================

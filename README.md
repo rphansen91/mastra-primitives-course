@@ -7,7 +7,7 @@ A course on the primitives inside the open-source [Mastra](https://github.com/ma
 Every primitive is taught in **four passes**:
 
 1. **The problem it solves**
-2. **How it's built** in real source (links to `mastra-ai/mastra` at commit `ebe143c4`)
+2. **How it's built** in real source (links to `mastra-ai/mastra` at commit `81299c94`)
 3. **Where it breaks** (a deliberate break-it exercise with tests)
 4. **When to choose something else** (a decision table)
 
@@ -39,7 +39,7 @@ npm run lab:anatomy              # print the agent loop's hook order
 npm run test:exercises           # run break-it tests against YOUR exercise files
 ```
 
-Labs pin `@mastra/core@1.75.0` and `@mastra/libsql@1.25.1`. CI also runs them against `1.76.0-alpha.9` (informational) to show behavior changes between releases.
+Labs pin `@mastra/core@1.76.0` and `@mastra/libsql@1.26.0` (latest stable on 2026-10-11). CI also runs them against the previous stable, `1.75.0`, and against a floating `@latest` (informational) to show behavior changes between releases.
 
 ## Repository layout
 

@@ -11,8 +11,8 @@
   gh-2 low thread=active
   cal-1 medium thread=active
   ch-1 low thread=idle
-  gh-2   low     status=pending   reason=active-batch-summary summaryAt=set
   cal-1  medium  status=pending   reason=active-batch-summary summaryAt=-
+  gh-2   low     status=pending   reason=active-batch-summary summaryAt=set
   ch-1   low     status=pending   reason=active-batch-summary summaryAt=set
   gh-1   urgent  status=delivered reason=urgent summaryAt=-
 
@@ -20,8 +20,7 @@
   delivered: [ 'ch-1:pending', 'gh-2:pending' ] signals: [ '<notification-summary> chat: 1, github: 1' ]
 
 === What the model saw (last message of each request) =====================
-  #1 (2 msgs) user      <notification repo="acme/api" id="<uuid>" source="github" type="firehose-event" kind="firehose-event" priority="urgent" status="de
-  #2 (4 msgs) user      <notification-summary pending="1" priority="medium">calendar: 1</notification-summary>
+  #1 (3 msgs) user      <notification-summary pending="1" priority="medium">calendar: 1</notification-summary>
 
 === Thread history persisted in memory (roles) ============================
-  signal(notification), assistant, signal(notification-summary), assistant, signal(notification-summary)
+  signal(notification), signal(notification-summary), assistant, signal(notification-summary)

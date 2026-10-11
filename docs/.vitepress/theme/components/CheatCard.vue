@@ -124,7 +124,7 @@ function print() {
           <text v-for="(w, k) in l.w" :key="k" :x="c.x + 36" :y="l.start + k * LH" :font-size="FS" :fill="C.ink">{{ w }}</text>
         </g>
       </g>
-      <text :x="W / 2" :y="layout.height - 18" font-size="13" text-anchor="middle" :fill="C.dim">rphansen91.github.io/mastra-primitives-course · MIT · source links pinned to mastra-ai/mastra@ebe143c</text>
+      <text :x="W / 2" :y="layout.height - 18" font-size="13" text-anchor="middle" :fill="C.dim">rphansen91.github.io/mastra-primitives-course · MIT · source links pinned to mastra-ai/mastra@81299c9</text>
     </svg>
   </figure>
 </template>

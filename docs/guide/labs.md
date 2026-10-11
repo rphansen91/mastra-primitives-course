@@ -1,6 +1,6 @@
 # Running the labs
 
-All labs live in [`labs/`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs), a single npm package that depends on the **published** `@mastra/core` (pinned to `1.75.0`) and `@mastra/libsql` (`1.25.1`). Nothing calls a real model.
+All labs live in [`labs/`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs), a single npm package that depends on the **published** `@mastra/core` (pinned to `1.76.0`) and `@mastra/libsql` (`1.26.0`). Nothing calls a real model.
 
 ```bash
 cd labs
@@ -65,7 +65,7 @@ CI runs `npm run verify:exercises-are-broken`, which asserts that every starter 
 ## Testing against a newer Mastra
 
 ```bash
-npm i --no-save @mastra/core@1.76.0-alpha.9 @mastra/libsql@1.26.0-alpha.3
+npm i --no-save @mastra/core@1.75.0 @mastra/libsql@1.25.1   # previous stable
 npm test
 ```
 
@@ -73,4 +73,4 @@ The crash-lab test adapts its expectations to the installed version (Module 7 ex
 
 ## Reading the Mastra source and tests
 
-Module 0 covers cloning `mastra-ai/mastra` and running its own test suites. The course links always point at commit `ebe143c4`, so line numbers match what you see.
+Module 0 covers cloning `mastra-ai/mastra` and running its own test suites. The course links always point at commit `81299c94`, so line numbers match what you see.

@@ -1,0 +1,39 @@
+
+=== 1) Signal while push_branch is executing ==============================
+thread state while tool runs: active
+sendSignal accepted → { action: 'deliver' }
+run1 text: Staggering pushes: waiting 10 minutes between pushes.
+
+=== 2) Thread idle; signal WAKES a new run (default ifIdle: wake) =========
+thread state: idle
+accepted → wake | woken run text: Resuming normal push cadence.
+
+=== 3) ifIdle: persist ====================================================
+accepted → { action: 'persist' } | persisted resolves: true
+
+=== Prompts the model actually received ===================================
+-- doStream #1
+   system    You push code. Obey operational notices.
+   user      Push feat/auth
+-- doStream #2
+   system    You push code. Obey operational notices.
+   user      Push feat/auth
+   assistant [tool-call push_branch]
+   tool      [tool-result push_branch: {"pushed":"feat/auth"}]
+   user      <notification source="chat" channel="ops" author="oncall">We're getting rate limited by GitHub, please stagger pushes.</notification>
+-- doStream #3
+   system    You push code. Obey operational notices.
+   user      <notification source="github">CI recovered; Docker Hub healthy.</notification>
+
+=== Thread subscription view (runId chunk) ================================
+  run tool-call
+  run tool-result
+  run data-signal <notification> We're getting rate limited by GitHub, please stagg
+  run text-delta "Staggering pushes: waiting 10 minutes between pushes."
+  run finish
+  run data-signal <notification> CI recovered; Docker Hub healthy.
+  run text-delta "Resuming normal push cadence."
+  run finish
+  run data-signal <notification> FYI: weekly leaderboard posted.
+  run finish
+distinct runs observed on the thread: 3

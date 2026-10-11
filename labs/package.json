@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@mastra/core": "1.75.0",
-    "@mastra/libsql": "1.25.1",
+    "@mastra/core": "1.76.0",
+    "@mastra/libsql": "1.26.0",
     "@mastra/observability": "1.19.0",
     "zod": "^4.1.0"
   },

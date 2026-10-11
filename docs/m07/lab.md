@@ -13,7 +13,7 @@ const q_crash = [{"text": "charge_card 1, slow_deploy 1", "why": "The in-flight 
 
 <LabHeader module="07" folder="m07-durability" runs="~25 s" :tests="2" mood="alarmed">
 
-A real `kill -9`. Storage is a libSQL **file**, so a fresh process sees exactly what a killed one left behind. Runs in ~25 s on 1.75.0, ~75 s on the 1.76 alpha (it waits out the claim TTL).
+A real `kill -9`. Storage is a libSQL **file**, so a fresh process sees exactly what a killed one left behind. Runs in ~75 s on 1.76.0 (it waits out the claim TTL), ~25 s on 1.75.0.
 
 </LabHeader>
 
@@ -36,7 +36,7 @@ A real `kill -9`. Storage is a libSQL **file**, so a fresh process sees exactly 
 
 <Quiz kind="predict" module="07" id="lab-crash" question="Scenario A: `charge_card` finished, then the process is killed while `slow_deploy` is running. After recovery, how many times did each tool start?" :options="q_crash" />
 
-## Expected output (`@mastra/core@1.75.0`, solutions)
+## Expected output (`@mastra/core@1.76.0`, solutions)
 
 ```text
 === A) kill -9 mid-flight, then a fresh process recovers ==================
@@ -46,7 +46,11 @@ persisted runs after crash: [
   'durable-agentic-loop/agent-run-1=running'
 ]
 active durable runs: [ 'agent-run-1' ]
-recoverAllDurableAgents t+4s {"t":4,"agents":1,"recovered":1,"succeeded":1,"failed":0}
+recoverAllDurableAgents t+0s {"recovered":0,"skipped":1}   ← the dead owner's claim is still valid
+recoverAllDurableAgents t+5s {"recovered":0,"skipped":1}
+...
+recoverAllDurableAgents t+25s {"recovered":0,"skipped":1}
+recoverAllDurableAgents t+34s {"recovered":1,"succeeded":1,"skipped":0}   ← claim lapsed (30 s); recovered
 side-effect counts: {
   'WF step send-email executed': 1,          ← memoized by the snapshot
   'WF step slow-step started': 2,            ← in-flight step re-ran
@@ -56,7 +60,6 @@ side-effect counts: {
   'TOOL slow_deploy started': 2,             ← in-flight tool re-ran
   'DEPLOY API applied': 1,
   'DEPLOY API deduped': 1,                   ← the idempotency key saved us
-  'WF step final executed': 1,
   'LLM call (tool results so far: charge_card,slow_deploy)': 1,
   ...
 }
@@ -64,28 +67,29 @@ deploy API ledger (effects actually applied): [ 'applied agent-run-1:c2' ]
 
 === B) second replica boots while the first is alive ======================
 distinct pids per effect: {
-  'WF step slow-step started': 2,            ← plain workflow ran in BOTH processes
+  'WF step slow-step started': 2,            ← plain workflow ran in BOTH processes (no claim)
   'WF step final executed': 2,
-  'TOOL slow_deploy started': 2,             ← 1.75.0: the replica re-drove the live durable run
-  'DEPLOY API applied': 1, 'DEPLOY API deduped': 1,
-  'second replica recoverAllDurableAgents recovered=1': 1,
+  'TOOL slow_deploy started': 1,             ← the live owner's claim kept the replica out
+  'DEPLOY API applied': 1,
+  'second replica recoverAllDurableAgents recovered=0': 1,
   ...
 }
 ```
 
-Full output: [`expected-output/m07-crash-lab.txt`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/expected-output/m07-crash-lab.txt).
+Full output: [`expected-output/m07-crash-lab.txt`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/expected-output/m07-crash-lab.txt). Timings vary by a few seconds between runs.
 
-### On `1.76.0-alpha.9` (CI "next" job)
+### On `1.75.0` (previous stable, CI "previous" job)
 
 ```text
-recoverAllDurableAgents t+0s  {"recovered":0,"skipped":1}   ← dead owner's claim still valid
-recoverAllDurableAgents t+5s  {"recovered":0,"skipped":1}
+recoverAllDurableAgents t+4s {"recovered":1,"succeeded":1,"failed":0}   ← no claim: immediate
 ...
-recoverAllDurableAgents t+30s {"recovered":0,"skipped":1}
-recoverAllDurableAgents t+35s {"recovered":0,"skipped":0}   ← claim expired; auto re-check recovers
+=== B) ...
+  'TOOL slow_deploy started': 2,             ← the replica re-drove the LIVE durable run
+  'DEPLOY API applied': 1, 'DEPLOY API deduped': 1,
+  'second replica recoverAllDurableAgents recovered=1': 1,
 ```
 
-and in scenario B, `TOOL slow_deploy started` comes from **one** pid: the claim held by the live owner keeps the replica out. The plain workflow still double-runs.
+On 1.75.0 there is no run claim: recovery starts immediately, and a second replica re-drives a run that is still alive. Only the idempotency key keeps the deploy from happening twice. Full output: [`expected-output/core-1.75.0/m07-crash-lab.txt`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/expected-output/core-1.75.0/m07-crash-lab.txt).
 
 ## Break it: Exercise 7.1, the double deploy
 
@@ -112,7 +116,7 @@ export function deployKey(_input: unknown, ctx: any) {
 }
 ```
 - `toolCallId` is stable across recovery because the checkpoint sits at the tool-call step boundary: recovery replays the persisted LLM response, it doesn't re-ask the model.
-- `runId` is stable because the recovered run keeps its id. On 1.75.0 the durable tool context lacks `runId`, so `phase-run.ts` puts it in the `RequestContext`, which the snapshot persists.
+- `runId` is stable because the recovered run keeps its id. On 1.75.0 and 1.76.0 the durable tool context lacks `runId`, so `phase-run.ts` puts it in the `RequestContext`, which the snapshot persists.
 - Not stable: `Date.now()`, a UUID, a process counter. Too coarse: the input alone.
 
 Note scenario B too: with the key, the replica's duplicate deploy is also deduped. Idempotency keys protect you from *every* source of duplicates, not just crashes.
@@ -123,6 +127,6 @@ Note scenario B too: with the key, the replica's duplicate deploy is also dedupe
 
 1. **Kill earlier.** Kill during `charge_card` instead (make it slow). Which LLM calls repeat now? Where exactly is the checkpoint?
 2. **Recovery off.** Set `recovery: { durableAgents: 'off' }` and rerun A. What does `listActiveRuns()` return, and why? (Hint: "running" checkpoints are skipped when nothing consumes them.)
-3. **Graceful shutdown.** Replace `SIGKILL` with `SIGTERM` + `mastra.shutdown()` in the child. On 1.76 alpha, does recovery still wait out the TTL? (Read "Shutdown" in `leases.md`.)
+3. **Graceful shutdown.** Replace `SIGKILL` with `SIGTERM` + `mastra.shutdown()` in the child. On 1.76.0, does recovery still wait out the TTL? (Read "Shutdown" in `leases.md`.)
 4. **Workflow fix.** Make the plain workflow safe under scenario B without changing Mastra: give `slow-step` an idempotency key from `runId` + step id and a ledger. Then try `recovery.workflows: 'off'` and compare.
 5. **Sub-agent.** Make `slow_deploy` delegate to a sub-agent with two tool calls, crash in the middle, and count what repeats.

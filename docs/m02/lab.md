@@ -73,4 +73,4 @@ On the same thread, the second call **doesn't start until the first finishes**, 
 2. **Two tool calls in one step.** Script the model to call `check_ci` twice in step 1. How many `tool-result` chunks, how many `step-finish`? What does prompt #2 look like?
 3. **Abort.** Pass an `abortSignal` and abort during the tool. Which chunks do you get? Is `processOutputResult` called?
 4. **Without memory.** Remove `memory` from the reservation lab. Do the runs still serialize? Why or why not? (Hint: what identifies a thread?)
-5. **Read along.** With the anatomy output open, walk [`loop-builder.ts` L263-416](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/loop-builder.ts#L263) and label each output line with the step that produced it.
+5. **Read along.** With the anatomy output open, walk [`loop-builder.ts` L263-416](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L263) and label each output line with the step that produced it.

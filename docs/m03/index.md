@@ -4,7 +4,7 @@ aside: false
 ---
 
 <script setup>
-const P = 'https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/processors/index.ts'
+const P = 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/index.ts'
 const outcomes = [
   'Name every processor hook, when it fires and what it may return',
   'Predict the output when several processors are stacked',
@@ -132,7 +132,7 @@ Picture the agent loop as an airport conveyor belt. Processors are the checkpoin
 
 ## Under the hood {#under-the-hood}
 
-A [`Processor`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/processors/index.ts#L625) is an object with an `id` and **any subset** of ten hooks. Click through them. The colors group them by phase: input, request, output, tools, errors.
+A [`Processor`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/index.ts#L625) is an object with an `id` and **any subset** of ten hooks. Click through them. The colors group them by phase: input, request, output, tools, errors.
 
 <ClickMap title="The ten hooks" :stations="hooks" start-label="user message" end-label="finish" />
 
@@ -162,24 +162,24 @@ The composition lab, then the tripwire lab. Notice `"hello "` got out before the
 
 <MascotSays mood="happy">
 
-From [`packages/core/AGENTS.md`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/AGENTS.md): *"Before adding a feature, check whether it can be a processor. Processors are self-contained and need no changes to core internals, so they carry far less risk of breaking existing behavior."*
+From [`packages/core/AGENTS.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/AGENTS.md): *"Before adding a feature, check whether it can be a processor. Processors are self-contained and need no changes to core internals, so they carry far less risk of breaking existing behavior."*
 
 </MascotSays>
 
-Mastra follows its own rule. Task lists and goals, signal-provider hints, stream retry, memory, moderation, PII, prompt-injection detection, token limiting, structured output and skills all ship as **processors**, not `Agent` methods. Browse them in [`processors/processors/`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/processors/processors).
+Mastra follows its own rule. Task lists and goals, signal-provider hints, stream retry, memory, moderation, PII, prompt-injection detection, token limiting, structured output and skills all ship as **processors**, not `Agent` methods. Browse them in [`processors/processors/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/processors).
 
 <DeepDive title="The runner, ordering rules and tests">
 
-- [`ProcessorRunner`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/processors/runner.ts#L329) runs each processor as a workflow step with its own span. A processor error is reported from a step named `processor:<id>`, and spans are named `<phase> processor: <id>` by default.
-- Processors contributed by a `SignalProvider` are **prepended** to the agent's input processors and **appended** to its output processors ([agent.ts L1121](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/agent.ts#L1121)). Memory and channel output processors are added at [L2233-2241](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/agent.ts#L2233).
+- [`ProcessorRunner`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/runner.ts#L329) runs each processor as a workflow step with its own span. A processor error is reported from a step named `processor:<id>`, and spans are named `<phase> processor: <id>` by default.
+- Processors contributed by a `SignalProvider` are **prepended** to the agent's input processors and **appended** to its output processors ([agent.ts L1121](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L1121)). Memory and channel output processors are added at [L2233-2241](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L2233).
 - Changes to the processor API itself should land in a separate PR first and be *"generally useful rather than shaped around one feature"* (same `AGENTS.md`).
 
 Tests worth reading:
 
-- [`runner.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/processors/runner.test.ts)
-- [`process-input-step.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/processors/process-input-step.test.ts)
-- [`output-processor-tool-execution.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/processors/output-processor-tool-execution.test.ts)
-- [`batch-parts.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/processors/processors/batch-parts.ts): a built-in that buffers stream parts. Compare it with your redactor from Station 3.
+- [`runner.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/runner.test.ts)
+- [`process-input-step.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/process-input-step.test.ts)
+- [`output-processor-tool-execution.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/output-processor-tool-execution.test.ts)
+- [`batch-parts.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/processors/batch-parts.ts): a built-in that buffers stream parts. Compare it with your redactor from Station 3.
 
 </DeepDive>
 

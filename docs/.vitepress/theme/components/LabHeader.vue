@@ -15,7 +15,7 @@ const REPO = 'https://github.com/rphansen91/mastra-primitives-course/tree/main/l
       <Mascot :mood="mood as any" :size="64" />
       <div class="txt">
         <slot />
-        <p class="code"><Icon name="book" :size="15" /> Code: <a :href="REPO + folder" target="_blank" rel="noopener"><code>labs/{{ folder }}</code></a> · against the published <code>@mastra/core@1.75.0</code></p>
+        <p class="code"><Icon name="book" :size="15" /> Code: <a :href="REPO + folder" target="_blank" rel="noopener"><code>labs/{{ folder }}</code></a> · against the published <code>@mastra/core@1.76.0</code></p>
       </div>
     </div>
   </section>

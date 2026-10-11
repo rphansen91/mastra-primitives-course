@@ -4,7 +4,7 @@ aside: false
 ---
 
 <script setup>
-const B = 'https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src'
+const B = 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src'
 const outcomes = [
   'Trace a run from <code>agent.stream()</code> to <code>finish</code> and name every hook, in order',
   'Explain why Mastra builds its loop as a <code>dowhile</code> <em>workflow</em> instead of a <code>for</code> loop',
@@ -132,7 +132,7 @@ Try the other two scenarios too. **Two tools at once** and **Runaway loop** are 
 
 ### The loop is a workflow
 
-Strip away the options, and [`AgenticLoopBuilder.build()`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/loop-builder.ts#L687) returns this:
+Strip away the options, and [`AgenticLoopBuilder.build()`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L687) returns this:
 
 ```ts
 createWorkflow({ id: 'agentic-loop', ... })
@@ -161,7 +161,7 @@ After every lap, the `dowhile` predicate decides whether to go round again. It c
 1. Resume bookkeeping (a resumed run continues the right message).
 2. **One more signal drain**, for mail that arrived after step 6.
 3. **Was this request preempted by a signal?** Then loop again *without spending a step*.
-4. [`decideContinuation`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/shared/continuation-core.ts#L115): `stopWhen`, `maxSteps`, `onIterationComplete` and friends.
+4. [`decideContinuation`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/shared/continuation-core.ts#L115): `stopWhen`, `maxSteps`, `onIterationComplete` and friends.
 5. Emit `step-finish`, handle tripwires and aborts.
 
 <MascotSays mood="thinking">
@@ -190,7 +190,7 @@ See both for real. The lab prints every hook and every prompt:
 
 <TryIt cmd="npm run lab:anatomy" :output="out1">
 
-Real `@mastra/core@1.75.0`, mock model. The test pins this exact order, so a release that reorders hooks fails CI.
+Real `@mastra/core@1.76.0` (same order on 1.75.0), mock model. The test pins this exact order, so a release that reorders hooks fails CI.
 
 </TryIt>
 
@@ -198,15 +198,15 @@ Real `@mastra/core@1.75.0`, mock model. The test pins this exact order, so a rel
 
 <DeepDive title="Agent.stream(), the prepare-stream workflow and the full sequence">
 
-What [`Agent.stream()`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/agent.ts#L9581) does before the first lap:
+What [`Agent.stream()`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9581) does before the first lap:
 
 1. Durable agents take the durable path (Module 7).
 2. Merge default and call options. `untilIdle` wraps everything in an outer stream that re-enters on background-task completion or signals.
 3. Resolve the model (v2/v3 specs; v1 goes to `streamLegacy`).
-4. Assign a `runId`, then [`waitForCrossAgentThreadRun`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/agent.ts#L9692) reserves the thread ([runtime L4128](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/thread-stream-runtime.ts#L4128)).
-5. [`prepareRunOptions`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/agent.ts#L9698) wires `drainPendingSignals` / `subscribePendingSignals`.
-6. `#execute` builds the [prepare-stream workflow](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/workflows/prepare-stream/index.ts#L230): `parallel([prepareToolsStep, prepareMemoryStep]) → mapResultsStep → streamStep`, and `streamStep` calls `loop()`.
-7. [`registerRun`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/agent.ts#L9744) makes the run the thread's active run. On error, the reservation is released.
+4. Assign a `runId`, then [`waitForCrossAgentThreadRun`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9692) reserves the thread ([runtime L4128](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts#L4128)).
+5. [`prepareRunOptions`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9698) wires `drainPendingSignals` / `subscribePendingSignals`.
+6. `#execute` builds the [prepare-stream workflow](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/workflows/prepare-stream/index.ts#L230): `parallel([prepareToolsStep, prepareMemoryStep]) → mapResultsStep → streamStep`, and `streamStep` calls `loop()`.
+7. [`registerRun`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9744) makes the run the thread's active run. On error, the reservation is released.
 
 ```mermaid
 sequenceDiagram
@@ -235,14 +235,14 @@ sequenceDiagram
   A->>RT: run ends → thread idle → release reservation
 ```
 
-**The predicate:** [`loop-builder.ts#L419`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/loop-builder.ts#L419), `signalPreempted` at [L499](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/loop-builder.ts#L499).
+**The predicate:** [`loop-builder.ts#L419`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L419), `signalPreempted` at [L499](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L499).
 
 **Tests worth reading:**
 
-- [`stream-signals.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/workflows/stream-signals.test.ts): how signals join requests.
-- [`tool-call-concurrency.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/workflows/agentic-execution/tool-call-concurrency.test.ts): the concurrency strategies.
-- [`llm-execution-step.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/workflows/agentic-execution/llm-execution-step.test.ts): request building and interruption ([L1299](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/workflows/agentic-execution/llm-execution-step.ts#L1299)).
-- [`continuation-core.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/shared/continuation-core.ts): why the durable and default engines share one decision function.
+- [`stream-signals.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/workflows/stream-signals.test.ts): how signals join requests.
+- [`tool-call-concurrency.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/workflows/agentic-execution/tool-call-concurrency.test.ts): the concurrency strategies.
+- [`llm-execution-step.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/workflows/agentic-execution/llm-execution-step.test.ts): request building and interruption ([L1299](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/workflows/agentic-execution/llm-execution-step.ts#L1299)).
+- [`continuation-core.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/shared/continuation-core.ts): why the durable and default engines share one decision function.
 
 </DeepDive>
 

@@ -10,7 +10,7 @@ on:
 
 jobs:
   stable:
-    name: Labs (pinned @mastra/core 1.75.0)
+    name: Labs (pinned @mastra/core 1.76.0)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -38,8 +38,27 @@ jobs:
           npm run -s lab:ping-pong
           npm run -s lab:observe
 
-  next:
-    name: Labs (next @mastra/core pre-release, informational)
+  previous:
+    name: Labs (previous stable @mastra/core 1.75.0)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: labs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: labs/package-lock.json
+      - run: npm ci
+      - run: npm i --no-save @mastra/core@1.75.0 @mastra/libsql@1.25.1
+      - run: node -e "console.log('core', require('@mastra/core/package.json').version)"
+      - run: npm test
+      - run: npm run verify:exercises-are-broken
+
+  latest:
+    name: Labs (floating @mastra/core@latest, informational)
     runs-on: ubuntu-latest
     continue-on-error: true
     defaults:
@@ -53,6 +72,8 @@ jobs:
           cache: npm
           cache-dependency-path: labs/package-lock.json
       - run: npm ci
-      - run: npm i --no-save @mastra/core@1.76.0-alpha.9 @mastra/libsql@1.26.0-alpha.3
-      - run: node -e "console.log('core', require('@mastra/core/package.json').version)"
+      - run: npm i --no-save @mastra/core@latest @mastra/libsql@latest @mastra/observability@latest
+      - run: node -e "for (const p of ['core','libsql','observability']) console.log(p, require('@mastra/'+p+'/package.json').version)"
       - run: npm test
+      - name: Behavior drift vs. the pinned version (informational; the crash lab's timings vary)
+        run: npm run -s expected && git diff --stat -- expected-output || true

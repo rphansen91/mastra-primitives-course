@@ -45,7 +45,7 @@ accepted → { action: 'persist' } | persisted resolves: true
    user      Push feat/auth
    assistant [tool-call push_branch]
    tool      [tool-result push_branch: {"pushed":"feat/auth"}]
-   user      <notification source="chat" channel="ops" author="oncall">We're getting rate limited by GitHub, please stagger pushes.</notification>
+   user      <notification author="oncall" channel="ops" source="chat">We're getting rate limited by GitHub, please stagger pushes.</notification>
 -- doStream #3
    system    You push code. Obey operational notices.
    user      <notification source="github">CI recovered; Docker Hub healthy.</notification>
@@ -54,7 +54,7 @@ accepted → { action: 'persist' } | persisted resolves: true
 Read it carefully:
 
 - The signal was accepted **during** the tool but reached the model **after** the tool result: cooperative delivery.
-- It arrived as a **user-role XML-tagged** message.
+- It arrived as a **user-role XML-tagged** message. (On 1.76.0 the tag attributes are sorted alphabetically; on 1.75.0 they kept insertion order, `source` first. Don't string-match the exact tag in your tests.)
 - The woken run (#3) has **no history**: this agent has no memory. Module 4's point, observed.
 - `persist` didn't call the model (3 model calls total), but one `subscribeToThread` subscription saw all **3 runs**, including the persisted signal's `data-signal` chunk.
 
@@ -76,9 +76,15 @@ Read it carefully:
 
 === Dispatcher tick (normally a cron workflow) emits due summaries ========
   delivered: [ 'ch-1:pending', 'gh-2:pending' ] signals: [ '<notification-summary> chat: 1, github: 1' ]
+
+=== What the model saw (last message of each request) =====================
+  #1 (3 msgs) user      <notification-summary pending="1" priority="medium">calendar: 1</notification-summary>
+
+=== Thread history persisted in memory (roles) ============================
+  signal(notification), signal(notification-summary), assistant, signal(notification-summary)
 ```
 
-The urgent event woke the idle thread; everything after it arrived while the thread was **active** and was summarized. The dispatcher batched the two lows into one summary signal; the medium calendar item was summarized immediately and joined the woken run. `decide` may be called more than once per record (receipt time and delivery time), which is why deciders must be pure.
+The urgent event woke the idle thread; everything after it arrived while the thread was **active** and was summarized. The dispatcher batched the two lows into one summary signal; the medium calendar item was summarized immediately and joined the woken run. **Version note:** on 1.76.0 the calendar summary is drained into the woken run's *first* model request (one model call, 3 messages). On 1.75.0 the woken run made two model calls, the urgent item first and the summary second ([`core-1.75.0/m06-notifications.txt`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/expected-output/core-1.75.0/m06-notifications.txt)). Same signals, same history, different number of LLM calls: count model calls per version before you budget for them. `decide` may be called more than once per record (receipt time and delivery time), which is why deciders must be pure.
 
 ## Break it: Exercise 6.1, a delivery policy
 
@@ -98,7 +104,7 @@ export const decide = ({ record }) => {
   return undefined; // fall through to sources → priorities → default → built-in
 };
 ```
-Observed statuses on 1.75.0: `calendar-medium: delivered`, `chat-low: pending` (no `summaryAt`), `spam-high: discarded`.
+Observed statuses on 1.75.0 and 1.76.0: `calendar-medium: delivered`, `chat-low: pending` (no `summaryAt`), `spam-high: discarded`.
 
 </Reveal>
 

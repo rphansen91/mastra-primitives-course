@@ -20,7 +20,7 @@
       </g>
       <path d="M440 112 L440 132 M575 102 L575 132 M685 102 L685 132" class="stroke" stroke-width="1.8" stroke-dasharray="3 4" />
       <text x="380" y="200" text-anchor="middle" font-size="14">Array order, every time. Each processor sees the previous one's output.</text>
-      <text x="380" y="224" text-anchor="middle" font-size="12.5" class="t-dim">Verified in Lab 3 on @mastra/core 1.75.0: final text “hi[X][Y]”.</text>
+      <text x="380" y="224" text-anchor="middle" font-size="12.5" class="t-dim">Verified in Lab 3 on @mastra/core 1.75.0 and 1.76.0: final text “hi[X][Y]”.</text>
     </svg>
   </figure>
 </template>

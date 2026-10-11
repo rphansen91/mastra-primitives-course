@@ -69,7 +69,7 @@ Make the keys identify the effect, so a replay can never hand one effect another
 
 <Callout type="note" title="Why it matters">
 
-this is the "non-determinism" problem every replay engine fights. Temporal fails the workflow task with a non-determinism error; Restate and DBOS key by step name or ordinal and validate. Mastra keys workflow results by step id and its durable operation ids by `runId + execution path + phase`. Look at [`durable-operation-ids.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/durable-operation-ids.test.ts).
+this is the "non-determinism" problem every replay engine fights. Temporal fails the workflow task with a non-determinism error; Restate and DBOS key by step name or ordinal and validate. Mastra keys workflow results by step id and its durable operation ids by `runId + execution path + phase`. Look at [`durable-operation-ids.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/durable-operation-ids.test.ts).
 
 </Callout>
 
@@ -93,7 +93,7 @@ Reject writes whose token is lower than the highest token seen for that key.
 
 <Callout type="note" title="Why it matters">
 
-a lease alone is not mutual exclusion in a distributed system. The *storage layer* must check, because the stale worker doesn't know it's stale. That's why Mastra's run fencing is implemented inside the storage adapters ([`stores/pg/src/storage/db/run-fencing.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/stores/pg/src/storage/db/run-fencing.ts)), not in the agent.
+a lease alone is not mutual exclusion in a distributed system. The *storage layer* must check, because the stale worker doesn't know it's stale. That's why Mastra's run fencing is implemented inside the storage adapters ([`stores/pg/src/storage/db/run-fencing.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/stores/pg/src/storage/db/run-fencing.ts)), not in the agent.
 
 </Callout>
 

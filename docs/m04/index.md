@@ -4,8 +4,8 @@ aside: false
 ---
 
 <script setup>
-const B = 'https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd'
-const T = 'https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd'
+const B = 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae'
+const T = 'https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae'
 const outcomes = [
   'Explain threads vs resources, and why one key does three jobs',
   'Trace how memory reaches the model, as storage plus input processors',
@@ -78,7 +78,7 @@ const recall = [
 const cheat = [
   { title: 'Keys', color: 'violet', lines: ['resource = the user / tenant', 'thread = one conversation', 'thread = unit of history, concurrency, signals'] },
   { title: 'Memory = processors', color: 'amber', lines: ['MessageHistory: last N or maxTokens', 'WorkingMemory: note + update tool', 'SemanticRecall: by meaning, with neighbors'] },
-  { title: 'Defaults (1.75.0)', color: 'sky', lines: ['lastMessages: 10 (deprecated)', 'semanticRecall: false', 'workingMemory: off'] },
+  { title: 'Defaults (1.76.0)', color: 'sky', lines: ['lastMessages: 10 (deprecated)', 'semanticRecall: false', 'workingMemory: off'] },
   { title: 'Woken runs', color: 'coral', lines: ['No memory → [system, signal]', 'With memory → history + signal', 'Only what was stored'] },
   { title: 'Gotchas', color: 'lime', lines: ['Recency ≠ relevance', 'Counts messages, not tokens', 'Loaded once per run', 'Resource WM read-modify-write races'] },
   { title: 'Choose', color: 'teal', lines: ['Facts about a user → working memory', 'Fuzzy past → semantic recall', 'Documents → RAG tool', 'Exact state → workflow / database'] },
@@ -131,7 +131,7 @@ await agent.stream('hi', { memory: { resource: 'user-1', thread: 'support-42' } 
 
 ### Memory is processors
 
-[`MastraMemory`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/memory/memory.ts#L121) defines the contract. The behavior lives in **input processors** that read from storage and write into the `MessageList`. Module 3's house rule, applied to Mastra's own memory:
+[`MastraMemory`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/memory/memory.ts#L121) defines the contract. The behavior lives in **input processors** that read from storage and write into the `MessageList`. Module 3's house rule, applied to Mastra's own memory:
 
 <MemoryLayers />
 
@@ -145,7 +145,7 @@ Here's the dinner thread from the story. Make it longer, switch memory features 
 
 <Callout type="note" title="Defaults at the pinned commit">
 
-From [`memory.ts` L89](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/memory/memory.ts#L89): `lastMessages: 10`, `semanticRecall: false`, working memory off. On 1.75.0, `lastMessages` is marked **deprecated**: *"Counting messages is a poor proxy for context size. Prefer `messageHistory` to bound history by a token budget."*
+From [`memory.ts` L89](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/memory/memory.ts#L89): `lastMessages: 10`, `semanticRecall: false`, working memory off. On 1.75.0 and 1.76.0, `lastMessages` is marked **deprecated**: *"Counting messages is a poor proxy for context size. Prefer `messageHistory` to bound history by a token budget."*
 
 </Callout>
 
@@ -163,11 +163,11 @@ Four experiments against the real package, each asserting on the **prompts the m
 
 <DeepDive title="Signals in memory, tool pairs, and where history is loaded">
 
-- **Where history is loaded.** The prepare-stream workflow runs `prepareMemoryStep` in parallel with `prepareToolsStep` ([prepare-stream L230](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/workflows/prepare-stream/index.ts#L230)), before the loop starts. The agent asks memory for its processors at [agent.ts L2233](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/agent.ts#L2233).
-- **Tool pairs.** Mastra stores a tool call and its result in **one** assistant message (the lab shows `assistant: tool-invocation + step-start + text`), so the window can't split them. The loader still groups linked tool messages for older formats: [`groupLinkedToolMessages`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/memory/load-message-history.ts#L49). If you trim **provider** messages yourself, you must keep pairs together.
-- **Signals in memory.** Signals are stored with `role: 'signal'` (Module 6). Which ones get replayed into history is a choice: see [`recall-signal-exclusions.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/memory/recall-signal-exclusions.test.ts). Transient signals reach the model but are never stored.
-- **Working memory merges.** How concurrent updates merge in the full package: [`merge-working-memory.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/memory/src/merge-working-memory.test.ts).
-- **The full package.** [`packages/memory`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/memory): observational memory, token-limited history, thread cloning, title generation.
+- **Where history is loaded.** The prepare-stream workflow runs `prepareMemoryStep` in parallel with `prepareToolsStep` ([prepare-stream L230](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/workflows/prepare-stream/index.ts#L230)), before the loop starts. The agent asks memory for its processors at [agent.ts L2233](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L2233).
+- **Tool pairs.** Mastra stores a tool call and its result in **one** assistant message (the lab shows `assistant: tool-invocation + step-start + text`), so the window can't split them. The loader still groups linked tool messages for older formats: [`groupLinkedToolMessages`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/memory/load-message-history.ts#L49). If you trim **provider** messages yourself, you must keep pairs together.
+- **Signals in memory.** Signals are stored with `role: 'signal'` (Module 6). Which ones get replayed into history is a choice: see [`recall-signal-exclusions.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/memory/recall-signal-exclusions.test.ts). Transient signals reach the model but are never stored.
+- **Working memory merges.** How concurrent updates merge in the full package: [`merge-working-memory.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/memory/src/merge-working-memory.test.ts).
+- **The full package.** [`packages/memory`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/memory): observational memory, token-limited history, thread cloning, title generation.
 
 </DeepDive>
 

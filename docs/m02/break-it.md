@@ -75,7 +75,7 @@ the loop guarantees **deterministic folding** of results (Module 1), not **isola
 
 <Reveal title="Show the solution">
 
-- **Agent level:** `toolCallConcurrency: 1` in the call (or agent default) options serializes tool calls for every step. Verified on 1.75.0.
+- **Agent level:** `toolCallConcurrency: 1` in the call (or agent default) options serializes tool calls for every step. Verified on 1.75.0 and 1.76.0.
 - **Tool level (preferred):** make the effect atomic: a mutex, a DB transaction, or an atomic decrement (`UPDATE seats SET left = left - 1`). The tool is then safe no matter who calls it: another agent, a workflow step, a retry.
 
 The solution file does both, with a promise-chain mutex keyed by the db object. Also note the `strategy: 'called'` option, which serializes only steps that actually call approval/suspend tools.

@@ -4,9 +4,9 @@ aside: false
 ---
 
 <script setup>
-const W = 'https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts'
-const B = 'https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd'
-const T = 'https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd'
+const W = 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts'
+const B = 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae'
+const T = 'https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae'
 const outcomes = [
   'Read a workflow as a step graph with typed inputs and outputs',
   'Say exactly what a snapshot holds, when it is written, and what it does not buy you',
@@ -161,7 +161,7 @@ Module 2 showed that Mastra's loop is `dowhile(iteration, predicate)`. In the la
 
 <TryIt cmd="tsx m05-workflows/loop-as-workflow.ts" :output="out2">
 
-Each iteration's **input** (the transcript so far) is in the snapshot. Compare with [`loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/loop-builder.ts#L263).
+Each iteration's **input** (the transcript so far) is in the snapshot. Compare with [`loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L263).
 
 </TryIt>
 
@@ -173,11 +173,11 @@ Fun fact we learned the hard way while building the lab: a workflow has a `.then
 
 <DeepDive title="Engines, scheduled workflows and time travel">
 
-- **Default engine** ([`default.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/default.ts)): in process. `persistStepUpdate` writes the snapshot after every step.
-- **Evented engine** ([`workflows/evented/`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/evented)): steps as PubSub events processed by workers; needs a store with atomic concurrent updates.
-- **Inngest / Temporal** ([`workflows/inngest`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/workflows/inngest), [`workflows/temporal`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/workflows/temporal)): the same definition on another platform, through `wrapDurableOperation` and `executeSleepDuration`.
-- **`waitForEvent`** ([L2360](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2360)) is removed: it throws `WORKFLOW_WAIT_FOR_EVENT_REMOVED`. Use suspend/resume.
-- **Restart** ([L4860](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L4860)) and **time travel** ([L5648](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L5648)) operate on the same run state. So do scheduled workflows; the notification dispatcher in Module 6 is one.
+- **Default engine** ([`default.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/default.ts)): in process. `persistStepUpdate` writes the snapshot after every step.
+- **Evented engine** ([`workflows/evented/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/evented)): steps as PubSub events processed by workers; needs a store with atomic concurrent updates.
+- **Inngest / Temporal** ([`workflows/inngest`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/workflows/inngest), [`workflows/temporal`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/workflows/temporal)): the same definition on another platform, through `wrapDurableOperation` and `executeSleepDuration`.
+- **`waitForEvent`** ([L2360](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L2360)) is removed: it throws `WORKFLOW_WAIT_FOR_EVENT_REMOVED`. Use suspend/resume.
+- **Restart** ([L4860](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L4860)) and **time travel** ([L5648](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L5648)) operate on the same run state. So do scheduled workflows; the notification dispatcher in Module 6 is one.
 - The workflow is Mastra's universal "unit of observable, resumable work": the agent loop, prepare-stream and processors are all workflow steps, which is why they all get spans (Module 9).
 
 </DeepDive>

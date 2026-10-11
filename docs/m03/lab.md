@@ -52,8 +52,8 @@ tripwire: { reason: 'policy violation', processorId: 'word-guard', ... }
 
 ## Tasks
 
-1. **Order with providers.** Read [agent.ts L1121](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/agent.ts#L1121). If a `SignalProvider` contributes an input processor P and the agent has [A, B], what's the order? Add a test using a tiny `SignalProvider` subclass with `getInputProcessors()`.
-2. **Retry tripwire.** Change the stream guard to `abort('…', { retry: true })`. What does the loop do? How many model calls? (Read the `processOutputStep` doc comment around [L806](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/processors/index.ts#L806).)
+1. **Order with providers.** Read [agent.ts L1121](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L1121). If a `SignalProvider` contributes an input processor P and the agent has [A, B], what's the order? Add a test using a tiny `SignalProvider` subclass with `getInputProcessors()`.
+2. **Retry tripwire.** Change the stream guard to `abort('…', { retry: true })`. What does the loop do? How many model calls? (Read the `processOutputStep` doc comment around [L806](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/index.ts#L806).)
 3. **Tool gating.** Write a `processOutputStep` processor that drops a `deploy` tool call if one already ran in this run (use `state`). Prove the tool never executes.
 4. **Drop a chunk.** Return `null` from `processOutputStream` for reasoning chunks. What do clients see? What's persisted?
 5. **Stretch: a `processToolResult`** that truncates results over 2 KB and adds `truncated: true`. Check what the model sees in `prompts`.
