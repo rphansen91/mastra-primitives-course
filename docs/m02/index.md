@@ -11,11 +11,12 @@ const outcomes = [
   'Predict what happens when two callers hit the same thread',
   'Stop a runaway loop with <code>stopWhen</code> and fix a lost update from parallel tools',
   'Pick the agent loop, a workflow, the AI SDK or LangGraph for a given job',
+  'Review it like a platform team: what\'s stable, beta or deprecated, how it fails, which guardrails it needs (Production readiness)'
 ]
 const iteration = [
   { name: 'llmExecutionStep', short: 'build the request, call the model', detail: 'Input-step processors, then `processLLMRequest`, then the model `doStream`, with `processOutputStream` on every chunk, then `processLLMResponse` and `processOutputStep`. Pending signals join the request here, and a request that has streamed **only reasoning** can be aborted when a signal is queued.', href: B + '/loop/workflows/agentic-execution/llm-execution-step.ts#L1488' },
   { name: 'map tool calls', short: 'split the turn into calls', detail: "Turns the model's tool calls into a list so the next step can `foreach` over them.", href: B + '/loop/loop-builder.ts#L263' },
-  { name: 'foreach(toolCallStep)', short: 'run each tool', detail: 'Approval and suspend (human in the loop), `tool.execute`, `processToolResult`, background-task dispatch. Up to **10 at once** by default. Forced to 1 when approval-capable tools are present.', href: B + '/loop/workflows/agentic-execution/tool-call-concurrency.ts' },
+  { name: 'foreach(toolCallStep)', short: 'run each tool', detail: 'Approval and suspend (human in the loop), `tool.execute`, `processToolResult`, background-task dispatch. Up to **10 at once** by default. Forced to 1 when any available tool can require approval or suspend (with `toolCallConcurrency: { strategy: \'called\' }`, only the tools actually called count).', href: B + '/loop/workflows/agentic-execution/tool-call-concurrency.ts' },
   { name: 'llmMappingStep', short: 'fold results back', detail: 'Writes tool results into the `MessageList` **in call order** (not completion order) and emits `tool-result` chunks. This is why the next prompt is deterministic.', href: B + '/loop/workflows/agentic-execution/llm-mapping-step.ts' },
   { name: 'backgroundTaskCheckStep', short: 'collect finished bg tasks', detail: 'Injects results from background tasks that finished since the last step.', href: B + '/loop/workflows/agentic-execution/background-task-check-step.ts' },
   { name: 'signalDrainStep', short: 'let the mail in', detail: 'Drains queued signals into the transcript at a safe point: seal the current message, add the signal, mark the iteration as continued. All of Module 6 hangs off this step.', href: B + '/loop/loop-builder.ts#L206' },

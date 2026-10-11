@@ -11,6 +11,7 @@ const outcomes = [
   'Configure notifications: priorities, the default policy, batching and the inbox tool',
   'Plug an external source in with a <code>SignalProvider</code>',
   'Know what signals don\'t guarantee yet (durability, preemption) and what to use instead',
+  'Review it like a platform team: what\'s stable, beta or deprecated, how it fails, which guardrails it needs (Production readiness)'
 ]
 const questions = [
   { title: 'Is the agent busy?', body: 'Then don\'t start a second run on the same transcript. Get the news into the **current** run at a safe point.', icon: 'clock', color: 'violet' },

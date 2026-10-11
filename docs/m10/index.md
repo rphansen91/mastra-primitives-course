@@ -9,6 +9,7 @@ const outcomes = [
   'Compare at least two systems\' prior art, with their actual APIs and guarantees',
   'Place a primitive on the smallest surface that respects the house rules',
   'Name its failure modes explicitly, then write the RFC',
+  'Review it like a platform team: what\'s stable, beta or deprecated, how it fails, which guardrails it needs (Production readiness)'
 ]
 const deliver = [
   { title: 'An RFC', body: '2 to 5 pages, from the [template](./rfc-template). The builder below writes the skeleton.', icon: 'book', color: 'violet' },

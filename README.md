@@ -29,7 +29,7 @@ Every primitive is taught in **four passes**:
 
 ## Run the labs
 
-Requires Node.js 22.12+. No API keys: every lab uses a ~100-line mock model.
+Requires Node.js 22.13+ (the `@mastra/core` engines field). No API keys: every lab uses a ~100-line mock model.
 
 ```bash
 cd labs

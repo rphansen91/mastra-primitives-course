@@ -38,7 +38,7 @@ The goal: by the end you can **explain each primitive from first principles, pre
 ## Prerequisites
 
 - Comfortable TypeScript and async JavaScript (Promises, async iterators, streams).
-- Node.js **22.12 or newer** (the labs use the built-in test runner and `import.meta.dirname`).
+- Node.js **22.13 or newer** (`@mastra/core` declares `engines.node >=22.13.0`; the labs also use the built-in test runner and `import.meta.dirname`).
 - Basic familiarity with LLM tool calling (what a tool call and a tool result are).
 - Optional: a local clone of `mastra-ai/mastra` for reading source and running its tests (Module 0).
 

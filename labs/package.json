@@ -14,7 +14,7 @@
   },
   "description": "Runnable labs for the Mastra Primitives course. Mock models only: no API keys.",
   "engines": {
-    "node": ">=22.12"
+    "node": ">=22.13"
   },
   "scripts": {
     "test": "node --import tsx --test --test-concurrency=1 'm0*/**/*.test.ts'",

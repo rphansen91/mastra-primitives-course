@@ -9,6 +9,7 @@ export type Prod = {
   failures: { mode: string; guard: string }[];
   guardrails: string[];
   alternatives: string[];
+  check: { question: string; options: { text: string; correct?: boolean; why: string }[] };
 };
 
 export const PROD: Record<string, Prod> = {
@@ -40,6 +41,14 @@ export const PROD: Record<string, Prod> = {
       'The AI SDK\'s `generateText` with `stopWhen` for simple single-process agents',
       'Your own loop, only if you need a guarantee no framework gives (and you\'ll own it forever)',
     ],
+    check: {
+      question: "Your team picks a framework with \"durable agents\" for an agent that calls a payment API. What do you still need?",
+      options: [
+        { text: "Nothing: durable means exactly-once", why: "Durable means *resumable*. Every engine re-runs the step that was in flight at the crash." },
+        { text: "An idempotency key the payment API dedupes on, built from stable ids", correct: true, why: "Recovery, retries and replica races all re-run in-flight work. Only the downstream dedupe makes the charge effectively-once." },
+        { text: "A longer timeout on the payment call", why: "Timeouts change *when* you retry, not *whether* the charge repeats." },
+      ],
+    },
   },
   '02': {
     ids: ['agent', 'tool-concurrency', 'distributed-pubsub', 'background-tasks', 'goals'],
@@ -50,7 +59,7 @@ export const PROD: Record<string, Prod> = {
       'Hook order is stable and testable (Lab 2 pins it, and it\'s identical on 1.75.0 and 1.76.0)',
     ],
     caution: [
-      'Tool calls in one step run **concurrently, up to 10 by default** (forced to 1 when approval-capable tools are present). Your tools must tolerate that.',
+      'Tool calls in one step run **concurrently, up to 10 by default** (forced to 1 when any available tool can require approval or suspend). Your tools must tolerate that.',
       'One active run per thread is coordinated through PubSub. The default `EventEmitterPubSub` covers **one process**.',
       'Background tasks (1.29.0+) and goals (1.43.0+) are newer loop features. Expect churn.',
     ],
@@ -71,6 +80,14 @@ export const PROD: Record<string, Prod> = {
       'LangGraph, for explicit graph-level control of the loop',
       'OpenAI Agents SDK, if you\'re committed to one provider',
     ],
+    check: {
+      question: "You scale an agent from 1 to 3 replicas behind a round-robin load balancer, with the default config. Two requests for the same thread land on different replicas. What keeps the thread to one active run?",
+      options: [
+        { text: "Mastra's one-run-per-thread rule, everywhere", why: "That rule is coordinated over PubSub, and the default `EventEmitterPubSub` only covers one process." },
+        { text: "Nothing, by default. You need a distributed PubSub (Redis/Valkey Streams) or sticky routing per thread", correct: true, why: "Per-process defaults are the most common surprise when scaling out." },
+        { text: "The database's row locks on the thread", why: "Storage isn't used as a run lock for threads." },
+      ],
+    },
   },
   '03': {
     ids: ['processors', 'processor-caching', 'tracing'],
@@ -102,6 +119,14 @@ export const PROD: Record<string, Prod> = {
       'An LLM gateway or proxy for org-wide policy, independent of the framework',
       'Moderation or PII APIs called from inside a processor',
     ],
+    check: {
+      question: "Your guardrail processor calls a moderation API, and the API times out. What should the review ask first?",
+      options: [
+        { text: "Whether the timeout fails the run (closed) or lets the output through (open), and whether that was chosen on purpose and tested", correct: true, why: "Every guardrail has an error path. Leaving it implicit is how policy gets bypassed under load." },
+        { text: "Whether the processor is registered first", why: "Order matters for composition, but it doesn't decide what happens on error." },
+        { text: "Whether response caching is on", why: "Caching (beta) can reduce calls, but the error path still needs a decision." },
+      ],
+    },
   },
   '04': {
     ids: ['memory', 'last-messages', 'observational-memory', 'wm-state-signals'],
@@ -134,6 +159,14 @@ export const PROD: Record<string, Prod> = {
       'Dedicated memory services (for example Zep, Mem0, Letta)',
       'A vector database queried directly from a tool',
     ],
+    check: {
+      question: "A client sends `resourceId` in the request body, and the server passes it straight to memory. What's the risk?",
+      options: [
+        { text: "None: Mastra checks thread ownership", why: "The docs say it plainly: *\"The memory system doesn't enforce access control.\"*" },
+        { text: "Cross-tenant reads: anyone can load another user's threads and working memory", correct: true, why: "Derive `resourceId` from the authenticated identity on the server, every time." },
+        { text: "Only a performance risk, because of semantic recall", why: "The problem is authorization, not speed." },
+      ],
+    },
   },
   '05': {
     ids: ['workflows', 'workflow-recovery', 'dynamic-workflows', 'temporal-runner', 'workers', 'schedules'],
@@ -167,6 +200,14 @@ export const PROD: Record<string, Prod> = {
       'Restate or DBOS, for journaled steps with less infrastructure',
       'Inngest, as a Mastra workflow runner with step memoization',
     ],
+    check: {
+      question: "You rename a workflow step and deploy while 200 runs are suspended on it. What happens when they resume?",
+      options: [
+        { text: "Mastra resumes each run on the version that started it", why: "There's no run versioning on the default engine." },
+        { text: "They resume against the code deployed now. Nothing checks the graph, so a renamed step can fail to resume", correct: true, why: "Drain or migrate suspended runs first, or put a version in the workflow id." },
+        { text: "Suspended runs are cancelled on deploy", why: "Snapshots persist, which is exactly why the mismatch matters." },
+      ],
+    },
   },
   '06': {
     ids: ['signals', 'notifications', 'signal-providers', 'distributed-pubsub', 'cross-agent'],
@@ -200,6 +241,14 @@ export const PROD: Record<string, Prod> = {
       'Temporal signals on a workflow that drives the agent',
       'Webhooks into a job queue',
     ],
+    check: {
+      question: "On the default in-memory transport, which signal can you afford to lose in a crash?",
+      options: [
+        { text: "\"CI is green, FYI\" to a busy agent", correct: true, why: "Informational and repeatable. If it's lost, nothing breaks." },
+        { text: "\"Refund approved, execute it\"", why: "This is a command with money attached. Persist it (inbox record or a durable queue) and handle it idempotently." },
+        { text: "Both: Mastra persists every accepted signal", why: "Pending signals for an active run are queued in memory until the next drain." },
+      ],
+    },
   },
   '07': {
     ids: ['durable-agents', 'run-claims', 'workflow-recovery', 'distributed-pubsub'],
@@ -236,6 +285,14 @@ export const PROD: Record<string, Prod> = {
       'Temporal, Restate or DBOS, with model and tool calls as activities or journaled steps',
       'A workflow that calls the agent from a step with idempotent tools (Module 5)',
     ],
+    check: {
+      question: "On 1.76.0 with Postgres storage, three replicas run `recovery.durableAgents: 'auto'`. One crashes in the middle of `charge_card`. What's still your job?",
+      options: [
+        { text: "Nothing: claims and fencing make it exactly-once", why: "Claims stop two live executions. Recovery still re-runs the in-flight tool." },
+        { text: "Make `charge_card` idempotent (run id + tool call id), and alert on runs stuck past the claim TTL", correct: true, why: "Fencing decides *who* recovers. Idempotency decides whether the effect repeats." },
+        { text: "Turn recovery off on two of the replicas", why: "With a fencing store, every replica can recover safely. The tool still repeats." },
+      ],
+    },
   },
   '08': {
     ids: ['subagents', 'networks', 'workflows', 'signals', 'thread-ownership', 'cross-agent'],
@@ -268,6 +325,14 @@ export const PROD: Record<string, Prod> = {
       'OpenAI Agents SDK handoffs',
       'A message bus between independent services, each running one agent',
     ],
+    check: {
+      question: "A new project needs a router agent that picks among three specialists. A teammate copies a `.network()` example. What's your review?",
+      options: [
+        { text: "Approve: networks are the routing primitive", why: "They're deprecated and will be removed in a future major release." },
+        { text: "Use a supervisor agent with subagents, and set a `messageFilter`, because subagents get the parent's full context by default", correct: true, why: "Same coordination on the supported API, without leaking the conversation to every helper." },
+        { text: "Use signals between the agents", why: "Signals are for independent, long-lived agents. This is per-turn delegation." },
+      ],
+    },
   },
   '09': {
     ids: ['tracing', 'scorers', 'datasets'],
@@ -300,6 +365,14 @@ export const PROD: Record<string, Prod> = {
       'Hosted eval and observability platforms (Langfuse, Braintrust, LangSmith, Arize)',
       'Promptfoo or a plain test runner for offline evals',
     ],
+    check: {
+      question: "Your CI gate asserts that the trace has exactly 9 spans. After the upgrade to 1.76.0 it fails. What's the right fix?",
+      options: [
+        { text: "Update the count to 11", why: "That passes today and breaks on the next built-in processor." },
+        { text: "Assert on the spans you care about (`tool_call`, `model_inference`, their nesting), not on totals", correct: true, why: "1.76.0 added a built-in request-processor span. Gates should track behavior, not framework internals." },
+        { text: "Pin 1.75.0 forever", why: "Pinning is right, but freezing is how you miss fixes like run claims." },
+      ],
+    },
   },
   '10': {
     ids: ['durable-agents', 'run-claims', 'signals', 'workflows'],
@@ -329,5 +402,13 @@ export const PROD: Record<string, Prod> = {
       'Use a dedicated engine for that guarantee (Temporal, Restate, a queue) and integrate',
       'Contribute it upstream',
     ],
+    check: {
+      question: "Your primitive reads a private field on `Agent` to work. What's the production risk?",
+      options: [
+        { text: "None, if the tests pass", why: "Tests pass on the pinned version. Private internals can change in any minor release." },
+        { text: "It can break silently on a minor upgrade. Build on public exports, and run CI on the pin and on `@latest`", correct: true, why: "That's why this course's Labs workflow runs both." },
+        { text: "Only a licensing risk", why: "The risk is breakage, not licensing." },
+      ],
+    },
   },
 };

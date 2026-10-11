@@ -22,6 +22,7 @@ const p = computed(() => PROD[props.module]);
       <div class="col c-sky mpc-card"><h4><Icon name="wrench" :size="16" /> Guardrails checklist</h4><ul class="checks"><li v-for="(s, i) in p.guardrails" :key="i" v-html="fmt(s)" /></ul></div>
       <div class="col c-violet mpc-card"><h4><Icon name="compass" :size="16" /> Alternatives</h4><ul><li v-for="(s, i) in p.alternatives" :key="i" v-html="fmt(s)" /></ul></div>
     </div>
+    <Quiz :module="module" id="prod" :question="p.check.question" :options="p.check.options" />
   </section>
 </template>
 <style scoped>

@@ -12,6 +12,7 @@ const outcomes = [
   'Predict exactly which messages a request carries, and what falls out',
   'Know what a run woken by a signal can and cannot remember',
   'Choose between history, working memory, semantic recall and your own database',
+  'Review it like a platform team: what\'s stable, beta or deprecated, how it fails, which guardrails it needs (Production readiness)'
 ]
 const problems = [
   { title: 'Identity', body: 'Which messages belong to *this* conversation, and to this user across conversations?', icon: 'map', color: 'violet' },

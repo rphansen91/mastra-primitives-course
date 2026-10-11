@@ -12,6 +12,7 @@ const outcomes = [
   'Run one scorer live, over traces, in CI, and inside the loop (isTaskComplete)',
   'Use record/replay for deterministic tests that catch prompt drift',
   'Know what traces are not: an authoritative, replayable history',
+  'Review it like a platform team: what\'s stable, beta or deprecated, how it fails, which guardrails it needs (Production readiness)'
 ]
 const questions = [
   { title: 'What woke it?', body: 'A signal? A schedule? A user? Which one, and with what text?', icon: 'bolt', color: 'amber' },

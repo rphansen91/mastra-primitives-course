@@ -13,6 +13,7 @@ const outcomes = [
   'Use suspend/resume safely, including across processes and racing callers',
   'See the agent loop as "just another workflow": <code>dowhile(iteration, predicate)</code>',
   'Choose between a Mastra workflow, an agent loop and a durable-execution engine',
+  'Review it like a platform team: what\'s stable, beta or deprecated, how it fails, which guardrails it needs (Production readiness)'
 ]
 const needs = [
   { title: 'Pause for days', body: 'Wait for a human, a webhook, a deadline. Without holding a process hostage.', icon: 'pause', color: 'violet' },

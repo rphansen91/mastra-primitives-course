@@ -10,6 +10,7 @@ const outcomes = [
   'Compare what each one shares: transcript, run, budget, failure, crash behavior',
   'Wire thread ownership, peer discovery and a relay tool into an always-on coordinator',
   'Stop two agents from waking each other forever, in code, not in the prompt',
+  'Review it like a platform team: what\'s stable, beta or deprecated, how it fails, which guardrails it needs (Production readiness)'
 ]
 const needs = [
   { title: 'Delegation', body: '"Research this and give me the answer." A function call that happens to be an agent.', icon: 'compass', color: 'sky' },

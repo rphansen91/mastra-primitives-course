@@ -11,6 +11,7 @@ const outcomes = [
   'Use a tripwire (<code>abort</code>), per-run <code>state</code> and the <code>writer</code> correctly',
   'Spot the three classic processor bugs: chunk boundaries, shared state, fail-closed enrichment',
   'Decide between a processor, tool code, a workflow, memory or a signal',
+  'Review it like a platform team: what\'s stable, beta or deprecated, how it fails, which guardrails it needs (Production readiness)'
 ]
 const needs = [
   { title: 'Redact secrets and PII', body: 'Before the model sees them, and before the user does.', icon: 'eye', color: 'coral' },

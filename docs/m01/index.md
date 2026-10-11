@@ -10,6 +10,7 @@ const outcomes = [
   'Close that gap with an idempotency key, and stop a zombie worker with a fencing token',
   'Tell a <em>request</em> from a <em>signal</em>, and say when a signal gets seen',
   'Recognise the same ideas when Mastra shows them to you in Modules 2 to 7',
+  'Review it like a platform team: what\'s stable, beta or deprecated, how it fails, which guardrails it needs (Production readiness)'
 ]
 const naive = [
   { title: 'It never stops', body: '"Until no tool calls" trusts the model. A confused model calls the same tool forever, on your card.', icon: 'reset', color: 'coral' },

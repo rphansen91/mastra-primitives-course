@@ -5,7 +5,7 @@
 ## 0.1 Run the course labs
 
 ```bash
-node -v            # must be >= 22.12
+node -v            # must be >= 22.13 (@mastra/core engines)
 git clone https://github.com/rphansen91/mastra-primitives-course
 cd mastra-primitives-course/labs
 npm install

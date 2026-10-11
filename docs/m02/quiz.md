@@ -11,9 +11,9 @@ const q2 = [
   { text: 'It\'s faster: workflows run steps in parallel', why: 'The loop\'s iterations are sequential by nature. Speed isn\'t the point.' },
 ]
 const q3 = [
-  { text: 'Before: it sees the step\'s tool calls and can veto, rewrite or tripwire them before any side effect', correct: true, why: 'That\'s what makes it the right place for policy like "never deploy twice".' },
-  { text: 'After: it sees the tool results and can redact them', why: 'That\'s `processToolResult`. `processOutputStep` runs before the tools.' },
-  { text: 'In parallel with the tools', why: 'Then it couldn\'t stop anything.' },
+  { text: '`processOutputStep`: it sees the step\'s tool calls after the model emits them and before any tool runs, so it can drop or tripwire the call', correct: true, why: 'Policy that must prevent a side effect has to run between "the model asked" and "the tool ran". That\'s this hook.' },
+  { text: '`processToolResult`: it can replace the deploy result with an error', why: 'It runs after `tool.execute`. The deploy already happened.' },
+  { text: 'A `stopWhen` condition that checks the clock', why: '`stopWhen` is evaluated after the iteration, so the tool has already run, and stopping the loop doesn\'t undo it.' },
 ]
 const q4 = [
   { text: 'Both run at once and their messages interleave in the thread', why: 'Mastra prevents exactly that: one active run per thread.' },
@@ -40,7 +40,7 @@ Answer before reading the explanations. Your progress is saved in this browser.
 
 <Quiz module="02" id="cq-2" question="Why is Mastra's loop a `dowhile` **workflow** instead of a plain `while` loop?" :options="q2" />
 
-<Quiz module="02" id="cq-3" question="Does `processOutputStep` run before or after `tool.execute`?" :options="q3" />
+<Quiz module="02" id="cq-3" question="Compliance: no `deploy` tool call may execute outside business hours, whatever the model asks for. Which hook can enforce that before any side effect?" :options="q3" />
 
 <Quiz kind="predict" module="02" id="cq-4" question="Two HTTP requests call `agent.stream()` on the **same thread** 10 ms apart. What happens?" :options="q4" />
 

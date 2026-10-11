@@ -11,6 +11,7 @@ const outcomes = [
   'Predict the difference between <code>@mastra/core</code> 1.75.0 and 1.76.0, and say what a version bump changes for your failure modes',
   'Make a tool exactly-once-effective with a stable idempotency key',
   'Choose between Mastra durable agents and Temporal, Restate, DBOS or Inngest',
+  'Review it like a platform team: what\'s stable, beta or deprecated, how it fails, which guardrails it needs (Production readiness)'
 ]
 const twists = [
   { title: 'LLM calls are expensive and fickle', body: 'Re-asking the model on replay costs money, and it might **answer differently**. Then the replay takes a different path from the original.', icon: 'bulb', color: 'violet' },
