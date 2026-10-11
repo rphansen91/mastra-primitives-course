@@ -14,7 +14,7 @@ export type Prod = {
 
 export const PROD: Record<string, Prod> = {
   '01': {
-    ids: ['agent', 'tool-concurrency'],
+    ids: ['agent', 'tool-concurrency', 'durable-agents', 'run-claims'],
     verdict: 'Nothing in this module ships as is. It gives your review its vocabulary. Every later module is judged against these guarantees: **journal, idempotency, fencing, safe points, deterministic order.**',
     safe: [
       'The concepts. They\'re framework-neutral and map one-to-one onto Temporal, Restate and DBOS.',

@@ -24,8 +24,8 @@ const used = computed(() => [...new Set(rows.value.map(r => r.status))] as Statu
 .hd { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; align-items: baseline; }
 .pin { font-size: 12.5px; color: var(--vp-c-text-2); }
 ul { list-style: none; padding: 0 !important; margin: 10px 0 0 !important; }
-li { display: grid; grid-template-columns: 150px 1fr; gap: 10px; align-items: start; padding: 8px 0; border-top: 1.5px dashed var(--vp-c-divider); margin: 0 !important; }
-li :deep(.sb) { justify-self: start; }
+li { display: grid; grid-template-columns: 172px 1fr; gap: 10px; align-items: start; padding: 8px 0; border-top: 1.5px dashed var(--vp-c-divider); margin: 0 !important; }
+li :deep(.sb) { justify-self: start; padding: 1px; border: 0; background: transparent; }
 .body { font-size: 14.5px; line-height: 1.5; min-width: 0; overflow-wrap: anywhere; }
 .since { font-family: var(--mpc-mono); font-size: 12px; color: var(--vp-c-text-2); }
 .note { color: var(--vp-c-text-1); }
