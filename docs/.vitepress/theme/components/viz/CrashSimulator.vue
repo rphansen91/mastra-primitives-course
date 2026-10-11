@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onBeforeUnmount } from 'vue';
-import { fmt, prefersReducedMotion } from '../progress';
+import { fmt, prefersReducedMotion } from '../../progress';
 
 /**
  * Press play, hit kill -9 whenever you like, restart, and see what recovers,

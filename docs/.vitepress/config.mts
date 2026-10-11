@@ -59,12 +59,12 @@ export default withMermaid(
         {
           text: 'Primitives',
           items: [
-            lessonModule('04', 'Memory'),
-            lessonModule('05', 'Workflows'),
+            builtLabModule('04', 'Memory'),
+            builtLabModule('05', 'Workflows'),
             builtLabModule('06', 'Signals and notifications'),
             builtLabModule('07', 'Durability'),
             builtLabModule('08', 'Multi-agent coordination'),
-            lessonModule('09', 'Evals and observability'),
+            builtLabModule('09', 'Evals and observability'),
           ],
         },
         {
@@ -88,5 +88,8 @@ export default withMermaid(
       },
     },
     mermaid: {},
+    // The only chunks over 500 kB are Mermaid's own diagram renderers, which it already
+    // loads lazily per diagram type; raise the limit instead of fighting its bundling.
+    vite: { build: { chunkSizeWarningLimit: 800 } },
   }),
 );

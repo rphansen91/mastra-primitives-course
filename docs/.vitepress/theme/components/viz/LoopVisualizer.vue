@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onBeforeUnmount } from 'vue';
-import { fmt, prefersReducedMotion } from '../progress';
+import { fmt, prefersReducedMotion } from '../../progress';
 
 /**
  * Step through one agent run, phase by phase. Three scenarios:

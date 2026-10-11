@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { fmt } from '../progress';
+import { fmt } from '../../progress';
 
 /** Where does a signal go? Toggle the thread state and options, then send one. Mirrors sendSignal routing at the pinned commit. */
 type TS = 'here' | 'elsewhere' | 'suspended' | 'idle';

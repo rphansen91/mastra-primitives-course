@@ -31,6 +31,7 @@ function reset() {
 }
 const state = (i: number) => (!tried.value.includes(i) ? '' : props.options[i].correct ? 'right' : 'wrong');
 const lastOpt = computed(() => (last.value === null ? null : props.options[last.value]));
+const whyHtml = computed(() => (lastOpt.value?.why ? ' ' + fmt(lastOpt.value.why) : ''));
 </script>
 
 <template>
@@ -57,7 +58,7 @@ const lastOpt = computed(() => (last.value === null ? null : props.options[last.
         <Mascot :mood="lastOpt.correct ? 'cheer' : 'thinking'" :size="54" />
         <div>
           <strong>{{ lastOpt.correct ? (tried.length === 1 ? 'Nailed it.' : 'Got there!') : 'Not quite.' }}</strong>
-          <span v-if="lastOpt.why" v-html="' ' + fmt(lastOpt.why)" />
+          <span v-if="lastOpt.why" v-html="whyHtml" />
           <span v-if="!lastOpt.correct"> Try another option.</span>
           <p v-if="lastOpt.correct && explain" class="explain" v-html="fmt(explain)" />
         </div>
