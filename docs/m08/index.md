@@ -1,4 +1,8 @@
 ---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
 pageClass: lesson
 aside: false
 ---
@@ -196,6 +200,18 @@ mastracode (the coding agent in [`mastracode/`](https://github.com/mastra-ai/mas
 
 Every piece is an existing primitive (notifications, ownership, processors, PubSub). No new core API was needed: the house rules working as intended.
 </DeepDive>
+
+### Pattern: an async expert that answers via signals
+
+A blocking subagent makes the parent wait. For slow research (minutes, not seconds), a pattern that composes the primitives in this course works better:
+
+1. The parent calls an `ask_expert` **tool** that enqueues the question and returns a `replyId` **immediately**. The parent keeps working.
+2. A separate expert agent runs on **its own thread**, with one question at a time per parent thread (a FIFO queue), so follow-ups keep their context.
+3. Answers come back with `parent.sendSignal({ type: 'notification', tagName: 'expert-reply', attributes: { replyId, moreComing } }, { resourceId, threadId })`. The `replyId` correlates the answer with the question, and `moreComing` streams partial answers.
+4. Budgets keep it honest: heartbeat signals while working, a stall watchdog, a soft cap on total time, and a processor that nudges the expert to answer as the budget runs out.
+5. Guards: the expert can't call itself (recursion guard), and there's a kill switch.
+
+Every piece is a primitive from Modules 3, 4, 6 and 8, and every caveat from them applies. The reply signal sits in memory until it's drained, so persist anything you can't lose. Cross-process delivery needs a distributed PubSub. The `replyId` makes duplicates harmless.
 
 <StationDone module="08" :station="2" />
 

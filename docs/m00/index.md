@@ -1,3 +1,10 @@
+---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
+---
+
 # Module 0: Setup and how to read the Mastra codebase
 
 **Goal:** get the labs running, get a local clone of Mastra you can grep and test, and learn a reading strategy for a large TypeScript monorepo so the rest of the course goes fast.

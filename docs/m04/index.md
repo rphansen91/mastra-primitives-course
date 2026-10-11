@@ -1,4 +1,8 @@
 ---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
 pageClass: lesson
 aside: false
 ---
@@ -171,6 +175,14 @@ Four experiments against the real package, each asserting on the **prompts the m
 - **The full package.** [`packages/memory`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/memory): observational memory, token-limited history, thread cloning, title generation.
 
 </DeepDive>
+
+### Trimming, ordering and the prompt cache
+
+Which messages stay in the prompt also decides your **cost**, because provider prompt caches key on the unchanged prefix:
+
+- A count window (`lastMessages`) slides **every turn** once the thread is longer than the limit. The oldest message leaves, the prefix changes, and the cache misses ([`message-history.mdx` L115](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/memory/message-history.mdx#L115)). It also counts tool calls, tool results and signals, so one turn can use up several slots.
+- A token budget (`messageHistory: { maxTokens }`) removes history **in chunks** (`atMaxRemoveTokens`, default 25% of the budget), so the prefix stays stable across several turns. System messages, context, the current input and the agent's responses are never trimmed, and a tool call and its result are removed together ([L148–150](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/memory/message-history.mdx#L148)).
+- Context you inject matters too. A reminder appended as a signal keeps the prefix stable, while editing the system message busts the cache ([`processors.mdx` L655](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/agents/processors.mdx#L655)). A **transient** signal is in this call's prompt but never stored ([L740](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/agents/processors.mdx#L740)). Working memory normally sits in the system prompt, so every update invalidates the cache. `workingMemory.useStateSignals: true` delivers it as a state signal instead, deduped on `cacheKey` so an unchanged snapshot isn't sent again ([`working-memory.mdx` L443–464](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/memory/working-memory.mdx#L443)). Observational memory appends observations to keep the prefix cacheable ([`observational-memory.mdx` L262, L387](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/memory/observational-memory.mdx#L262)).
 
 <StationDone module="04" :station="2" />
 

@@ -1,4 +1,8 @@
 ---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
 pageClass: lesson
 aside: false
 ---

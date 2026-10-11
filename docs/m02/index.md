@@ -1,4 +1,8 @@
 ---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
 pageClass: lesson
 aside: false
 ---
@@ -246,6 +250,12 @@ sequenceDiagram
 - [`continuation-core.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/shared/continuation-core.ts): why the durable and default engines share one decision function.
 
 </DeepDive>
+
+<Callout type="note" title="One loop builder for regular and durable agents">
+
+Since [#24569](https://github.com/mastra-ai/mastra/pull/24569), one `AgenticLoopBuilder` drives the regular loop, and the durable loop is a subclass that overrides typed seams ([`durable-loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/workflows/durable-loop-builder.ts)). The iteration chain you just clicked through is the same on both paths. What differs is what survives a process boundary (Module 7).
+
+</Callout>
 
 <StationDone module="02" :station="2" />
 

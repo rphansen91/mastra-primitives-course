@@ -1,4 +1,8 @@
 ---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
 pageClass: lesson
 aside: false
 ---
@@ -115,6 +119,22 @@ Your design has to respect these, or justify every exception. Tap each one:
 <ClickMap title="The eight house rules" :stations="rules" start-label="design" end-label="review" />
 
 <Quiz module="10" id="place" question="You're designing **journaled tool results** (`ctx.journal.run('open-pr', fn)`). Where should it live first?" :options="q_place" />
+
+### How a primitive actually gets accepted
+
+From [`CONTRIBUTING.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/CONTRIBUTING.md) and the public PR automation:
+
+- **Issue first.** A PR must link the issue it addresses (`Fixes #1234`). PRs without one are closed (L31).
+- **Approval before code.** For a feature, open a feature request and wait for maintainers. A PR opened while the issue is still labeled `status: needs triage` or `status: needs approval` is closed automatically (L39–40).
+- **Fail before pass.** An automated "changed test gate" runs the PR's changed tests against the base branch and expects them to **fail** there (visible on public PRs, e.g. [#24772](https://github.com/mastra-ai/mastra/pull/24772)). That's exactly this course's break-it discipline.
+- **Respect the phase design.** #24772 was closed because it moved a hook across phases (Module 3).
+
+Open, public RFC seeds that match this course's gaps:
+
+- [#25780](https://github.com/mastra-ai/mastra/issues/25780): make interrupted-tool recovery depend on an explicit replay-safety declaration (Module 7's idempotency gap).
+- [#25360](https://github.com/mastra-ai/mastra/pull/25360) (open PR): prevent duplicate evented step execution after redelivery.
+- Durable signal-provider subscriptions: the docs say the registry is in-memory and per-process (Module 6).
+- A signal outbox: `persist` resolves `accepted` before the write (Module 6).
 
 <StationDone module="10" :station="2" />
 

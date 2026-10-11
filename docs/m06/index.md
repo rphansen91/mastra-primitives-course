@@ -1,4 +1,8 @@
 ---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
 pageClass: lesson
 aside: false
 ---
@@ -189,6 +193,21 @@ A fake firehose emits four events through a real `SignalProvider`. Watch the urg
 **Tests and docs:** [`stream-signals.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/workflows/stream-signals.test.ts), [`signal-drain-core.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/shared/steps/signal-drain-core.test.ts), [`agent/signals.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/signals.test.ts), [`harness/signals.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/signals.mdx), [`harness/signal-providers.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/signal-providers.mdx).
 
 </DeepDive>
+
+### What exactly is guaranteed
+
+| You see | It means | It doesn't mean |
+|---|---|---|
+| `accepted` → `deliver` | Queued **in memory** for the next drain in this process | Durable. A crash before the drain loses it |
+| `accepted` → `persist` | Mastra *will try* to write it to the thread | Written. `accepted` resolves **before** the write; await `result.persisted` ([source](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts#L5611), [docs](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/signals.mdx#L164)) |
+| `accepted` → `wake` | A new run was started from the signal | That the woken run has your tools or model settings (pass `streamOptions`) |
+| A `SignalProvider` subscription | Registered in this process | Survives a restart. *"The base registry is in-memory and per-process"*: persist and rehydrate subscriptions in `start()` ([`signal-providers.mdx` L206](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/signal-providers.mdx#L206)) |
+
+<Callout type="tip" title="Ack upstream only after the write">
+
+If a webhook hands you an event you can't lose, `await result.persisted` before you return 200. Then make the handler idempotent (`dedupeKey` / `coalesceKey` on notifications), because the sender will retry whenever you didn't ack.
+
+</Callout>
 
 <StationDone module="06" :station="2" />
 

@@ -1,4 +1,8 @@
 ---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
 pageClass: lesson
 aside: false
 ---
@@ -22,7 +26,7 @@ const toolbox = [
   { name: 'workflow snapshots', short: 'after every step', detail: 'On the default engine, full run state is persisted **after every step**.', href: B + '/packages/core/src/workflows/handlers/entry.ts#L195', color: 'sky' },
   { name: 'workflow recovery', short: "recovery.workflows: 'auto'", detail: 'On by default. On boot, `restartAllActiveWorkflowRuns()` re-runs RUNNING / WAITING runs from their last snapshot. **No ownership claim.**', href: B + '/packages/core/src/workflows/workflow.ts#L3386', color: 'sky' },
   { name: 'durable agents', short: 'createDurableAgent', detail: 'The agent loop as an outer `durable-agentic-loop` workflow around an inner `durable-agentic-execution` (LLM → tools → mapping → bg check → signal drain → goal). Same steps as Module 2. Also `createEventedAgent`, `createInngestAgent`.', href: 'https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable', color: 'violet' },
-  { name: 'agent checkpoints', short: 'every step boundary', detail: "With `recovery.durableAgents: 'auto'` (**off by default**), a `running` checkpoint is written at every step boundary: per LLM step and per tool-call step. Not mid-stream.", href: B + '/docs/src/content/en/docs/harness/durable-agents.mdx', color: 'violet' },
+  { name: 'agent checkpoints', short: 'every step boundary', detail: "With `recovery.durableAgents: 'auto'` (**off by default**), a `running` checkpoint is written at every step boundary: per LLM step and per tool-call step. Not mid-stream. With recovery off, only step boundaries reached during `mastra.shutdown()`'s drain are checkpointed (1.76.0+, #26642).", href: B + '/docs/src/content/en/docs/harness/durable-agents.mdx', color: 'violet' },
   { name: 'agent recovery', short: 'recoverAllDurableAgents()', detail: 'On boot, or explicitly with `recover(runId)` / `recoverActiveRuns()`. Rebuilds the MessageList, memory and requestContext, then redoes the work after the last snapshot.', href: B + '/packages/core/src/agent/durable/run-recovery.md', color: 'violet' },
   { name: 'run claims + fencing', short: 'TTL 30 s, renew 10 s', detail: 'Claims have **generations**. With a fencing store (in-memory, pg, libSQL, Turso), every snapshot and memory write is checked atomically, and a stale writer gets `RunFenceConflictError`. Module 1\'s fencing token, for real.', href: B + '/packages/core/src/agent/durable/execution-fence.ts#L36', color: 'teal' },
   { name: 'wrapDurableOperation', short: 'the idempotency seam', detail: 'A no-op on the default engine, `step.run` on Inngest. The place a journal would plug in.', href: B + '/packages/core/src/workflows/default.ts#L173', color: 'amber' },
@@ -186,6 +190,38 @@ The 1.75.0 docs said it plainly: *"Mastra doesn't provide a distributed lease or
 
 </DeepDive>
 
+### The durable path is not the regular path
+
+A `DurableAgent` runs the same loop builder as a regular `Agent` (one `AgenticLoopBuilder` with durable overrides, since [#24569](https://github.com/mastra-ai/mastra/pull/24569)). But anything that has to cross a process boundary gets serialized, and some things can't be. These are verified at the pin:
+
+| You configure | On the durable path | Evidence |
+|---|---|---|
+| `stopWhen` / `onIterationComplete` closures | Parked in an **in-process** registry. After recovery in another process, they're gone, and only `maxSteps` bounds the loop | [`preparation.ts` L887–890](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/preparation.ts#L887) |
+| `structuredOutput` | Only the `schema` is persisted and rebuilt on recovery. Options without a schema don't survive | [`durable-agent.ts` L1461–1467](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/durable-agent.ts#L1461) |
+| `RequestContext` entries | Persisted as JSON entries and restored on recovery. Non-JSON values (class instances, functions, clients) don't come back. The auth token is deliberately never persisted | [`resolve-runtime.ts` L105–125](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/utils/resolve-runtime.ts#L105), [`subagents.mdx` L144](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/subagents.mdx#L144) |
+| `eagerToolExecution: true` | Throws: *"not supported by durable agents"* | [`preparation.ts` L348](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/preparation.ts#L348) |
+| Tool context | Has `toolCallId` but no `runId` (verified on 1.75.0 and 1.76.0 by printing the context keys) | Lab 7, [`phase-run.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m07-durability/phase-run.ts) |
+
+<Callout type="warn" title="The crash lab is cross-process, so a stopWhen guard wouldn't survive it">
+
+Module 2's `stopOnRepeat` guard is a closure. A run recovered in a fresh process loses it and falls back to `maxSteps`. If a stop rule must hold after recovery, express it in something that's persisted: `maxSteps`, a processor registered on the agent, or a tool-level check.
+
+</Callout>
+
+### What `recover()` does, and refuses
+
+From [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/run-recovery.md):
+
+- **Restores** the message list, memory, request context (JSON entries) and the tracing span from the last `running` snapshot, raises the memory fence to the new claim's generation, then restarts the workflow. **Every step after the snapshot runs again**, including model and tool calls. Message ids come from the snapshot, so the redo *upserts* rather than appending duplicates.
+- **Doesn't restore** anything that lived only in the dead process: closures, caches, open connections, in-memory signal queues.
+- **Refuses suspended runs.** A run waiting on an approval isn't orphaned: `recover()` throws `DURABLE_AGENT_RECOVER_RUN_SUSPENDED` and you continue it with `resume()`. The server route maps run-state conflicts like this one to **409**.
+- **Skips live runs.** `recoverActiveRuns()` reports `skipped` with reason `run-active` and a `retryAt`. `recoverAllDurableAgents()` re-checks at `retryAt` plus up to 5 s of jitter, so replicas that booted together spread out.
+- **Replays whole delegations.** A sub-agent call is one tool call to the parent, so a replayed delegation restarts the entire sub-agent run, including tool side effects that already completed ([docs warning](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/durable-agents.mdx#L293), [#25194](https://github.com/mastra-ai/mastra/pull/25194)). **Sub-agent tools need idempotency keys too.** Declaring which tools are replay-safe is an open feature request, [#25780](https://github.com/mastra-ai/mastra/issues/25780).
+
+### Shutdown is part of durability
+
+`mastra.shutdown({ drainTimeout })` gives in-flight runs up to `drainTimeout` ms (**default 5000**) to settle ([`mastra/index.ts` L7679](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/mastra/index.ts#L7679)). Since 1.76.0 ([#26642](https://github.com/mastra-ai/mastra/pull/26642)), a durable agent writes a `running` checkpoint at each step boundary it reaches during the drain, **even with `recovery.durableAgents: 'off'`**. Runs still going at the deadline are abandoned without writing, and their claims are released, so the next boot can recover them right away instead of waiting about 30 s for the claims to lapse. A run stuck inside one long tool call for the whole drain gets no checkpoint.
+
 <StationDone module="07" :station="2" />
 
 <Journey :station="3" module="07" />
@@ -204,7 +240,7 @@ It runs every **completed step** exactly once. The step that was running when th
 
 <Misconception myth="Durable means my agent is checkpointed by default.">
 
-A plain `Agent.stream()` isn't checkpointed at all. Durable agents only checkpoint `running` state with `recovery.durableAgents: 'auto'`. Timers and events aren't durable on the default engine (Module 5), and signal queues live in memory (Module 6).
+A plain `Agent.stream()` isn't checkpointed at all. Durable agents checkpoint `running` state at every step only with `recovery.durableAgents: 'auto'`. With recovery off (the default), they checkpoint only at step boundaries reached during `mastra.shutdown()`'s drain (1.76.0+), so a `kill -9` leaves nothing to recover. Timers and events aren't durable on the default engine (Module 5), and signal queues live in memory (Module 6).
 
 </Misconception>
 

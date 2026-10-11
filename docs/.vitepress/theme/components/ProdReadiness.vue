@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useData } from 'vitepress';
 import { fmt } from '../progress';
 import { PROD } from '../production';
 /** The enterprise review for one module: what to lean on, how it fails, the guardrails, and the alternatives. Content: theme/production.ts. */
 const props = defineProps<{ module: string }>();
 const p = computed(() => PROD[props.module]);
+const { frontmatter } = useData();
+const v = computed(() => frontmatter.value.verified as { core: string; sha: string; date: string } | undefined);
 </script>
 <template>
   <section v-if="p" class="pr" aria-label="Production readiness">
@@ -22,11 +25,14 @@ const p = computed(() => PROD[props.module]);
       <div class="col c-sky mpc-card"><h4><Icon name="wrench" :size="16" /> Guardrails checklist</h4><ul class="checks"><li v-for="(s, i) in p.guardrails" :key="i" v-html="fmt(s)" /></ul></div>
       <div class="col c-violet mpc-card"><h4><Icon name="compass" :size="16" /> Alternatives</h4><ul><li v-for="(s, i) in p.alternatives" :key="i" v-html="fmt(s)" /></ul></div>
     </div>
+    <p v-if="v" class="verified"><Icon name="check" :size="14" /> Verified against <code>@mastra/core@{{ v.core }}</code> at <a :href="`https://github.com/mastra-ai/mastra/tree/${v.sha}`" target="_blank" rel="noopener"><code>{{ v.sha.slice(0, 7) }}</code></a> on {{ v.date }}. A weekly CI job flags this module when the Mastra files it cites change upstream.</p>
     <Quiz :module="module" id="prod" :question="p.check.question" :options="p.check.options" />
   </section>
 </template>
 <style scoped>
 .pr { margin: 20px 0; display: grid; gap: 14px; }
+.verified { margin: 0 !important; font-size: 13.5px; color: var(--vp-c-text-2); }
+.verified :deep(svg) { vertical-align: -2px; margin-right: 4px; }
 .verdict { padding: 12px 16px; background: var(--mpc-paper); }
 .verdict p { margin: 4px 0 0 !important; font-size: 15.5px; }
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }

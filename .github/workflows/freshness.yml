@@ -1,0 +1,24 @@
+name: Course freshness
+
+# Weekly: flag modules whose cited mastra-ai/mastra files changed since the commit
+# the module was verified against (frontmatter `verified.sha`). Informational.
+on:
+  schedule:
+    - cron: '23 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check cited Mastra files against main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/freshness.mjs

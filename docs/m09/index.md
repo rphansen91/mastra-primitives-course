@@ -1,4 +1,8 @@
 ---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
 pageClass: lesson
 aside: false
 ---
@@ -142,6 +146,16 @@ All five experiments in one run: trace tree, rule scorer over a dataset, LLM jud
 - **Classifier scorers** wrap Mastra's `Classifier` primitive, the same one you might use to triage notifications (Module 6).
 
 </DeepDive>
+
+### Goals: a scorer that gates the loop
+
+Goals (1.43.0+) put Module 9's judge *inside* Module 2's loop. A goal is a durable, thread-scoped objective, and after each iteration a judge model scores the output: `1` when the objective is met, `0` otherwise. The loop continues with feedback until the judge passes or the **run budget** runs out (`maxRuns`, default **50**). The objective is then marked `paused` ([`goals.mdx` L13–17, L62–76](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/goals.mdx#L13)). Without a judge, the goal step does nothing. `goal.tools` lets the judge verify the work rather than grade the text alone. Budget for it: that's one more model call per iteration.
+
+<Callout type="note" title="Test utilities that ship in the package">
+
+`@mastra/core/test-utils/llm-mock` exports `createMockModel` and `MastraLanguageModelV2Mock` ([`llm-mock.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/test-utils/llm-mock.ts)). The course's ~100-line mock model teaches the mechanics. In your own repo, start with the shipped helpers.
+
+</Callout>
 
 <StationDone module="09" :station="2" />
 

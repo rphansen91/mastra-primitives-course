@@ -1,4 +1,8 @@
 ---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
 pageClass: lesson
 aside: false
 ---
@@ -182,6 +186,12 @@ Fun fact we learned the hard way while building the lab: a workflow has a `.then
 - The workflow is Mastra's universal "unit of observable, resumable work": the agent loop, prepare-stream and processors are all workflow steps, which is why they all get spans (Module 9).
 
 </DeepDive>
+
+### Shutdown, leases and the Temporal runner
+
+- `mastra.shutdown({ drainTimeout })` gives in-flight evented runs (including durable agents) up to `drainTimeout` ms, **default 5000**, to settle before workers and PubSub are torn down. Runs past the deadline are abandoned with a warning ([`mastra/index.ts` L7679](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/mastra/index.ts#L7679)). Before [#23168](https://github.com/mastra-ai/mastra/pull/23168), shutdown could tear down PubSub under a run mid-step. Wire `shutdown()` to SIGTERM.
+- Background tasks use the same idea as Module 7's run claims: a persisted, expiring **execution lease** that fences stale owners ([#24841](https://github.com/mastra-ai/mastra/pull/24841)). Once you've seen claims + fencing, you'll find the pattern in several places.
+- The Temporal runner is still marked *"experimental and not ready for production use"* in the docs ([`workflow-runners.mdx` L22](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/deployment/workflow-runners.mdx#L22)), and `@mastra/temporal` is pre-1.0 (0.4.14 on npm). Go by what the package and docs say, not by marketing copy.
 
 <StationDone module="05" :station="2" />
 

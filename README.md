@@ -58,3 +58,7 @@ cd docs && npm install && npm run dev
 ## License and affiliation
 
 Course text and code are [MIT licensed](LICENSE). This is an independent course built from the public `mastra-ai/mastra` repository and public documentation; it isn't an official Mastra project. Source line references are correct at the pinned commit.
+
+## Freshness
+
+Every module page records the Mastra commit it was verified against (frontmatter `verified: { core, sha, date }`, shown under each module's Production readiness panel). The weekly [`freshness`](.github/workflows/freshness.yml) workflow runs `node scripts/freshness.mjs`. It lists, for each module, the cited `mastra-ai/mastra` files that have newer commits on `main`, and writes the report to the job summary. Re-verify the flagged claims, then bump `verified.sha` and `verified.date`. Run it locally with `GH_TOKEN=$(gh auth token) node scripts/freshness.mjs`.

@@ -86,7 +86,17 @@ Read it carefully:
 
 The urgent event woke the idle thread; everything after it arrived while the thread was **active** and was summarized. The dispatcher batched the two lows into one summary signal; the medium calendar item was summarized immediately and joined the woken run. **Version note:** on 1.76.0 the calendar summary is drained into the woken run's *first* model request (one model call, 3 messages). On 1.75.0 the woken run made two model calls, the urgent item first and the summary second ([`core-1.75.0/m06-notifications.txt`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/expected-output/core-1.75.0/m06-notifications.txt)). Same signals, same history, different number of LLM calls: count model calls per version before you budget for them. `decide` may be called more than once per record (receipt time and delivery time), which is why deciders must be pure.
 
-## Break it: Exercise 6.1, a delivery policy
+## 6.3 Write your own signal source
+
+Build a provider for an event source you actually have (a CI webhook, a chat socket, a queue). Copy [`notifications.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m06-signals/notifications.ts) as a template and meet this contract (from [`signal-providers.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/signal-providers.mdx)):
+
+1. `extends SignalProvider<'my-source'>`. Do async setup in `start()`. If you override `stop()`, call `super.stop()` so polling stops and the registry clears.
+2. Poll, or override `handleWebhook(request)`. It is **not** an auto-mounted route: call it from your own endpoint.
+3. For each event that matches a subscription, call `notify()` with a stable `dedupeKey` (the source's event id) and a `priority`.
+4. **Survive a restart.** Subscriptions are in-memory per process, so persist them yourself and rehydrate them in `start()`.
+5. **Prove it.** Write a test that sends the same event twice (one record), restarts the provider (the subscription still fires), and kills the process between `accepted` and `persisted` (what does your webhook return?).
+
+
 
 **File:** [`exercises/ex1-delivery-policy.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m06-signals/exercises/ex1-delivery-policy.ts)
 

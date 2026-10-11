@@ -101,12 +101,13 @@ export const PROD: Record<string, Prod> = {
       'Processor **response caching is beta**',
       'Mastra adds built-in processors around yours. 1.76.0 added one (`unsupported-file-handler`) that shows up in traces',
       'Streaming redaction must handle secrets split **across chunks** (Exercise 3.1)',
+      'Output stream processors **fail closed** since #25826 (1.76.0): a throw stops the run instead of passing raw output through. Good for safety, but a buggy processor is now an outage',
     ],
     failures: [
       { mode: 'A secret split across two stream chunks slips through', guard: 'A boundary-aware redactor that buffers to a safe point (Exercise 3.1)' },
       { mode: 'Reordering processors changes the output', guard: 'An order test pinned in CI' },
       { mode: 'An LLM-based guardrail doubles latency and cost', guard: 'A cheap rule first, the LLM check only when needed; measure it with spans' },
-      { mode: 'A guardrail fails open on its own error', guard: 'Decide fail-open vs fail-closed per processor, and test the throw path' },
+      { mode: 'A guardrail fails open on its own error', guard: 'Output stream processors fail closed by default now; for others, decide fail-open vs fail-closed and test the throw path' },
     ],
     guardrails: [
       'Unit-test every processor with a mock model (Lab 3)',
@@ -146,6 +147,7 @@ export const PROD: Record<string, Prod> = {
       { mode: 'A fact from message 1 is gone by message 11', guard: 'Working memory or semantic recall; a token budget instead of a count' },
       { mode: 'Tenant A reads tenant B\'s thread', guard: 'Derive `resourceId` server-side from auth; never trust a client value' },
       { mode: 'Long tool results blow the context window', guard: '`messageHistory.maxTokens` + a tool-result truncation processor' },
+      { mode: 'Prompt-cache hit rate collapses on long threads', guard: 'A sliding `lastMessages` window changes the prompt prefix every turn. Token trimming removes history in chunks (`atMaxRemoveTokens`, default 25%), and transient signals or appended reminders keep the prefix stable' },
       { mode: 'Trimming splits a tool call from its result', guard: 'Trim by call/result pairs, and test it (Lab 4)' },
     ],
     guardrails: [
@@ -181,7 +183,8 @@ export const PROD: Record<string, Prod> = {
       'Retries are a fixed `delay`: no exponential backoff, jitter or heartbeats',
       'No run versioning. A restart replays against the code deployed **now**',
       'Boot restart takes **no ownership claim**: two replicas can re-run the same in-flight step',
-      'Dynamic workflows and workers are **beta**; `@mastra/temporal` is **experimental**',
+      'Dynamic workflows and workers are **beta**; `@mastra/temporal` is **experimental** and pre-1.0 (0.4.14)',
+      '`mastra.shutdown({ drainTimeout })` gives in-flight evented runs a deadline (default 5000 ms); runs past it are abandoned',
     ],
     failures: [
       { mode: 'A double resume runs a step twice', guard: 'Idempotent steps keyed on run id + step id (Lab 5 race)' },
@@ -219,13 +222,14 @@ export const PROD: Record<string, Prod> = {
     ],
     caution: [
       'Pending signals for an active run are queued **in memory**. A crash loses undelivered ones',
+      'Even `persist` isn\'t an outbox: `accepted` resolves **before** the storage write. Await `result.persisted` before you ack the upstream event',
       'The default `EventEmitterPubSub` covers one process. The distributed backends (Redis/Valkey Streams) are **pre-1.0 packages**',
       'Notification timing **changed in 1.76.0** (a summary joins the first request; tag attributes are sorted)',
       'Cross-agent communication is **experimental** and off by default',
       'A woken run gets only the options you pass it',
     ],
     failures: [
-      { mode: 'A signal is accepted, then the process dies before the drain', guard: '`persist` (an inbox record) for anything you can\'t lose; idempotent handling on redelivery' },
+      { mode: 'A signal is accepted, then the process dies before the drain', guard: '`persist` (an inbox record) for anything you can\'t lose, ack upstream only after `await result.persisted`, and handle redelivery idempotently' },
       { mode: 'The thread is owned by another instance', guard: 'Redis or Valkey Streams PubSub so delivery and leases span instances' },
       { mode: 'An event storm wakes agents again and again', guard: 'Priorities, batching, `dedupeKey` / `coalesceKey`, and a pure `decide`' },
       { mode: 'External event text injects instructions', guard: 'Signals reach the model as **user-role** messages. Treat event content as untrusted input' },
@@ -261,7 +265,8 @@ export const PROD: Record<string, Prod> = {
     caution: [
       '**Beta**: *"Breaking changes may occur without a major version bump"*',
       'Recovery re-runs the in-flight step. LLM calls cost again, tools re-execute, and a sub-agent delegation re-runs whole',
-      '`recovery.durableAgents` is `off` by default, so there are no `running` checkpoints except at shutdown',
+      '`recovery.durableAgents` is `off` by default: `running` checkpoints are written only at step boundaries reached during the `mastra.shutdown()` drain (1.76.0+), so a hard crash leaves nothing to recover',
+      'Closures (`stopWhen`, `onIterationComplete`) don\'t survive recovery in another process: only `maxSteps` does. Non-JSON `RequestContext` values are dropped; `eagerToolExecution` throws',
       'Memory writes are fenced only if the **memory** store supports fencing too',
       'Without a fencing store, the claim is a PubSub lease: stale writers are *not* rejected, and Redis/Valkey Streams are pre-1.0 packages',
       'The tool context has no `runId` (1.75.0 and 1.76.0): pass it through `RequestContext`',
@@ -271,7 +276,9 @@ export const PROD: Record<string, Prod> = {
       { mode: 'Two replicas recover the same run', guard: 'A fencing store or a shared Redis/Valkey lease; otherwise leader-elect recovery' },
       { mode: 'Plain workflows double-run when replicas boot', guard: '`recovery.workflows: \'off\'` except on one instance, or idempotent steps' },
       { mode: 'A hung execution holds the claim', guard: '`recover(runId, { force: true })` (1.76.0+)' },
-      { mode: 'Rolling deploys orphan runs for 30 s', guard: 'Call `mastra.shutdown()` on SIGTERM: it checkpoints at step boundaries and releases claims' },
+      { mode: 'A recovered run ignores your `stopWhen` guard', guard: 'Put hard limits in `maxSteps` or a registered processor; closures stay in the dead process' },
+      { mode: 'An ops script calls `recover()` on a run waiting for approval', guard: 'Suspended runs are refused (409): use `resume()`' },
+      { mode: 'Rolling deploys orphan runs for 30 s', guard: 'Call `mastra.shutdown({ drainTimeout })` on SIGTERM (default 5000 ms): it checkpoints at step boundaries and releases claims' },
     ],
     guardrails: [
       'Pin the exact version. Re-run a crash lab on every upgrade',
@@ -310,7 +317,7 @@ export const PROD: Record<string, Prod> = {
     ],
     failures: [
       { mode: 'A subagent sees PII it doesn\'t need', guard: '`messageFilter` to strip or trim the context' },
-      { mode: 'A crash replays a whole delegation', guard: 'Idempotent sub-agent tools; long helpers as workflow steps or separate threads' },
+      { mode: 'A crash replays a whole delegation, including the helper\'s completed tool calls', guard: 'Idempotency keys on **sub-agent** tools too; long helpers as workflow steps or separate threads' },
       { mode: 'Two agents wake each other forever', guard: 'A hop budget carried in the signal (Exercise 8.1)' },
       { mode: 'A failed delegation gets ignored by the parent', guard: '`onDelegationComplete` with `bail()` or explicit feedback' },
     ],
@@ -341,12 +348,14 @@ export const PROD: Record<string, Prod> = {
       '`@mastra/observability` tracing with exporters (OTel, Langfuse, Braintrust, Datadog and others)',
       'Rule-based and LLM-judge scorers; `runEvals` over datasets',
       'Datasets and experiments (1.4.0+)',
+      'Test helpers shipped in the package: `@mastra/core/test-utils/llm-mock` (`createMockModel`)',
     ],
     caution: [
       'The trace shape **changed in 1.76.0** (a new built-in processor span)',
       'The docs warn observability data *"can quickly overwhelm general-purpose databases"*: route it to ClickHouse or an external exporter',
       'LLM-judge scores aren\'t deterministic',
       'Record/replay tapes are a course pattern (~30 lines), not a Mastra feature',
+      'Goals (1.43.0+) gate the loop on a judge model with a run budget (`maxRuns`, default 50). A judge is a model call per iteration: budget for it',
     ],
     failures: [
       { mode: 'Prompt drift silently changes behavior', guard: 'Replay tapes + a CI gate on rule scorers (Lab 9)' },
@@ -385,6 +394,7 @@ export const PROD: Record<string, Prod> = {
       'Internal or undocumented APIs (`#private` fields, undocumented `Agent` methods) can change in a minor release',
       'Upstream moves fast: run claims and new processors both landed in 1.76.0',
       'A private fork drifts. Upstream through a public RFC or PR instead',
+      'The contribution rules are strict: a PR must link an issue, feature PRs are closed while the issue is still `status: needs approval`, and an automated gate checks that changed tests fail on the base branch',
     ],
     failures: [
       { mode: 'A minor upgrade breaks your primitive', guard: 'CI on the pinned version **and** `@latest` (this course\'s Labs workflow)' },

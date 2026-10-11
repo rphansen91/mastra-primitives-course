@@ -1,4 +1,8 @@
 ---
+verified:
+  core: 1.76.0
+  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+  date: '2026-10-11'
 pageClass: lesson
 aside: false
 ---
@@ -168,6 +172,14 @@ From [`packages/core/AGENTS.md`](https://github.com/mastra-ai/mastra/blob/81299c
 </MascotSays>
 
 Mastra follows its own rule. Task lists and goals, signal-provider hints, stream retry, memory, moderation, PII, prompt-injection detection, token limiting, structured output and skills all ship as **processors**, not `Agent` methods. Browse them in [`processors/processors/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/processors).
+
+The rule is enforced in review, too. [PR #24772](https://github.com/mastra-ai/mastra/pull/24772) tried to let *input* processors run `processToolResult` so they could bound tool results. It was closed unmerged: `processToolResult` is an output-phase hook by declaration (the public `InputProcessor` and `OutputProcessor` types split the phases), so the fix had to live in an output processor instead. Before you propose a new hook, check which phase owns it.
+
+<Callout type="warn" title="Output stream processors fail closed (1.76.0)">
+
+Since [#25826](https://github.com/mastra-ai/mastra/pull/25826), when an output stream processor throws, the run stops instead of passing the raw, unprocessed output through. That's the safe default for a redactor. It also means a bug in a processor becomes a failed run, so test the throw path.
+
+</Callout>
 
 <DeepDive title="The runner, ordering rules and tests">
 

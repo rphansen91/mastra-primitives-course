@@ -8,7 +8,7 @@ const rows = computed(() => props.ids.map(id => ({ id, ...STABILITY[id] })).filt
 const used = computed(() => [...new Set(rows.value.map(r => r.status))] as Status[]);
 </script>
 <template>
-  <section class="sp mpc-card" :aria-label="title">
+  <section class="stab mpc-card" :aria-label="title">
     <div class="hd"><span class="mpc-kicker">{{ title }}</span><span class="pin">checked at <code>@mastra/core@1.76.0</code> · <a :href="`https://github.com/mastra-ai/mastra/tree/${SHA}`" target="_blank" rel="noopener">{{ SHA.slice(0, 7) }}</a></span></div>
     <ul>
       <li v-for="r in rows" :key="r.id">
@@ -20,7 +20,7 @@ const used = computed(() => [...new Set(rows.value.map(r => r.status))] as Statu
   </section>
 </template>
 <style scoped>
-.sp { padding: 14px 16px; margin: 20px 0; }
+.stab { padding: 14px 16px; margin: 20px 0; }
 .hd { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; align-items: baseline; }
 .pin { font-size: 12.5px; color: var(--vp-c-text-2); }
 ul { list-style: none; padding: 0 !important; margin: 10px 0 0 !important; }
