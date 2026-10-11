@@ -10,6 +10,19 @@ flowchart LR
   P4 -.->|"gaps become"| C["Capstone:<br/>a new primitive"]
 ```
 
+## How a lesson feels
+
+In each lesson, the four passes are a journey with four stations: **The problem → Under the hood → Break it → Choose wisely**. A station banner marks each one, and "Mark station done" tracks your progress on this device. Along the way you'll find:
+
+- **A story first.** Every lesson opens with a concrete scenario that goes wrong, plus a "by the end you'll be able to" card.
+- **Things to poke.** Step-through visualizers (the agent loop, signal delivery, a `kill -9` crash simulator, a stream chunker) and clickable diagrams.
+- **Checks as you go.** Multiple choice, predict-the-output and put-it-in-order checks, each with instant feedback and explanations, plus a spaced-recall deck at the end.
+- **Hands-on.** "Try it" terminal blocks with copy buttons and expected output, and break-it missions.
+- **More than one way in.** Analogy callouts, "common misconception" cards, a podcast-style transcript you can read or have your browser read aloud, and a cheat card you can download or print.
+- **Source when you want it.** "Go deeper into the source" sections keep the pinned links out of your way until you need them.
+
+Modules 1, 2, 3, 6 and 7 are fully interactive. The rest use the same layout with lighter interactivity.
+
 ## Pass 1: the problem it solves
 
 Start without the primitive. What would you write by hand, and what goes wrong? In Module 1 you literally write the agent loop, a journal, and a fencing check by hand, so that later "Mastra does X" reads as "Mastra solved the problem I already hit".

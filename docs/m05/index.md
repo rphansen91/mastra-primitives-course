@@ -1,14 +1,36 @@
+---
+pageClass: lesson
+aside: false
+---
+
+<script setup>
+const outcomes = ["Read a workflow as a step graph with typed inputs and outputs", "Explain run state, snapshots, suspend/resume, sleep and retries", "Say exactly what a snapshot buys you, and what it does not", "See the agent loop as \"just another workflow\""]
+</script>
+
 # Module 5: Workflows
 
 **Goal:** understand Mastra workflows as the substrate everything else is built on: the step graph, run state and snapshots, suspend/resume, sleep, retries, and "loop-as-workflow". Know exactly what a snapshot buys you and what it doesn't.
 
+<LessonHero :recap="false" module="05" :minutes="35" lab="Suspend, crash, resume spec lab" :outcomes="outcomes" mood="thinking">
+
+**Tuesday, 4:40 pm.** Your refund flow needs a manager's approval. The manager is on a plane until Thursday.
+
+Your code is a pile of nested `await`s, and the process will definitely restart before Thursday. You need the shape of the work as data.
+
+</LessonHero>
+
+
 **Depth:** lesson + lab spec. Module 7's crash lab exercises workflow recovery for real.
 
-## Pass 1: the problem
+<Journey :station="1" module="05" />
+
+## The problem {#problem}
 
 Some work has a known shape: fetch → validate → branch → fan out → wait for a human → finish. Writing it as nested `await`s works until you need to **pause for days** (approval), **observe** each step, **retry one step**, or **survive a restart**. Then you need the shape as data: a graph of steps with typed inputs and outputs, and persisted run state.
 
-## Pass 2: how it's built
+<Journey :station="2" module="05" />
+
+## How it's built {#under-the-hood}
 
 ### The step graph
 
@@ -55,7 +77,9 @@ stateDiagram-v2
   running --> running: crash → restartAllActiveWorkflowRuns()\n(completed steps memoized,\nin-flight step re-runs)
 ```
 
-## Pass 3: where it falls down
+<Journey :station="3" module="05" />
+
+## Where it falls down {#break-it}
 
 These are verified in [Module 7's crash lab](/m07/lab) or read directly from source at the pinned commit:
 
@@ -66,7 +90,9 @@ These are verified in [Module 7's crash lab](/m07/lab) or read directly from sou
 - **Retries are fixed-delay, in memory.** No exponential backoff, jitter, schedule-to-close timeouts or heartbeats.
 - **No versioning for in-flight code-defined workflows.** A restart replays against whatever code is deployed now.
 
-## Pass 4: when to choose something else
+<Journey :station="4" module="05" />
+
+## When to choose something else {#choose-wisely}
 
 | Use a Mastra workflow when | Don't when | Alternatives |
 |---|---|---|

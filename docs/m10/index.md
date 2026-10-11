@@ -1,6 +1,24 @@
+---
+pageClass: lesson
+aside: false
+---
+
+<script setup>
+const outcomes = ["Write an RFC grounded in source and prior art", "Design a primitive that respects the house rules", "Name its failure modes explicitly", "Ship it with tests that run like this course's labs"]
+</script>
+
 # Module 10: Capstone, building primitives
 
 **Goal:** design, argue for, and implement a new primitive that would make Mastra better, the way a core contributor would: an RFC grounded in source and prior art, a design that fits the house rules, explicit failure modes, and an implementation with tests that run like this course's labs.
+
+<LessonHero :recap="false" module="10" :minutes="120" lab="Your own primitive" :outcomes="outcomes" mood="cheer">
+
+**You've taken Mastra apart.** You've watched the loop spin, streamed secrets through processors, signalled running agents and killed processes mid-charge.
+
+Now design the piece you wish existed, the way a core contributor would.
+
+</LessonHero>
+
 
 ## What you deliver
 

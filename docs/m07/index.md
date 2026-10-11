@@ -1,37 +1,138 @@
+---
+pageClass: lesson
+aside: false
+---
+
+<script setup>
+const B = 'https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd'
+const outcomes = [
+  'Say exactly what survives a <code>kill -9</code> in Mastra, and what runs again',
+  'Explain step-boundary checkpoints, recovery modes and run claims with fencing',
+  'Predict the difference between <code>@mastra/core</code> 1.75.0 and the 1.76 pre-release',
+  'Make a tool exactly-once-effective with a stable idempotency key',
+  'Choose between Mastra durable agents and Temporal, Restate, DBOS or Inngest',
+]
+const twists = [
+  { title: 'LLM calls are expensive and fickle', body: 'Re-asking the model on replay costs money, and it might **answer differently**. Then the replay takes a different path from the original.', icon: 'bulb', color: 'violet' },
+  { title: 'Tool calls touch the world', body: 'Cards, emails, deploys. These are the side effects you must not repeat.', icon: 'bolt', color: 'coral' },
+  { title: 'Runs are long and chatty', body: '"Just restart from scratch" is rarely acceptable twenty minutes into a conversation.', icon: 'clock', color: 'amber' },
+]
+const toolbox = [
+  { name: 'workflow snapshots', short: 'after every step', detail: 'On the default engine, full run state is persisted **after every step**.', href: B + '/packages/core/src/workflows/handlers/entry.ts#L195', color: 'sky' },
+  { name: 'workflow recovery', short: "recovery.workflows: 'auto'", detail: 'On by default. On boot, `restartAllActiveWorkflowRuns()` re-runs RUNNING / WAITING runs from their last snapshot. **No ownership claim.**', href: B + '/packages/core/src/workflows/workflow.ts#L3386', color: 'sky' },
+  { name: 'durable agents', short: 'createDurableAgent', detail: 'The agent loop as an outer `durable-agentic-loop` workflow around an inner `durable-agentic-execution` (LLM → tools → mapping → bg check → signal drain → goal). Same steps as Module 2. Also `createEventedAgent`, `createInngestAgent`.', href: 'https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable', color: 'violet' },
+  { name: 'agent checkpoints', short: 'every step boundary', detail: "With `recovery.durableAgents: 'auto'` (**off by default**), a `running` checkpoint is written at every step boundary: per LLM step and per tool-call step. Not mid-stream.", href: B + '/docs/src/content/en/docs/harness/durable-agents.mdx', color: 'violet' },
+  { name: 'agent recovery', short: 'recoverAllDurableAgents()', detail: 'On boot, or explicitly with `recover(runId)` / `recoverActiveRuns()`. Rebuilds the MessageList, memory and requestContext, then redoes the work after the last snapshot.', href: B + '/packages/core/src/agent/durable/run-recovery.md', color: 'violet' },
+  { name: 'run claims + fencing', short: 'TTL 30 s, renew 10 s', detail: 'Claims have **generations**. With a fencing store (in-memory, pg, libSQL, Turso), every snapshot and memory write is checked atomically, and a stale writer gets `RunFenceConflictError`. Module 1\'s fencing token, for real.', href: B + '/packages/core/src/agent/durable/execution-fence.ts#L36', color: 'teal' },
+  { name: 'wrapDurableOperation', short: 'the idempotency seam', detail: 'A no-op on the default engine, `step.run` on Inngest. The place a journal would plug in.', href: B + '/packages/core/src/workflows/default.ts#L173', color: 'amber' },
+  { name: 'engines', short: 'default · evented · Inngest · Temporal', detail: 'Default (in process), evented (PubSub + workers), Inngest, and Temporal (experimental). Same workflow definitions, different runtimes.', href: 'https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/workflows', color: 'amber' },
+]
+const observed = [
+  { title: 'The in-flight tool re-runs', body: 'Granularity is the **step**, not the side effect. `slow_deploy` started twice.', icon: 'reset', color: 'coral' },
+  { title: 'No idempotency key reaches the tool', body: 'On 1.75.0 a durable agent\'s tool context has `toolCallId` but **no `runId`**. Route it yourself via `RequestContext`.', icon: 'alert', color: 'amber' },
+  { title: 'Plain workflows double-run', body: 'Auto workflow recovery has no claim. Two instances sharing a DB run in-flight steps **twice, concurrently**.', icon: 'cards', color: 'violet' },
+  { title: 'Recovery is boot-time or explicit', body: 'No continuous sweeper picks up orphaned runs while the process stays up.', icon: 'clock', color: 'sky' },
+]
+const q_why = [
+  { text: 'It is slow', why: 'True, but not the scary part.' },
+  { text: 'The model might answer differently, so the replay takes a different path', correct: true, why: 'Non-determinism. The tool calls after a different answer may not match what already happened.' },
+  { text: 'Providers reject repeated prompts', why: 'They do not.' },
+]
+const q_replica = [
+  { text: 'Both versions: the replica leaves the live run alone', why: 'Only the pre-release has run claims.' },
+  { text: '1.75.0: the replica re-drives the live run. 1.76: it skips it because a live owner holds the claim', correct: true, why: 'Exactly what the crash lab observes. The 1.75.0 docs say it outright: there is no distributed lease yet.' },
+  { text: 'Both versions: the replica re-drives it', why: 'Run claims landed on main just before the pinned commit, and the 1.76 pre-release has them.' },
+]
+const q_key = [
+  { text: '`Date.now()`', why: 'Different on every execution: every retry looks like a new deploy.' },
+  { text: '`crypto.randomUUID()`', why: 'Same problem. A key must be **stable** across re-executions.' },
+  { text: '`` `${runId}:${toolCallId}` ``', correct: true, why: 'Both survive recovery: the run keeps its id, and the replayed LLM response keeps its tool call ids.' },
+  { text: 'The tool input, `JSON.stringify(args)`', why: 'Too coarse: two genuine deploys with the same args would be merged into one.' },
+]
+const choose = [
+  { when: 'Long agent runs must survive deploys and crashes, and you can make tools idempotent', not: 'Tools have side effects you cannot key', alt: 'Put the effect behind a durable activity: Temporal, Restate `ctx.run`, a DBOS step' },
+  { when: 'Single instance, or a fencing store on a version with claims', not: 'Multi-replica on 1.75.x with auto recovery', alt: 'Leader-elect recovery yourself, or `createInngestAgent` (per-step memoization via Inngest)' },
+  { when: 'The same agent code should run in-process today and on Inngest / Temporal later', not: 'You need durable timers, signals or versioning today', alt: 'Temporal, Restate, DBOS, Cloudflare Workflows, Vercel Workflow' },
+]
+const prod = [
+  { title: 'Durable agent + fencing store', body: '`createDurableAgent`, `recovery.durableAgents: \'auto\'`, Postgres / libSQL / Turso, on a version with run claims. Plus a distributed PubSub with leases (Redis / Valkey Streams).', icon: 'check', color: 'teal' },
+  { title: 'Every outward tool is idempotent', body: 'Key on `runId:toolCallId`. Route `runId` through `RequestContext` if your durable tool context lacks it.', icon: 'bolt', color: 'amber' },
+  { title: 'Think about workflow recovery', body: "Set `recovery.workflows: 'off'` on multi-instance deployments unless workflow steps are idempotent, or run one instance.", icon: 'alert', color: 'coral' },
+  { title: 'Persist subscriptions yourself', body: 'SignalProvider subscriptions are in memory (Module 6).', icon: 'mail', color: 'sky' },
+]
+const recall = [
+  { q: 'Where are durable agent checkpoints written?', a: 'At every **step boundary**: per LLM step and per tool-call step, with `recovery.durableAgents: \'auto\'`. Not mid-stream.' },
+  { q: 'After `kill -9` mid-tool, what runs again?', a: 'The in-flight tool step, from its start. Completed LLM and tool steps come back from the snapshot.' },
+  { q: 'Is durable-agent recovery on by default?', a: 'No. Workflow recovery is (`recovery.workflows: \'auto\'`); durable agents are opt-in.' },
+  { q: 'What changed between 1.75.0 and the 1.76 pre-release?', a: 'Run claims with generations and fencing. Recovery skips runs whose (dead) owner still holds the claim, about 30 s, and a live replica no longer re-drives a run.' },
+  { q: 'A good idempotency key for a durable tool call?', a: '`${runId}:${toolCallId}`: stable across recovery, unique per genuine call.' },
+  { q: 'Biggest gap versus Restate / DBOS?', a: 'Granularity. They journal every side effect inside a handler; Mastra\'s unit is the step (one LLM call, one tool call).' },
+]
+const cheat = [
+  { title: 'Survives', color: 'teal', lines: ['Completed LLM steps (not re-asked)', 'Completed tool steps', 'MessageList, memory, requestContext', 'Workflow snapshots after every step'] },
+  { title: 'Runs again', color: 'amber', lines: ['The in-flight step, from its start', 'Its side effect, unless the receiver dedupes', 'A whole sub-agent call'] },
+  { title: 'Lost', color: 'coral', lines: ['Plain agent.stream() runs', 'In-memory signal queues and subscriptions', 'Timers on the default engine'] },
+  { title: 'Recovery', color: 'violet', lines: ["recovery.workflows: 'auto' (default, no claim)", "recovery.durableAgents: 'auto' (opt-in)", 'Boot-time or explicit recover(runId)'] },
+  { title: 'Claims (1.76)', color: 'sky', lines: ['TTL 30 s, renew 10 s, generations', 'Fencing store rejects stale writers', 'Recovery waits for a dead owner\'s claim'] },
+  { title: 'Do this', color: 'lime', lines: ['Key every outward tool on runId:toolCallId', 'Use a fencing store + distributed PubSub', 'Turn off workflow auto-recovery on replicas unless idempotent'] },
+]
+const exCmd = 'LAB_TARGET=exercises npm run lab:crash -- A\nLAB_TARGET=exercises node --import tsx --test m07-durability/crash-lab.test.ts'
+const out1 = "=== A) kill -9 mid-flight, then a fresh process recovers ===\nrecoverAllDurableAgents t+4s {\"recovered\":1,\"succeeded\":1}\nside-effect counts: {\n  'LLM call (tool results so far: none)': 1,\n  'TOOL charge_card executed': 1,\n  'LLM call (tool results so far: charge_card)': 1,\n  'TOOL slow_deploy started': 2,\n  'DEPLOY API applied': 1,\n  'DEPLOY API deduped': 1,\n  'WF step slow-step started': 2,\n  'LLM call (tool results so far: charge_card,slow_deploy)': 1\n}\ndeploy API ledger (effects actually applied): [ 'applied agent-run-1:c2' ]"
+</script>
+
 # Module 7: Durability
 
-**Goal:** know precisely what survives a `kill -9` in Mastra and what doesn't: workflow snapshots, durable agents, step-boundary checkpoints, recovery modes, run claims and fencing, and the plain-workflow double run. Then make the side effect exactly-once-effective yourself.
+<p class="lead">"Durable" is one of those words that means whatever the person saying it hopes it means. In this module you'll kill real processes with <code>kill -9</code> and write down exactly what comes back, what runs twice, and what's just gone.</p>
 
-**Lab:** [`labs/m07-durability`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs/m07-durability): a real crash lab that spawns processes and `SIGKILL`s them · [Lab guide](./lab)
+<LessonHero module="07" :minutes="45" lab="Real kill -9 crash lab, ~40 s" :outcomes="outcomes" mood="alarmed">
 
-## Pass 1: the problem
+**Thursday, 11:03 pm.** You ship a small fix. Kubernetes rolls the deployment and sends `SIGKILL` to the old pod, which was in the middle of upgrading a customer to Pro.
 
-Recall Module 1: a journal makes completed steps exactly-once, the in-flight step at-least-once, and only an idempotency key at the receiver closes the gap. A fencing token keeps a stale owner from writing. An agent framework adds two complications:
+The new pod boots, finds the half-finished run, and helpfully recovers it. The card gets charged. Again. You were using a durable agent. **So what went wrong?**
 
-- The expensive, risky things are **LLM calls** (cost, non-determinism) and **tool calls** (side effects). A replay must not re-ask the model a question it already answered, or the run may take a different path.
-- Agent runs are long and conversational, so "restart from scratch" is rarely acceptable.
+</LessonHero>
 
-## Pass 2: how it's built
+<Journey :station="1" module="07" />
 
-### Inventory at the pinned commit
+## The problem {#problem}
 
-| Capability | What exists | Where |
-|---|---|---|
-| Workflow snapshots | full run state persisted **after every step** on the default engine | [`workflows/default.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/default.ts), [`handlers/entry.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/handlers/entry.ts#L195) |
-| Workflow crash recovery | `recovery.workflows: 'auto'` (default) → `restartAllActiveWorkflowRuns()` on boot re-runs RUNNING/WAITING runs from the last snapshot. **No ownership claim.** | [`workflow.ts` L3386](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L3386), [`mastra/index.ts` L671](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/mastra/index.ts#L671) |
-| Durable agents | `createDurableAgent` / `createEventedAgent` / `createInngestAgent`: the agentic loop as an outer `durable-agentic-loop` workflow wrapping an inner `durable-agentic-execution` (LLM → foreach tools → mapping → bg check → signal drain → goal) | [`agent/durable/`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable), [`durable-loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/workflows/durable-loop-builder.ts) |
-| Agent checkpoints | with `recovery.durableAgents: 'auto'`, a `running` checkpoint at **every step boundary** (per LLM step, per tool-call step; not mid-stream). Off by default. | [`harness/durable-agents.mdx`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/docs/src/content/en/docs/harness/durable-agents.mdx) |
-| Agent recovery | `recoverAllDurableAgents()` on boot; `recover(runId)`, `recoverActiveRuns()`; rebuilds MessageList/memory/requestContext; redoes work after the snapshot | [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/run-recovery.md) |
-| Run claims + fencing | claim TTL 30 s, renewed every 10 s, with **generations**; with a fencing store (InMemory, pg, libSQL, Turso) every snapshot/memory write is checked atomically, stale writers get `RunFenceConflictError` | [`execution-fence.ts` L36](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/execution-fence.ts#L36), [`leases.md`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/leases.md), [`stores/pg/.../run-fencing.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/stores/pg/src/storage/db/run-fencing.ts) |
-| Other leases | thread lease (one run per thread, 15 s / 5 s), thread-claim lease, evented step fence, background-task lease | [`leases.md`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/leases.md) |
-| Idempotency seam | `wrapDurableOperation(operationId, fn)`: a no-op on the default engine, `step.run` on Inngest | [`default.ts` L173](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/default.ts#L173) |
-| Engines | default (in process), evented (PubSub + workers), Inngest, Temporal (experimental) | [`workflows/`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows), [`workflows/inngest`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/workflows/inngest), [`workflows/temporal`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/workflows/temporal) |
+Module 1 gave you the rules: a journal makes finished steps exactly-once, the in-flight step stays at-least-once, and only an idempotency key at the receiver closes the gap. A fencing token keeps zombies from writing.
+
+Agents add three twists:
+
+<IdeaCards :cards="twists" />
+
+<Quiz module="07" id="why-not-reask" question="Why must recovery avoid re-asking the model a question it already answered?" :options="q_why" />
+
+<StationDone module="07" :station="1" />
+
+<Journey :station="2" module="07" />
+
+## Under the hood {#under-the-hood}
+
+Start by breaking things. This is Thursday night, with every knob exposed. Try each mode, kill it mid-`charge_card` after the lightning bolt, and then flip on the idempotency key:
+
+<CrashSimulator variant="durable" />
+
+<Callout type="note" title="What you should have found">
+
+Plain `agent.stream()` keeps nothing, so a retry is a whole new run. A durable agent brings back every **completed** step, but re-runs the **in-flight** one from its start. Only the idempotency key stops the double charge. That's Thursday night explained.
+
+</Callout>
+
+<RecoveryMap />
+
+### The toolbox
+
+Mastra's durability is a set of parts that fit together. Click through them:
+
+<ClickMap title="Durability parts at the pinned commit" :stations="toolbox" />
 
 ### Recovery modes
 
 ```mermaid
 flowchart LR
-  subgraph boot["Process boot (deployer)"]
+  subgraph boot["Process boot"]
     W["recovery.workflows: 'auto' (default)<br/>restartAllActiveWorkflowRuns()"]
     D["recovery.durableAgents: 'auto' (opt-in)<br/>recoverAllDurableAgents()"]
   end
@@ -41,56 +142,147 @@ flowchart LR
   C -- "no / expired" --> R["recover: rebuild state,<br/>re-drive from step-boundary checkpoint"]
 ```
 
-### The version difference you'll see in the lab
+### Two versions, two behaviors
 
-This is the most important thing the crash lab teaches, because it's a real behavior change between the published package and `main`:
+The crash lab runs on both the published package and the pre-release in CI, because the behavior genuinely changed:
 
-| Observation | `@mastra/core@1.75.0` (published 2026-10-07) | `1.76.0-alpha.9` ≈ main at the pinned commit |
+| What you observe | `@mastra/core@1.75.0` | `1.76.0-alpha.9` (≈ the pinned commit) |
 |---|---|---|
-| Recovery right after `kill -9` | recovers immediately (t+4 s) | **skips** while the dead owner's claim is unexpired (≈30 s), then recovers |
-| LLM calls / completed tools repeated on recovery | no | no |
-| In-flight tool re-executed | yes | yes |
-| Second replica boots while first is alive: **plain workflow** | in-flight step runs in **both** processes | in-flight step runs in **both** processes |
-| Second replica: **durable agent** | replica **re-drives the live run** (tool runs twice, second final LLM call) | replica leaves it alone (claim held by live owner) |
+| Recovery right after `kill -9` | immediate (t+4 s) | **waits** for the dead owner's claim (≈30 s) |
+| LLM calls / completed tools repeated | no | no |
+| In-flight tool re-executed | **yes** | **yes** |
+| Second replica, plain workflow | in-flight step runs **twice** | in-flight step runs **twice** |
+| Second replica, durable agent | replica **re-drives** the live run | replica leaves it alone |
 
-The 1.75.0 docs say so plainly: "Mastra doesn't provide a distributed lease or lock yet. In multi-replica deployments, every replica that starts with `recovery.durableAgents: 'auto'` will race to recover the same runs." The claims and libSQL/pg fencing landed on main just before the pinned commit. CI runs the lab on both versions; the test asserts the version-appropriate behavior.
+<Quiz kind="predict" module="07" id="replica" question="A second replica boots while the first is still happily running a durable agent. Both use `recovery.durableAgents: 'auto'`. What does the replica do?" :options="q_replica" />
 
-## Pass 3: where it breaks
+<TryIt cmd="npm run lab:crash" :output="out1">
 
-Observed in the [crash lab](./lab):
+Spawns real child processes, `SIGKILL`s one mid-`slow_deploy`, and recovers from a libSQL file. The solution's idempotency key turns the second deploy into `deduped`.
 
-1. **The in-flight tool re-runs.** Granularity is the step, not the side effect. `slow_deploy` started twice.
-2. **No idempotency key reaches the tool.** On 1.75.0 a regular agent's tool context has `runId` and `agent.toolCallId`; a **durable** agent's tool context has `toolCallId` but **no `runId`**. You have to route the run id yourself (the lab uses `RequestContext`, which the snapshot persists).
-3. **Plain workflows double-run with replicas.** `restartAllActiveWorkflowRuns()` has no claim; with `recovery.workflows: 'auto'` (the default!) and two instances sharing a DB, in-flight steps execute twice concurrently.
-4. **Recovery is boot-time or explicit.** No continuous orphan sweeper.
+</TryIt>
 
-From source and docs at the pinned commit:
+<DeepDive title="Design docs, fencing in storage, and tests">
 
-5. **Off by default.** A plain `Agent.stream()` isn't checkpointed at all; durable agents checkpoint `running` state only with `recovery.durableAgents: 'auto'`.
-6. **Timers and events aren't durable on the default engine** (Module 5), and **signal queues are in memory** (Module 6).
-7. **No versioning of in-flight code-defined workflows**; no event-history replay debugger.
-8. **Sub-agent delegation is one opaque step**: recovery reruns the whole sub-agent (the docs warn about this).
+Read these two in full; they're the authors' own design notes:
 
-## Pass 4: when to choose something else
+- [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/run-recovery.md)
+- [`leases.md`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/leases.md): the run claim plus the thread lease (one run per thread, 15 s / 5 s), the thread-claim lease, the evented step fence and the background-task lease.
 
-| Use Mastra durable agents when | Don't when | Alternatives |
-|---|---|---|
-| Long agent runs must survive deploys/crashes, and you can make tools idempotent | Tools have non-idempotent effects you can't key | Put the effect behind a durable engine activity (Temporal, Restate `ctx.run`, DBOS step) |
-| Single instance, or a fencing store (pg/libSQL/Turso) on a version with claims | Multi-replica on 1.75.x with auto recovery | Leader-elect recovery yourself; `createInngestAgent` (per-tool memoization via Inngest steps) |
-| You want the same agent code to run in-process and on Inngest/Temporal later | You need durable timers/signals/versioning today | Temporal, Restate, DBOS, Cloudflare Workflows, Vercel Workflow |
+Where the pieces live:
 
-**Compare: Restate / DBOS.** Both journal **every** side effect inside a handler (`ctx.run(name, fn)` / `@DBOS.step()`), so an in-flight effect's *completed* sub-steps are memoized and only the exact in-flight call can repeat, and both hand you a stable idempotency key for it. Mastra's unit is the workflow step (one LLM call, one tool call). That's the biggest gap, and it's capstone candidate #1: journaled tool results and an idempotency key on every tool call.
+- [`durable-loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/workflows/durable-loop-builder.ts): the durable loop, same steps as Module 2.
+- [`mastra/index.ts` L671](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/mastra/index.ts#L671): boot-time recovery.
+- [`stores/pg/.../run-fencing.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/stores/pg/src/storage/db/run-fencing.ts): fencing as one atomic conditional write.
 
-## Recommendations if you run this in production today
+Tests:
 
-- Use `createDurableAgent` + `recovery.durableAgents: 'auto'` with a **fencing store** (Postgres/libSQL/Turso) on a version with run claims, plus a distributed PubSub with leases (Redis/Valkey Streams).
-- Make every outward tool idempotent: key on `runId:toolCallId` (route `runId` through `RequestContext` if your version's durable tool context lacks it).
-- Set `recovery.workflows: 'off'` on multi-instance deployments unless workflow steps are idempotent, or run one instance.
-- Persist provider subscriptions yourself (Module 6).
-
-## Read the source and tests
-
-- [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/run-recovery.md) and [`leases.md`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/leases.md): design docs, read in full.
 - [`execution-fence.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/execution-fence.test.ts)
 - [`durable-operation-ids.test.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/durable-operation-ids.test.ts)
 - [`agent/durable/__tests__/`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/durable/__tests__)
+
+The 1.75.0 docs say it plainly: *"Mastra doesn't provide a distributed lease or lock yet. In multi-replica deployments, every replica that starts with `recovery.durableAgents: 'auto'` will race to recover the same runs."*
+
+</DeepDive>
+
+<StationDone module="07" :station="2" />
+
+<Journey :station="3" module="07" />
+
+## Break it {#break-it}
+
+Four things the crash lab catches in the act:
+
+<IdeaCards :cols="2" :cards="observed" />
+
+<Misconception myth="A durable agent runs every tool exactly once.">
+
+It runs every **completed step** exactly once. The step that was running when the process died runs again from its start. If that step charged a card before the crash, it charges again, unless the payments API dedupes on a key.
+
+</Misconception>
+
+<Misconception myth="Durable means my agent is checkpointed by default.">
+
+A plain `Agent.stream()` isn't checkpointed at all. Durable agents only checkpoint `running` state with `recovery.durableAgents: 'auto'`. Timers and events aren't durable on the default engine (Module 5), and signal queues live in memory (Module 6).
+
+</Misconception>
+
+### Your mission: stop the double deploy
+
+<Callout type="tip" title="Exercise 7.1">
+
+The starter's `deployKey()` returns `undefined`, so the deploy API can't tell a recovery retry from a new deploy. Return a key that's **identical** when the same tool call re-runs after a crash, and **different** for a genuinely new call. File: `exercises/ex1-idempotency-key.ts`.
+
+</Callout>
+
+<Quiz module="07" id="key" question="Which key does the job?" :options="q_key" explain="On 1.75.0 the durable tool context has no `runId`, so the lab passes it through `RequestContext`, which the snapshot persists." />
+
+<TryIt :cmd="exCmd">
+
+The first command shows the ledger with two `applied (no key)` entries. The test fails until your key makes the second one `deduped`. Full solution on the [lab page](./lab#break-it-exercise-7-1-the-double-deploy).
+
+</TryIt>
+
+<StationDone module="07" :station="3" />
+
+<Journey :station="4" module="07" />
+
+## Choose wisely {#choose-wisely}
+
+<Choose subject="Mastra durable agents" :rows="choose" />
+
+<Callout type="analogy" title="Save points vs autosave">
+
+Mastra durable agents are a video game with **save points between levels**. Die mid-level and you replay that whole level. Restate and DBOS are **autosave**: they journal every side effect inside a handler (`ctx.run(name, fn)` / `@DBOS.step()`), so only the exact call in flight can repeat, and they hand you a stable key for it.
+
+That gap (journaled tool results, plus an idempotency key on every tool call) is capstone candidate #1 in Module 10.
+
+</Callout>
+
+### If you run this in production today
+
+<IdeaCards :cols="2" :cards="prod" />
+
+<StationDone module="07" :station="4" next="./lab" next-label="On to the crash lab" />
+
+## Wrap-up
+
+<Podcast title="Durability, in five minutes" :minutes="5">
+
+**Host:** Thursday night. Durable agent, and the card still got charged twice. Why?
+
+**Loopy:** Because durable agents save at step boundaries. One model call is a step, one tool call is a step. When the pod died, the charge tool was in the middle of its step. Its effect had already happened, but the step hadn't finished, so there was no checkpoint after it.
+
+**Host:** So on recovery…
+
+**Loopy:** Everything that finished comes back from the snapshot. The model isn't asked again, finished tools don't run again. But the in-flight step runs again from the top. Charge, again.
+
+**Host:** How do I fix it?
+
+**Loopy:** Give the payments API an idempotency key that's the same every time this exact tool call runs: the run id plus the tool call id. Both survive recovery. On 1.75.0 the durable tool context doesn't include the run id, so pass it through the request context.
+
+**Host:** What about two replicas?
+
+**Loopy:** On 1.75.0 there's no lock. A second replica that boots with auto recovery will re-drive a run that's still alive. The 1.76 pre-release adds run claims with generations and fencing: a live owner holds the claim, and stale writers get rejected. And watch out for plain workflows: their auto recovery is on by default and has no claim, so in-flight steps can run twice on two instances.
+
+**Host:** Is any of this on by default?
+
+**Loopy:** Workflow recovery, yes. Durable agent recovery, no. And a plain agent.stream run isn't checkpointed at all.
+
+**Host:** Last one: Temporal or Mastra?
+
+**Loopy:** If your tools can be made idempotent and step-level saves are enough, Mastra's durable agents are great, and the same code can move to Inngest or Temporal later. If you need every side effect journaled, durable timers, or workflow versioning today, use a durable engine.
+
+</Podcast>
+
+<Recall module="07" :cards="recall" />
+
+<CheatCard module="07" title="Durability" subtitle="What survives a kill -9" :cells="cheat" />
+
+<Callout type="win" title="Where next">
+
+- **[Lab 7: the crash lab](./lab):** two scenarios, real processes, real `SIGKILL`.
+- **[Module 8: Multi-agent coordination](/m08/)**
+- **[Module 10: Capstone](/m10/):** design the primitive that closes the gap you just found.
+
+</Callout>

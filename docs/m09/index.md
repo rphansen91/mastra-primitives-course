@@ -1,14 +1,36 @@
+---
+pageClass: lesson
+aside: false
+---
+
+<script setup>
+const outcomes = ["Read spans for every loop step and processor", "Grade outputs with scorers: live, on traces and in CI", "Use datasets, experiments and record/replay for deterministic tests", "Debug with time travel"]
+</script>
+
 # Module 9: Evals and observability
 
 **Goal:** treat agent quality and agent behavior as observable, testable data: spans for every loop step and processor, scorers that grade outputs (live, on traces, and in CI), datasets and experiments, record/replay of model calls for deterministic tests, and time travel for debugging.
 
+<LessonHero :recap="false" module="09" :minutes="30" lab="Observe-the-course spec lab" :outcomes="outcomes" mood="thinking">
+
+**3:07 am.** Your always-on agent sent a customer a very confident, very wrong answer. In the morning, everyone asks the same question: *why?*
+
+Which signal woke it? Which processor rewrote the prompt? Did a tool call repeat after recovery? Right now, you can't tell.
+
+</LessonHero>
+
+
 **Depth:** lesson + lab spec.
 
-## Pass 1: the problem
+<Journey :station="1" module="09" />
+
+## The problem {#problem}
 
 Everything in Modules 2 to 8 is invisible by default. When an always-on agent did something odd at 3 a.m. you need to answer: which signal woke it, which processor rewrote the prompt, which tool call repeated after recovery, and was the answer any good? And before you ship a processor change, you want to know it didn't make answers worse. Unit tests with a mock model (this course's labs) prove *mechanics*; they can't prove *quality*.
 
-## Pass 2: how it's built
+<Journey :station="2" module="09" />
+
+## How it's built {#under-the-hood}
 
 ### Tracing: the loop's structure is the trace's structure
 
@@ -30,7 +52,9 @@ Mastra's own test suite runs most agent tests against **recorded** model respons
 
 Workflow [`timeTravel`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L5648) re-executes a run from a chosen step with new context ([docs](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/docs/src/content/en/docs/workflows/time-travel.mdx)). Combined with snapshots it's a "what if this step had returned X" debugger.
 
-## Pass 3: where it falls down
+<Journey :station="3" module="09" />
+
+## Where it falls down {#break-it}
 
 - **No event-sourced history.** There's no per-run journal of every request, response, signal and claim generation like Temporal's history; traces are the closest thing, and they're sampled/exported, not authoritative.
 - **No deterministic replay of an agent run against new code.** Time travel re-executes; it doesn't replay recorded model outputs through changed processors.
@@ -38,7 +62,9 @@ Workflow [`timeTravel`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20
 - **Mock-model tests can lie.** They prove the loop's mechanics, not that a real model will call the tool. Pair them with recorded and live evals.
 - **Signals are hard to attribute.** Which notification caused a wake should be a first-class span attribute; check what your exporter shows.
 
-## Pass 4: when to choose something else
+<Journey :station="4" module="09" />
+
+## When to choose something else {#choose-wisely}
 
 | Use Mastra evals/tracing when | Don't when | Alternatives |
 |---|---|---|

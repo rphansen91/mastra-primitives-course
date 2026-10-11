@@ -1,10 +1,30 @@
+---
+pageClass: lesson
+aside: false
+---
+
+<script setup>
+const outcomes = ["Distinguish sub-agents as tools, networks, workflows and signals between threads", "Compare what each shares: transcript, run, budget and failure", "Study agent-to-agent messaging as a production case", "Build the always-on coordinator pattern"]
+</script>
+
 # Module 8: Multi-agent coordination
 
 **Goal:** choose between the four ways Mastra agents work together (sub-agents as tools, networks, workflows, and signals between threads) by understanding what each one shares (transcript, run, budget, failure). Study mastracode's agent-to-agent messaging as a production case, and build the **always-on coordinator** pattern.
 
+<LessonHero :recap="false" module="08" :minutes="40" lab="Coordinator lab, built and tested" :outcomes="outcomes" mood="happy">
+
+**Monday standup.** Someone says "let's make it multi-agent". Three people nod, and each of them is picturing something completely different.
+
+One means a research helper, one means a pipeline, one means two always-on agents chatting. Let's tell them apart by what they share.
+
+</LessonHero>
+
+
 **Lab:** [`labs/m08-multi-agent`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs/m08-multi-agent) (built and tested) · [Lab guide](./lab)
 
-## Pass 1: the problem
+<Journey :station="1" module="08" />
+
+## The problem {#problem}
 
 "Multi-agent" hides very different needs:
 
@@ -15,7 +35,9 @@
 
 Each needs a different answer to: whose transcript? whose run? who pays the step budget? what happens when one fails or crashes?
 
-## Pass 2: how it's built
+<Journey :station="2" module="08" />
+
+## How it's built {#under-the-hood}
 
 ### The four mechanisms
 
@@ -75,7 +97,9 @@ flowchart LR
 6. **Safety:** all inbound and peer text is untrusted; tool approval stays on for outward actions on unattended wakes; idempotent tools.
 7. **Deployment:** more than one instance needs a PubSub with leases; persist provider subscriptions.
 
-## Pass 3: where it falls down
+<Journey :station="3" module="08" />
+
+## Where it falls down {#break-it}
 
 - **Sub-agents are opaque to durability.** A crash replays the whole delegation (Module 7).
 - **Sub-agents share the caller's latency and budget.** A slow sub-agent blocks the parent's step; its steps don't show in the parent's `maxSteps`.
@@ -84,7 +108,9 @@ flowchart LR
 - **Prompt injection between agents.** A compromised or confused peer is an untrusted input source. Frame it as data and keep approvals.
 - **Feedback loops.** Two agents that relay to each other can wake each other forever. Add hop counts or dedupe keys.
 
-## Pass 4: when to choose something else
+<Journey :station="4" module="08" />
+
+## When to choose something else {#choose-wisely}
 
 | Need | Choose | Not | Alternatives |
 |---|---|---|---|

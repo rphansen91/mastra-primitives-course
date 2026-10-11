@@ -1,10 +1,30 @@
+---
+pageClass: lesson
+aside: false
+---
+
+<script setup>
+const outcomes = ["Explain threads vs resources, and what each memory type stores", "Trace how memory reaches the model, as input and output processors", "Predict what gets dropped when the context window fills up", "Choose between working memory, semantic recall and observational memory"]
+</script>
+
 # Module 4: Memory
 
 **Goal:** understand what "memory" means mechanically in Mastra (threads and resources, message history, working memory, semantic recall, observational memory), how it reaches the model (as processors), how it bounds the context window, and why woken runs depend on it.
 
+<LessonHero :recap="false" module="04" :minutes="35" lab="Memory spec lab" :outcomes="outcomes" mood="thinking">
+
+**Week three of the pilot.** A user tells your assistant, for the fourth time, that they're vegetarian. The thread is 900 messages long and the model's context window gave up somewhere around message 400.
+
+What does "remember" even mean for a stateless model, and who decides what fits?
+
+</LessonHero>
+
+
 **Depth:** lesson + lab spec. The lab is yours to build; the spec has acceptance tests.
 
-## Pass 1: the problem
+<Journey :station="1" module="04" />
+
+## The problem {#problem}
 
 An LLM is stateless. Every request must carry everything the model should "remember". Three problems follow:
 
@@ -14,7 +34,9 @@ An LLM is stateless. Every request must carry everything the model should "remem
 
 And one problem specific to always-on agents: a run **woken by a signal** (Module 6) starts with no caller-supplied messages. If there's no memory, the woken run sees only the signal (the Module 6 lab shows exactly this: request #3 contains only the system prompt and the signal).
 
-## Pass 2: how it's built
+<Journey :station="2" module="04" />
+
+## How it's built {#under-the-hood}
 
 ### Threads and resources
 
@@ -49,7 +71,9 @@ Signals are stored with `role: 'signal'` (Module 6). History loading must decide
 
 The prepare-stream workflow runs `prepareMemoryStep` in parallel with `prepareToolsStep` ([prepare-stream L230](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/agent/workflows/prepare-stream/index.ts#L230)), before the loop starts. History is loaded **once per run**; messages that other runs add to the thread during this run arrive only through signals or the next run.
 
-## Pass 3: where it falls down
+<Journey :station="3" module="04" />
+
+## Where it falls down {#break-it}
 
 - **Recency ≠ relevance.** `lastMessages: 10` silently drops the instruction from message 11. Semantic recall helps, but needs a vector store and an embedder (cost, latency, eventual consistency).
 - **Tool-call pairs.** Truncating history between a tool call and its result breaks provider validation. The loader groups linked tool messages ([`groupLinkedToolMessages`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/memory/load-message-history.ts#L49)); custom trimming must too.
@@ -57,7 +81,9 @@ The prepare-stream workflow runs `prepareMemoryStep` in parallel with `prepareTo
 - **Woken runs only know what's stored.** No memory means no history for wake-ups.
 - **Memory is not a journal.** It stores the conversation, not the results of side effects. Recovering a crashed run needs Module 7's snapshots.
 
-## Pass 4: when to choose something else
+<Journey :station="4" module="04" />
+
+## When to choose something else {#choose-wisely}
 
 | Use Mastra memory when | Don't when | Alternatives |
 |---|---|---|

@@ -1,0 +1,191 @@
+/* ---------- Design tokens: one palette for components, illustrations and the site ---------- */
+:root {
+  --mpc-ink: #221d45;
+  --mpc-ink-2: #5b5680;
+  --mpc-paper: #ffffff;
+  --mpc-violet: #6d4aff;
+  --mpc-violet-soft: #ece7ff;
+  --mpc-teal: #0e9f92;
+  --mpc-teal-soft: #d6f5f0;
+  --mpc-amber: #e58f00;
+  --mpc-amber-soft: #fff0d1;
+  --mpc-coral: #e5405e;
+  --mpc-coral-soft: #ffe0e6;
+  --mpc-sky: #2b8be6;
+  --mpc-sky-soft: #ddeeff;
+  --mpc-lime: #3f9b2c;
+  --mpc-lime-soft: #e3f6da;
+  --mpc-shadow: #221d45;
+  --mpc-radius: 14px;
+  --mpc-card-shadow: 4px 4px 0 var(--mpc-shadow);
+  --mpc-mono: var(--vp-font-family-mono);
+
+  --vp-c-brand-1: #6d4aff;
+  --vp-c-brand-2: #7f60ff;
+  --vp-c-brand-3: #6d4aff;
+  --vp-c-brand-soft: rgba(109, 74, 255, 0.14);
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, #6d4aff 10%, #0e9f92 90%);
+}
+.dark {
+  --mpc-ink: #ebe8ff;
+  --mpc-ink-2: #b4afd6;
+  --mpc-paper: #1b1a26;
+  --mpc-violet: #a48dff;
+  --mpc-violet-soft: #2c2552;
+  --mpc-teal: #3fd6c6;
+  --mpc-teal-soft: #173d3a;
+  --mpc-amber: #ffbd4a;
+  --mpc-amber-soft: #42321a;
+  --mpc-coral: #ff7d93;
+  --mpc-coral-soft: #4a2230;
+  --mpc-sky: #6cb6ff;
+  --mpc-sky-soft: #1d3550;
+  --mpc-lime: #84d96f;
+  --mpc-lime-soft: #23401d;
+  --mpc-shadow: #000000;
+  --vp-c-brand-1: #a48dff;
+  --vp-c-brand-2: #b6a3ff;
+  --vp-c-brand-3: #8a6dff;
+}
+
+/* ---------- Lesson pages read like a course, not a reference ---------- */
+.lesson .vp-doc p,
+.lesson .vp-doc li {
+  font-size: 16.5px;
+  line-height: 1.75;
+}
+.lesson .vp-doc > div > p { max-width: 70ch; }
+.lesson .vp-doc h2 {
+  border-top: none;
+  margin-top: 56px;
+  padding-top: 0;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+}
+.lesson .vp-doc h3 { font-size: 21px; margin-top: 40px; }
+.lesson .vp-doc h1 { font-size: 40px; letter-spacing: -0.03em; line-height: 1.15; }
+.lesson .vp-doc .lead { font-size: 19px; line-height: 1.7; color: var(--vp-c-text-2); }
+
+/* ---------- Shared component chrome ---------- */
+.mpc-card {
+  border: 2px solid var(--mpc-ink);
+  border-radius: var(--mpc-radius);
+  background: var(--mpc-paper);
+  box-shadow: var(--mpc-card-shadow);
+  padding: 18px 20px;
+  margin: 28px 0;
+  color: var(--vp-c-text-1);
+}
+.mpc-card :where(p, li) { font-size: 16px !important; }
+.mpc-card > :first-child { margin-top: 0; }
+.mpc-card > :last-child { margin-bottom: 0; }
+.mpc-kicker {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mpc-ink-2);
+}
+.mpc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 2px solid var(--mpc-ink);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.3;
+  background: var(--mpc-paper);
+  color: var(--mpc-ink);
+  box-shadow: 2px 2px 0 var(--mpc-shadow);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.mpc-btn:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--mpc-shadow); }
+.mpc-btn:active:not(:disabled) { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--mpc-shadow); }
+.mpc-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.mpc-btn.primary { background: var(--mpc-violet); color: #fff; border-color: var(--mpc-ink); }
+.dark .mpc-btn.primary { color: #14112b; }
+.mpc-btn.danger { background: var(--mpc-coral); color: #fff; }
+.dark .mpc-btn.danger { color: #14112b; }
+.mpc-btn.small { padding: 3px 10px; font-size: 13px; }
+.mpc-btn:focus-visible,
+.mpc-focus:focus-visible {
+  outline: 3px solid var(--mpc-sky);
+  outline-offset: 2px;
+}
+.mpc-chip {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 1px 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  border: 1.5px solid currentColor;
+}
+.mpc-toggle-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.mpc-toggle-group .label { font-size: 13px; font-weight: 700; color: var(--mpc-ink-2); margin-right: 4px; }
+.mpc-toggle {
+  border: 2px solid var(--mpc-ink);
+  border-radius: 10px;
+  padding: 3px 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: var(--mpc-paper);
+  color: var(--mpc-ink);
+  cursor: pointer;
+}
+.mpc-toggle[aria-pressed='true'],
+.mpc-toggle[aria-checked='true'] { background: var(--mpc-ink); color: var(--mpc-paper); }
+.mpc-toggle:focus-visible { outline: 3px solid var(--mpc-sky); outline-offset: 2px; }
+.mpc-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* SVG illustration palette (used by every diagram so they look like one set) */
+.ill text { font-family: var(--vp-font-family-base); fill: var(--mpc-ink); }
+.ill .t-strong { font-weight: 800; }
+.ill .t-mono { font-family: var(--mpc-mono); }
+.ill .t-dim { fill: var(--mpc-ink-2); }
+.ill .stroke { stroke: var(--mpc-ink); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.ill .outline { stroke: var(--mpc-ink); stroke-width: 2.5; }
+.ill .shadow { fill: var(--mpc-shadow); }
+.ill .f-paper { fill: var(--mpc-paper); }
+.ill .f-ink { fill: var(--mpc-ink); }
+.ill .f-violet { fill: var(--mpc-violet-soft); }
+.ill .f-teal { fill: var(--mpc-teal-soft); }
+.ill .f-amber { fill: var(--mpc-amber-soft); }
+.ill .f-coral { fill: var(--mpc-coral-soft); }
+.ill .f-sky { fill: var(--mpc-sky-soft); }
+.ill .f-lime { fill: var(--mpc-lime-soft); }
+.ill .s-violet { stroke: var(--mpc-violet); }
+.ill .s-teal { stroke: var(--mpc-teal); }
+.ill .s-coral { stroke: var(--mpc-coral); }
+.ill .s-amber { stroke: var(--mpc-amber); }
+.ill .c-violet { fill: var(--mpc-violet); }
+.ill .c-teal { fill: var(--mpc-teal); }
+.ill .c-coral { fill: var(--mpc-coral); }
+.ill .c-amber { fill: var(--mpc-amber); }
+.ill .c-sky { fill: var(--mpc-sky); }
+.ill .c-lime { fill: var(--mpc-lime); }
+
+.mpc-figure { margin: 32px 0; }
+.mpc-figure svg { width: 100%; height: auto; display: block; }
+.mpc-figure figcaption { font-size: 14px; color: var(--vp-c-text-2); text-align: center; margin-top: 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mpc-btn, .mpc-anim, .mpc-anim * { transition: none !important; animation: none !important; }
+}
+
+/* Print: only the cheat card being printed is visible */
+@media print {
+  html.mpc-printing body * { visibility: hidden !important; }
+  html.mpc-printing .mpc-print-target,
+  html.mpc-printing .mpc-print-target * { visibility: visible !important; }
+  html.mpc-printing .mpc-print-target { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; }
+  html.mpc-printing .mpc-no-print { display: none !important; }
+}
+.vp-doc .journey + h2 { margin-top: 18px !important; }
+
+/* Lesson pages drop the right-hand outline (the journey tracker replaces it) and get a wider stage */
+.lesson .VPDoc .content-container { max-width: 900px; }
+.lesson .vp-doc > div > :where(p, ul, ol, h2, h3, blockquote) { max-width: 72ch; }
