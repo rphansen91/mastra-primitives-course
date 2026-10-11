@@ -14,9 +14,9 @@ Every module's "when to choose something else" table in one place. **Bold** = th
 | A hard step budget | **`maxSteps`** (M2) | | |
 | A reasoned stop ("loop detected", "goal met") | **`stopWhen`** / goals (M2) | `maxSteps` alone | |
 | Safe parallel tools with shared state | atomic tools; **`toolCallConcurrency`** (M2) | relying on result ordering | DB transactions |
-| History across requests | **Memory: threads + `lastMessages`** (M4) | stuffing the prompt by hand | LangGraph checkpointer |
+| History across requests | **Memory: threads + `messageHistory: { maxTokens }`** (M4; `lastMessages` is deprecated) | stuffing the prompt by hand | LangGraph checkpointer |
 | Facts about the user that persist | **Working memory** (M4) | long raw history | a database; Zep/Letta-style services |
-| Relevant old messages | **Semantic recall** (M4) | bigger `lastMessages` | a RAG tool |
+| Relevant old messages | **Semantic recall** (M4) | a bigger history window | a RAG tool |
 | Tell a busy agent something without a second run | **`sendSignal` (deliver)** (M6) | a new `stream()` on the same thread | Temporal signals (durable, no agent semantics) |
 | Wake an idle agent on an event | **`sendSignal` (wake)** + memory (M4, M6) | cron polling inside a tool | a queue consumer calling `stream()` |
 | Priority-aware interrupt vs digest | **Notifications + delivery policy** (M6) | ad-hoc `if` in a webhook | |
@@ -24,11 +24,11 @@ Every module's "when to choose something else" table in one place. **Bold** = th
 | Survive crashes mid-run | **Durable agent** + `recovery.durableAgents: 'auto'` + fencing store (M7) | a plain `Agent.stream()` | `createInngestAgent`, Temporal, Restate, DBOS |
 | Exactly-once external effects | **Idempotency keys** (`runId:toolCallId`) (M1, M7) | trusting recovery | Restate `ctx.run`, outbox pattern |
 | Multiple replicas sharing a DB | fencing store + leased PubSub; `recovery.workflows: 'off'` unless steps are idempotent (M7) | defaults | single instance; leader election |
-| Answer a sub-question within a turn | **Sub-agent as tool** (M8) | signals | LangGraph subgraph |
-| Route among specialists per turn | **Agent network** (M8) | if/else in a tool | OpenAI handoffs, LangGraph supervisor |
-| Long-lived agents informing each other mid-work | **Signals + ownership + discovery** (M8) | sub-agents (they block) | message bus + mailbox |
+| Answer a sub-question within a turn | **Subagent** on a supervisor (M8) | signals | LangGraph subgraph |
+| Route among specialists per turn | **Supervisor agent + subagents** (M8; `.network()` is deprecated) | if/else in a tool | OpenAI handoffs, LangGraph supervisor |
+| Long-lived agents informing each other mid-work | **Signals** + ownership + discovery (M8; ownership/discovery are experimental) | sub-agents (they block) | message bus + mailbox |
 | Quality checks in CI and production | **Scorers** + `runEvals` (M9) | eyeballing traces | Braintrust, LangSmith |
-| Deterministic agent tests without keys | mock model / **LLM recorder** (M9) | live models in CI | VCR-style HTTP recording |
+| Deterministic agent tests without keys | mock model / record-replay tapes (M9; Mastra's `_llm-recorder` is a private internal package) | live models in CI | VCR-style HTTP recording |
 
 ## Per-module tables
 
@@ -101,7 +101,7 @@ Every module's "when to choose something else" table in one place. **Bold** = th
 |---|---|---|
 | sub-question in a turn | sub-agent as tool | LangGraph subgraph |
 | known pipeline | workflow + agent steps | Temporal |
-| dynamic routing | agent network | OpenAI handoffs |
+| dynamic routing | supervisor agent (subagents) | OpenAI handoffs |
 | independent long-lived agents | signals + ownership + discovery | message bus |
 | cross-host | Redis/Valkey Streams PubSub | Temporal signals |
 

@@ -4,20 +4,21 @@ import { fmt } from '../../progress';
 
 /**
  * Module 8: four ways agents work together, compared by what they share.
+ * Agent networks are deprecated at the pin (docs/agents/networks.mdx L12); they stay here for comparison.
  * Pick a mechanism; see what crosses between the agents and how each dimension behaves.
  */
 type Key = 'sub' | 'net' | 'wf' | 'sig';
 type Cell = { v: 'shared' | 'separate' | 'mixed'; text: string };
 const mechs: { key: Key; name: string; code: string; across: [string, string]; color: string }[] = [
-  { key: 'sub', name: 'Sub-agent as a tool', code: 'agents: { researcher }', across: ['prompt the parent\'s model writes', 'answer, as one tool result'], color: 'sky' },
-  { key: 'net', name: 'Agent network', code: 'agent.network(task)', across: ['the router\'s prompt for this turn', 'result; router picks again'], color: 'violet' },
+  { key: 'sub', name: 'Supervisor + subagent', code: 'agents: { researcher }', across: ['delegation prompt + the parent\'s context', 'answer, as one tool result'], color: 'sky' },
+  { key: 'net', name: 'Agent network (deprecated)', code: 'agent.network(task)', across: ['the router\'s prompt for this turn', 'result; router picks again'], color: 'violet' },
   { key: 'wf', name: 'Workflow with agent steps', code: 'createStepFromAgent(a)', across: ['typed inputData', 'typed output to the next step'], color: 'teal' },
   { key: 'sig', name: 'Signals between threads', code: 'peer.sendSignal(s, { threadId })', across: ['one message (a signal)', 'nothing, unless it signals back'], color: 'coral' },
 ];
 const dims: { key: string; label: string; cells: Record<Key, Cell> }[] = [
   { key: 'transcript', label: 'Transcript', cells: {
-    sub: { v: 'separate', text: 'The helper sees the prompt it was given, not the parent\'s conversation.' },
-    net: { v: 'mixed', text: 'The routing agent keeps the task and each result; specialists get the router\'s prompt.' },
+    sub: { v: 'mixed', text: 'By default the subagent **receives the parent\'s conversation context** plus the delegation prompt, and writes to its own thread. Trim or redact with `messageFilter`.' },
+    net: { v: 'mixed', text: 'The routing agent keeps the task and each result. **Deprecated:** use a supervisor agent instead.' },
     wf: { v: 'separate', text: 'None. Data flows between steps through schemas.' },
     sig: { v: 'separate', text: 'Separate threads. Only the message crosses.' } } },
   { key: 'run', label: 'Run', cells: {
@@ -26,12 +27,12 @@ const dims: { key: string; label: string; cells: Record<Key, Cell> }[] = [
     wf: { v: 'shared', text: 'One workflow run. Each agent is a step.' },
     sig: { v: 'separate', text: 'Separate runs. **The sender doesn\'t wait.**' } } },
   { key: 'budget', label: 'Step budget', cells: {
-    sub: { v: 'separate', text: 'Its own `maxSteps`. Its steps don\'t count in the parent\'s budget, but its latency does.' },
+    sub: { v: 'separate', text: 'Its own `maxSteps` (cap it with `modifiedMaxSteps` in `onDelegationStart`). Its steps don\'t count in the parent\'s budget, but its latency and tokens do.' },
     net: { v: 'shared', text: 'The network\'s iteration limit bounds the whole thing.' },
     wf: { v: 'separate', text: 'Per agent step. The graph itself is fixed.' },
     sig: { v: 'separate', text: 'Each agent has its own. Two agents can still wake each other forever (Exercise 8.1).' } } },
   { key: 'failure', label: 'Failure', cells: {
-    sub: { v: 'shared', text: 'Comes back as a tool error. The parent\'s model decides what to do.' },
+    sub: { v: 'shared', text: 'Comes back as a failed tool result with a generic error. The parent\'s model decides; `onDelegationComplete` can `bail()`.' },
     net: { v: 'shared', text: 'The router sees the result and can route somewhere else.' },
     wf: { v: 'shared', text: 'Step retries, then the run fails. Visible in the snapshot.' },
     sig: { v: 'separate', text: 'The sender never finds out. Fire-and-forget.' } } },

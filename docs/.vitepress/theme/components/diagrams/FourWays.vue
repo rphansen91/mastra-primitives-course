@@ -1,8 +1,8 @@
 <template>
   <figure class="mpc-figure">
-    <svg class="ill" viewBox="0 0 760 250" role="img" aria-label="Four ways agents work together. Sub-agent as a tool: a helper runs inside the parent's run. Network: a router picks a specialist each iteration. Workflow: agents are steps in a fixed graph. Signals: separate agents on separate threads send each other messages.">
+    <svg class="ill" viewBox="0 0 760 250" role="img" aria-label="Four ways agents work together. Sub-agent as a tool: a helper runs inside the parent's run. Network (deprecated): a router picks a specialist each iteration. Workflow: agents are steps in a fixed graph. Signals: separate agents on separate threads send each other messages.">
       <ArrowDefs />
-      <g v-for="(t, k) in ['Sub-agent as a tool', 'Agent network', 'Workflow steps', 'Signals between threads']" :key="t" :transform="`translate(${8 + k * 188} 8)`">
+      <g v-for="(t, k) in ['Sub-agent as a tool', 'Network (deprecated)', 'Workflow steps', 'Signals between threads']" :key="t" :transform="`translate(${8 + k * 188} 8)`">
         <rect x="3" y="3" width="176" height="232" rx="16" class="shadow" />
         <rect x="0" y="0" width="176" height="232" rx="16" class="f-paper outline" />
         <text x="88" y="26" text-anchor="middle" font-size="13.5" class="t-strong">{{ t }}</text>

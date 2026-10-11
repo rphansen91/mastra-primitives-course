@@ -6,7 +6,7 @@ aside: false
 <script setup>
 const outRelay = "=== Worker claims + advertises its thread; coordinator discovers peers ====\n  worker claim: true\n  peers: [\n  {\n    agentId: 'worker',\n    threadId: 'worker-auth-refactor',\n    label: 'api (auth refactor)'\n  }\n]\n\n=== Ops notification wakes the coordinator \u2192 relay tool \u2192 worker mid-run ==\n  coordinator accepted: wake\n  relay tool result: { routed: 'deliver' }\n  coordinator says: Relayed the rate-limit notice to the worker agent.\n  worker final text: Got it from the coordinator: batching pushes, max 1 per 10 min.\n\n=== Two polite agents, one relay tool each ================================\n  alice \u2192 bob (hops=1) \"Heads up: CI is rate limited.\"\n  bob \u2192 alice (hops=2) \"Thanks, noted!\"\n  alice \u2192 bob (hops=3) \"Thanks, noted!\"\n  bob \u270b stops at hop 3\n  relays sent: 3 | stopped by the guard: true"
 const outcomes = [
-  'Tell apart sub-agents as tools, networks, workflows and signals between threads',
+  'Tell apart supervisor agents (subagents), workflows, signals between threads, and the deprecated agent network',
   'Compare what each one shares: transcript, run, budget, failure, crash behavior',
   'Wire thread ownership, peer discovery and a relay tool into an always-on coordinator',
   'Stop two agents from waking each other forever, in code, not in the prompt',
@@ -19,12 +19,12 @@ const needs = [
 ]
 const q_which = [
   { text: 'Sub-agent as a tool', why: 'The parent would wait for the helper to finish. The workers are already busy in their own runs.' },
-  { text: 'Agent network', why: 'A network routes one task among specialists inside one run. These agents are independent and long-lived.' },
+  { text: 'Agent network', why: 'A network routes one task among specialists inside one run, and `.network()` is deprecated anyway. These agents are independent and long-lived.' },
   { text: 'Signals between threads', correct: true, why: 'Each worker keeps its own thread, run and budget. The notice arrives at its next safe point. Nobody waits.' },
 ]
 const mechs = [
-  { name: 'Sub-agent', short: 'agents: { researcher }', detail: 'The model calls `agent-researcher` like any tool. The whole sub-run is one tool call. [`agent/subagent.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/subagent.ts), [docs](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/subagents.mdx).', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/subagent.ts', color: 'sky' },
-  { name: 'Network', short: 'routing agent', detail: 'A routing agent picks agents, workflows or tools per iteration, inside one network run. [`agents/networks.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/agents/networks.mdx), [`agent-network.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent-network.test.ts).', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/agents/networks.mdx', color: 'violet' },
+  { name: 'Sub-agent', short: 'agents: { researcher }', detail: 'The supervisor pattern: the model calls `agent-researcher` like any tool, and the whole sub-run is one tool call. By default the subagent gets the parent\'s conversation context; `messageFilter`, `onDelegationStart` and `onDelegationComplete` control it. [`agent/subagent.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/subagent.ts), [docs](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/subagents.mdx).', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/subagent.ts', color: 'sky' },
+  { name: 'Network (deprecated)', short: 'routing agent', detail: '**Deprecated** at the pin, to be removed in a future major. A routing agent picks agents, workflows or tools per iteration, inside one network run. Migrate to a supervisor agent. [`agents/networks.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/agents/networks.mdx), [`agent-network.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent-network.test.ts).', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/agents/networks.mdx', color: 'violet' },
   { name: 'Workflow', short: 'createStepFromAgent', detail: 'An agent becomes a step in `.then / .parallel / .foreach`: snapshots, retries and suspend/resume apply (Module 5). [`workflows/agents-and-tools.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/workflows/agents-and-tools.mdx).', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/workflows/agents-and-tools.mdx', color: 'teal' },
   { name: 'Signals', short: 'sendSignal + ownership', detail: '`otherAgent.sendSignal(signal, { resourceId, threadId })`, with [`claimThreadOwnership`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9005) and [`discoverThreadPeers`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9042). Delivery in [`thread-stream-runtime.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts#L5515).', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9005', color: 'coral' },
 ]
@@ -56,12 +56,12 @@ const q_guard = [
 const choose = [
   { when: '"Answer this sub-question" inside one turn', not: 'The helper needs to run for minutes while the parent stays responsive', alt: 'Sub-agent as tool; AI SDK tool calling `generateText`; a LangGraph subgraph' },
   { when: 'A known pipeline with agent steps', not: 'The next step depends on what the model thinks', alt: 'Workflow + `createStepFromAgent`; LangGraph graph; Temporal workflow + activities' },
-  { when: 'Dynamic routing among specialists per turn', not: 'You can write the routing as plain if/else', alt: 'Agent network; LangGraph supervisor; OpenAI Agents SDK handoffs' },
+  { when: 'Dynamic routing among specialists per turn', not: 'You can write the routing as plain if/else', alt: 'A supervisor agent with subagents (`.network()` is deprecated); LangGraph supervisor; OpenAI Agents SDK handoffs' },
   { when: 'Independent long-lived agents that inform each other mid-work', not: 'You need guaranteed delivery and replies on the default PubSub', alt: 'Signals + ownership + discovery; a message bus with your own mailbox; actor frameworks' },
   { when: 'Cross-host coordination', not: 'Default `EventEmitterPubSub`', alt: 'Signals over Redis/Valkey Streams PubSub; Temporal signals between workflows' },
 ]
 const recall = [
-  { q: 'What does a sub-agent share with its parent?', a: 'The run (the parent waits) and failure (a tool error). Not the transcript: it sees the prompt it was given.' },
+  { q: 'What does a subagent share with its parent?', a: 'The run (the parent waits), failure (a failed tool result) and, by default, the parent\'s conversation context, which you trim with `messageFilter`. It writes to its own thread.' },
   { q: 'What crosses between two agents using signals?', a: 'Only the message. Separate threads, runs and budgets. The sender doesn\'t wait or learn the outcome.' },
   { q: 'What do claimThreadOwnership and discoverThreadPeers do?', a: 'Take a lease-backed claim on a thread and advertise it with a label; ask the PubSub directory which live owners exist.' },
   { q: 'Running vs idle target thread?', a: 'Running: `deliver` into the live run at its next safe point. Idle: `wake` a new run, or `persist` for later.' },
@@ -70,7 +70,7 @@ const recall = [
 ]
 const cheat = [
   { title: 'Sub-agent', color: 'sky', lines: ['agents: { researcher }', 'one tool call; parent waits', 'crash = whole delegation re-runs'] },
-  { title: 'Network', color: 'violet', lines: ['router picks per iteration', 'one network run', 'like handoffs'] },
+  { title: 'Network (deprecated)', color: 'violet', lines: ['router picks per iteration', 'one network run', 'migrate to a supervisor'] },
   { title: 'Workflow', color: 'teal', lines: ['createStepFromAgent(a)', 'snapshots + retries per agent', 'fixed shape'] },
   { title: 'Signals', color: 'coral', lines: ['peer.sendSignal(s, { threadId })', 'running → deliver; idle → wake / persist', 'requireClaimedOwner'] },
   { title: 'Peers', color: 'amber', lines: ['claimThreadOwnership({ peer: { label } })', 'discoverThreadPeers()', 'PubSub: EventEmitter → Unix socket → Redis'] },
@@ -104,7 +104,7 @@ Each needs a different answer to the same five questions: **whose transcript? wh
 
 <Callout type="analogy" title="A kitchen">
 
-A **sub-agent** is the chef asking the sous-chef to taste the sauce and waiting for the verdict. A **network** is the head waiter deciding which station takes each order. A **workflow** is the plating line: same stations, same order, every dish. **Signals** are the ticket rail: anyone can clip a note for the grill, and the grill reads it when they flip the next steak.
+A **sub-agent** is the chef asking the sous-chef to taste the sauce and waiting for the verdict. A **network** was the head waiter deciding which station takes each order (Mastra now deprecates it in favor of the chef-as-supervisor). A **workflow** is the plating line: same stations, same order, every dish. **Signals** are the ticket rail: anyone can clip a note for the grill, and the grill reads it when they flip the next steak.
 
 </Callout>
 
@@ -120,6 +120,14 @@ A **sub-agent** is the chef asking the sous-chef to taste the sauce and waiting 
 
 <SharedCompare />
 
+<Callout type="warn" title="Agent networks are deprecated">
+
+<StabilityBadge id="networks" /> The docs at the pin say networks *"are deprecated and will be removed in a future major release. Replace them with supervisor agents that use `agent.stream()` or `agent.generate()`."* There's a [migration guide](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/reference/migrations/network-to-supervisor.mdx). This course keeps networks in the comparison so you can recognize them in existing code. Don't start new work on them.
+
+Also check what a subagent sees. <StabilityBadge id="subagents" /> By default, *"subagents receive the full conversation context from the parent agent"* ([`subagents.mdx` L247](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/subagents.mdx#L247)). That matters for data handling. Use `messageFilter` to drop sensitive or bulky messages before delegation.
+
+</Callout>
+
 <ClickMap title="Where each one lives in the source" :stations="mechs" start-label="most coupled" end-label="least coupled" />
 
 ### Ownership and discovery
@@ -127,6 +135,8 @@ A **sub-agent** is the chef asking the sous-chef to taste the sauce and waiting 
 - [`claimThreadOwnership`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9005) takes a **lease-backed claim** on a thread and advertises it as a peer with a label.
 - [`discoverThreadPeers`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9042) asks over PubSub (request/reply) who's out there.
 - `sendSignal(…, { ifIdle: { behavior: 'wake', requireClaimedOwner: true } })` wakes a peer **only if** a live owner exists.
+
+<StabilityBadge id="thread-ownership" /> Treat ownership and discovery as experimental. The methods are public, but the docs don't cover them, and the one product feature built on them (cross-agent communication in Mastra Code) is *"experimental and off by default"*. Pin exact versions if you build on them.
 
 With the default `EventEmitterPubSub` this works inside one process. With `UnixSocketPubSub`, across processes on one host. With Redis/Valkey Streams, across a cluster.
 
@@ -232,9 +242,16 @@ Fails until the relay count is at most 4 and the conversation reports `stopped`.
 
 <Callout type="analogy" title="OpenAI Agents SDK: handoffs">
 
-A handoff transfers the **conversation** to another agent: the new agent continues the same run with the same transcript. That's routing within one run, closest to a Mastra network. Signals are the opposite: separate runs and transcripts that exchange messages. Know which one you want before you pick.
+A handoff transfers the **conversation** to another agent: the new agent continues the same run with the same transcript. That's routing within one run, closest to Mastra's deprecated network, or a supervisor agent today. Signals are the opposite: separate runs and transcripts that exchange messages. Know which one you want before you pick.
 
 </Callout>
+
+
+## Production readiness {#production-readiness}
+
+The review a cautious platform team would write before putting this module's primitives on a critical path. Every badge links to its source at the pinned release. For the course-wide decision, see [Adopting Mastra in production](../adopting).
+
+<ProdReadiness module="08" />
 
 <StationDone module="08" :station="4" next="./lab" next-label="On to the lab" />
 
@@ -244,11 +261,11 @@ A handoff transfers the **conversation** to another agent: the new agent continu
 
 **Host:** Everyone says multi-agent. What does Mastra actually offer?
 
-**Loopy:** Four shapes. A sub-agent as a tool, an agent network, a workflow with agent steps, and signals between threads.
+**Loopy:** Three you'd start with today: a supervisor agent with subagents, a workflow with agent steps, and signals between threads. There's a fourth, the agent network, but it's deprecated. You'll still see it in older code.
 
 **Host:** How do I pick?
 
-**Loopy:** Ask what they share. A sub-agent shares the parent's run: the parent waits and gets one tool result. A network shares one routed run. A workflow shares a run but passes typed data between steps. Signals share nothing but the message.
+**Loopy:** Ask what they share. A subagent shares the parent's run: the parent waits and gets one tool result. By default it also sees the parent's conversation, which surprises people, so filter it. A network shares one routed run. A workflow shares a run but passes typed data between steps. Signals share nothing but the message.
 
 **Host:** And the coordinator pattern?
 

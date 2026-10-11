@@ -212,6 +212,13 @@ There's no single right answer. A strong answer names the **failing test** (e.g.
 | Tests | break-it fails before, passes after; deterministic; no API keys |
 | Clarity | someone else could implement it from the RFC |
 
+
+## Production readiness {#production-readiness}
+
+The review a cautious platform team would write before putting this module's primitives on a critical path. Every badge links to its source at the pinned release. For the course-wide decision, see [Adopting Mastra in production](../adopting).
+
+<ProdReadiness module="10" />
+
 <StationDone module="10" :station="4" next="./rfc-template" next-label="Open the RFC template" />
 
 ## Wrap-up

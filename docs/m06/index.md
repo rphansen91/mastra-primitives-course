@@ -247,6 +247,13 @@ The test wakes the thread with an urgent item, then sends calendar, chat and spa
 
 </Callout>
 
+
+## Production readiness {#production-readiness}
+
+The review a cautious platform team would write before putting this module's primitives on a critical path. Every badge links to its source at the pinned release. For the course-wide decision, see [Adopting Mastra in production](../adopting).
+
+<ProdReadiness module="06" />
+
 <StationDone module="06" :station="4" next="./lab" next-label="On to the lab" />
 
 ## Wrap-up

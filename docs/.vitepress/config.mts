@@ -35,6 +35,7 @@ export default withMermaid(
         { text: 'Start', link: '/guide/method' },
         { text: 'Modules', link: '/m00/' },
         { text: 'Cheat sheet', link: '/cheatsheet' },
+        { text: 'Adopting in production', link: '/adopting' },
         { text: 'Capstone RFC template', link: '/m10/rfc-template' },
       ],
       sidebar: [
@@ -45,6 +46,7 @@ export default withMermaid(
             { text: 'The four-pass method', link: '/guide/method' },
             { text: 'Running the labs', link: '/guide/labs' },
             { text: 'Decision-table cheat sheet', link: '/cheatsheet' },
+            { text: 'Adopting Mastra in production', link: '/adopting' },
           ],
         },
         {

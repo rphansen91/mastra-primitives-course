@@ -326,6 +326,13 @@ Mastra hands you one well-tested railway with lots of switches and signal boxes 
 
 <Quiz module="02" id="pick-tool" question="Your design has a planner, an executor and a critic, with an edge from critic back to planner after a failed review. What do you reach for?" :options="q_pick_tool" />
 
+
+## Production readiness {#production-readiness}
+
+The review a cautious platform team would write before putting this module's primitives on a critical path. Every badge links to its source at the pinned release. For the course-wide decision, see [Adopting Mastra in production](../adopting).
+
+<ProdReadiness module="02" />
+
 <StationDone module="02" :station="4" next="./lab" next-label="On to the lab" />
 
 ## Wrap-up

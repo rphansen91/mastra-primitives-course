@@ -192,6 +192,13 @@ LangSmith traces LangChain and LangGraph runs from callbacks and hosts datasets 
 
 </Callout>
 
+
+## Production readiness {#production-readiness}
+
+The review a cautious platform team would write before putting this module's primitives on a critical path. Every badge links to its source at the pinned release. For the course-wide decision, see [Adopting Mastra in production](../adopting).
+
+<ProdReadiness module="09" />
+
 <StationDone module="09" :station="4" next="./lab" next-label="On to the lab" />
 
 ## Wrap-up

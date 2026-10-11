@@ -243,6 +243,13 @@ That gap (journaled tool results, plus an idempotency key on every tool call) is
 
 <IdeaCards :cols="2" :cards="prod" />
 
+
+## Production readiness {#production-readiness}
+
+The review a cautious platform team would write before putting this module's primitives on a critical path. Every badge links to its source at the pinned release. For the course-wide decision, see [Adopting Mastra in production](../adopting).
+
+<ProdReadiness module="07" />
+
 <StationDone module="07" :station="4" next="./lab" next-label="On to the crash lab" />
 
 ## Wrap-up

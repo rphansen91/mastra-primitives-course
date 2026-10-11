@@ -235,6 +235,13 @@ LangChain's agent middleware (`before_model`, `after_model`, `wrap_tool_call`, â
 
 </Callout>
 
+
+## Production readiness {#production-readiness}
+
+The review a cautious platform team would write before putting this module's primitives on a critical path. Every badge links to its source at the pinned release. For the course-wide decision, see [Adopting Mastra in production](../adopting).
+
+<ProdReadiness module="03" />
+
 <StationDone module="03" :station="4" next="./lab" next-label="On to the lab" />
 
 ## Wrap-up

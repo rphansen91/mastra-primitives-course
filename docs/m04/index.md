@@ -227,6 +227,13 @@ The difference: LangGraph's checkpointer also does crash recovery. In Mastra, ch
 
 </Callout>
 
+
+## Production readiness {#production-readiness}
+
+The review a cautious platform team would write before putting this module's primitives on a critical path. Every badge links to its source at the pinned release. For the course-wide decision, see [Adopting Mastra in production](../adopting).
+
+<ProdReadiness module="04" />
+
 <StationDone module="04" :station="4" next="./lab" next-label="On to the lab" />
 
 ## Wrap-up
