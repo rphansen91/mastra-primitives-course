@@ -4,67 +4,139 @@ aside: false
 ---
 
 <script setup>
-const outcomes = ["Read a workflow as a step graph with typed inputs and outputs", "Explain run state, snapshots, suspend/resume, sleep and retries", "Say exactly what a snapshot buys you, and what it does not", "See the agent loop as \"just another workflow\""]
+const W = 'https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts'
+const B = 'https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd'
+const T = 'https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd'
+const outcomes = [
+  'Read a workflow as a step graph with typed inputs and outputs',
+  'Say exactly what a snapshot holds, when it is written, and what it does not buy you',
+  'Use suspend/resume safely, including across processes and racing callers',
+  'See the agent loop as "just another workflow": <code>dowhile(iteration, predicate)</code>',
+  'Choose between a Mastra workflow, an agent loop and a durable-execution engine',
+]
+const needs = [
+  { title: 'Pause for days', body: 'Wait for a human, a webhook, a deadline. Without holding a process hostage.', icon: 'pause', color: 'violet' },
+  { title: 'See every step', body: 'Which step ran, with what input, how long, and what it returned.', icon: 'eye', color: 'sky' },
+  { title: 'Retry one step', body: 'The email provider hiccuped. Don\'t re-charge the card to retry the email.', icon: 'reset', color: 'amber' },
+  { title: 'Survive a restart', body: 'Deploys happen. The run should pick up where it was.', icon: 'skull', color: 'coral' },
+]
+const q_shape = [
+  { text: '"Answer the user\'s question, using tools as needed"', why: 'The model decides the next action. That\'s an agent loop (Module 2).' },
+  { text: '"Validate the refund, wait for a manager, pay, email the customer"', correct: true, why: 'A known shape with a human pause in the middle: a workflow with suspend/resume.' },
+  { text: '"Tell the coding agent CI is rate limited, mid-run"', why: 'An outside event reaching a running agent: a signal (Module 6).' },
+]
+const parts = [
+  { name: 'createStep', short: 'typed unit of work', detail: '`inputSchema`, `outputSchema`, optional `suspendSchema` / `resumeSchema`, `retries`, and `execute({ inputData, resumeData, suspend, state, requestContext, … })`. Agents and tools can be steps directly (`createStepFromAgent`, `createStepFromTool`).', href: W, color: 'sky' },
+  { name: 'createWorkflow', short: 'the builder', detail: '`.then` [L2063](' + W + '#L2063), `.parallel` [L2546](' + W + '#L2546), `.branch`, `.foreach`, `.dowhile` [L2670](' + W + '#L2670), `.map` [L2375](' + W + '#L2375), `.sleep` [L2264](' + W + '#L2264), `.commit()` [L2852](' + W + '#L2852) freezes the graph.', href: W + '#L2063', color: 'violet' },
+  { name: 'createRun / start', short: 'one execution', detail: '`workflow.createRun()` [L2883](' + W + '#L2883) then `run.start()` [L4212](' + W + '#L4212). A run has an id; the snapshot is stored under `(workflowName, runId)`.', href: W + '#L4212', color: 'teal' },
+  { name: 'snapshot', short: 'after every step', detail: 'The default engine\'s `persistStepUpdate` writes step results, execution path, suspended paths, the serialized graph, retry counts and requestContext to `workflow_snapshots`. `shouldPersistSnapshot` can thin writes ([entry.ts L195](' + B + '/packages/core/src/workflows/handlers/entry.ts#L195)).', href: B + '/packages/core/src/workflows/default.ts', color: 'amber' },
+  { name: 'suspend / resume', short: 'pause for a human', detail: '`suspend(payload)` marks the path suspended. `run.resume({ step, resumeData })` [L4781](' + W + '#L4781) continues, even in another process. The resume is **CAS-claimed** (`#claimResume` [L4882](' + W + '#L4882)). Tool approval in agents uses the same mechanism.', href: W + '#L4781', color: 'coral' },
+  { name: 'engines', short: 'default · evented · Inngest · Temporal', detail: 'Same definition, different runtime. Seams: `wrapDurableOperation` ([default.ts L173](' + B + '/packages/core/src/workflows/default.ts#L173), a no-op by default) and `executeSleepDuration` ([L140](' + B + '/packages/core/src/workflows/default.ts#L140), `setTimeout` by default).', href: T + '/packages/core/src/workflows/evented', color: 'lime' },
+]
+const q_resume = [
+  { text: 'Only the code after `suspend()`', why: 'There\'s no "after" to jump to. JavaScript can\'t resume a function in the middle.' },
+  { text: 'The whole `execute`, from the top, with `resumeData` set', correct: true, why: 'Verified in Lab 5: `approve:start resume=undefined`, then `approve:start resume={"approved":true}`. Anything before your `resumeData` check runs twice.' },
+  { text: 'The whole workflow, from `fetch`', why: 'Completed steps come from the snapshot. Only the suspended step re-executes.' },
+]
+const out1 = "=== 2) The snapshot on disk while suspended ===============================\n{\n  status: 'suspended',\n  suspendedPaths: { approve: [ 1 ] },\n  stepResults: [ 'fetch', 'approve' ],\n  suspendPayload: { ask: 'Refund $49?' }\n}\n\n=== 3) A NEW process resumes with { approved: true } ======================\nresult: { status: 'success', result: { message: 'Refunded $49' } }\nstarter : [ 'fetch', 'EMAIL manager: Approve refund of $49 for order-1042?' ]\nresumer : [ 'apply refund $49', 'notify customer: Refunded $49' ]\n\n=== 4) Two callers resume the same run at once ============================\n  won → success\n  lost → This suspended workflow run was already resumed by another caller. ..."
+const out2 = "=== The agent loop as createWorkflow().dowhile(iteration, predicate) ======\n  iteration 0: model → tool weather(Lisbon)\n  iteration 1: model → tool weather(Oslo)\n  iteration 2: model → \"Lisbon (24°C) is warmer than Oslo (9°C).\"\n  status: success | iterations: 3 | messages: 6\n\n=== Snapshots written to storage while it ran =============================\n  #1 run pending: no steps yet\n  #2 run running: iteration #1 starting, input carries 1 messages\n  #3 run running: iteration #2 starting, input carries 3 messages\n  #4 run running: iteration #3 starting, input carries 5 messages\n  #5 run running: iteration success, output carries 6 messages\n  #6 run success: iteration success, output carries 6 messages"
+const breaks = [
+  { title: 'The in-flight step re-runs', body: 'Snapshots are written **between** steps. A step that charged a card and then died charges again. Make steps idempotent.', icon: 'reset', color: 'coral' },
+  { title: 'No owner on restart', body: '`restartAllActiveWorkflowRuns()` has no claim. A second replica runs the in-flight step **concurrently** (Module 7\'s crash lab shows two pids).', icon: 'cards', color: 'amber' },
+  { title: 'Timers are setTimeout', body: 'On the default engine, a restart during a 1-hour `sleep` restarts the sleep (or the step). The evented engine stores waiting steps.', icon: 'clock', color: 'sky' },
+  { title: '`waitForEvent` is gone', body: 'It throws `WORKFLOW_WAIT_FOR_EVENT_REMOVED`. Correlated, timeout-bounded events need suspend/resume plus your own timer.', icon: 'mail', color: 'violet' },
+  { title: 'Retries are simple', body: 'Fixed delay, in memory. No exponential backoff, jitter, schedule-to-close timeouts or heartbeats.', icon: 'bolt', color: 'lime' },
+  { title: 'No versioning', body: 'A restart replays against whatever code is deployed **now**, even if the step graph changed under a running workflow.', icon: 'alert', color: 'teal' },
+]
+const q_race = [
+  { text: 'Both resumes run; the refund is paid twice', why: 'That\'s exactly what the claim prevents.' },
+  { text: 'One wins; the other throws "already resumed by another caller"', correct: true, why: 'The resume flips `suspended → running` with a compare-and-set. The loser gets a clear error. Re-read the run state before trying again.' },
+  { text: 'The second waits and then resumes again after the first finishes', why: 'There\'s nothing left to resume: the run isn\'t suspended any more.' },
+]
+const choose = [
+  { when: 'The shape of the work is known: steps, branches, fan-out', not: 'The model should decide the next action', alt: 'The agent loop (Module 2)' },
+  { when: 'You need human-in-the-loop pauses (suspend/resume)', not: 'You need durable timers and events at scale on the default engine', alt: 'The evented engine; Inngest / Temporal runners; Temporal or Restate directly' },
+  { when: 'You want per-step observability and time travel', not: 'Steps aren\'t idempotent and several replicas auto-restart runs', alt: 'One instance with `recovery.workflows: \'off\'`, or an engine with ownership (Temporal)' },
+  { when: 'The same definition should run in-process now, on Inngest or Temporal later', not: 'Long-running workflows must survive code deploys mid-run', alt: 'Temporal (`patched()` / versioning), Restate, DBOS' },
+]
+const recall = [
+  { q: 'When does the default engine write a snapshot?', a: 'After every step (and when a run starts, suspends and finishes), to `workflow_snapshots` under `(workflowName, runId)`.' },
+  { q: 'What runs again when a suspended step resumes?', a: 'Its whole `execute`, from the top, with `resumeData` set. Guard pre-suspend side effects with `if (resumeData)`.' },
+  { q: 'Two callers resume the same run at once?', a: 'One wins (CAS `suspended → running`); the other throws "already resumed by another caller".' },
+  { q: 'What does the agent loop look like as a workflow?', a: '`createWorkflow().dowhile(iterationStep, predicate)`. Each iteration\'s input is in the snapshot.' },
+  { q: 'Why can\'t you `await` a workflow?', a: 'It has a `.then()` method (the builder), so JavaScript treats it as a promise and waits forever. Return `{ workflow }` from async helpers.' },
+  { q: 'Biggest difference from Temporal?', a: 'Mastra snapshots step **results** and resumes from the graph position. Temporal records an event history and replays workflow **code** deterministically, with durable timers and versioning.' },
+]
+const cheat = [
+  { title: 'Build', color: 'violet', lines: ['createStep({ inputSchema, outputSchema, execute })', '.then .parallel .branch .foreach .dowhile .map .sleep', '.commit() freezes the graph'] },
+  { title: 'Run', color: 'teal', lines: ['createRun() → start({ inputData })', 'status: running | suspended | success | failed', 'snapshot after every step'] },
+  { title: 'Suspend / resume', color: 'coral', lines: ['return suspend(payload)', 'resume({ step, resumeData }), any process', 'execute re-runs from the top', 'CAS-claimed: one winner'] },
+  { title: 'Engines', color: 'sky', lines: ['default (in process)', 'evented (PubSub + workers)', 'Inngest, Temporal (experimental)'] },
+  { title: 'Gotchas', color: 'amber', lines: ['In-flight step re-runs after a crash', 'No owner on restart', 'sleep = setTimeout', 'Never await a workflow object'] },
+  { title: 'Choose', color: 'lime', lines: ['Known shape → workflow', 'Model decides → agent loop', 'Durable timers / versioning → Temporal, Restate, DBOS'] },
+]
 </script>
 
 # Module 5: Workflows
 
-**Goal:** understand Mastra workflows as the substrate everything else is built on: the step graph, run state and snapshots, suspend/resume, sleep, retries, and "loop-as-workflow". Know exactly what a snapshot buys you and what it doesn't.
+<p class="lead">Agents are improvisers. Workflows are sheet music: a known shape, written down as data. That's what lets Mastra pause a run for three days, resume it on a different machine, show you every step, and, it turns out, run the agent loop itself.</p>
 
-<LessonHero :recap="false" module="05" :minutes="35" lab="Suspend, crash, resume spec lab" :outcomes="outcomes" mood="thinking">
+<LessonHero module="05" :minutes="40" lab="Suspend/resume lab, ~5 s, two processes" :outcomes="outcomes" mood="thinking">
 
-**Tuesday, 4:40 pm.** Your refund flow needs a manager's approval. The manager is on a plane until Thursday.
+**Tuesday, 4:40 pm.** A customer asks for a $49 refund. Policy says a manager must approve anything over $25. The manager is boarding a plane and will look at it Thursday.
 
-Your code is a pile of nested `await`s, and the process will definitely restart before Thursday. You need the shape of the work as data.
+Your code is a nice chain of `await`s, and your servers will be redeployed at least twice before Thursday. When the manager finally taps **Approve**, which process remembers what it was doing?
 
 </LessonHero>
-
-
-**Depth:** lesson + lab spec. Module 7's crash lab exercises workflow recovery for real.
 
 <Journey :station="1" module="05" />
 
 ## The problem {#problem}
 
-Some work has a known shape: fetch → validate → branch → fan out → wait for a human → finish. Writing it as nested `await`s works until you need to **pause for days** (approval), **observe** each step, **retry one step**, or **survive a restart**. Then you need the shape as data: a graph of steps with typed inputs and outputs, and persisted run state.
+Some work has a known shape: fetch → validate → wait for a human → pay → notify. Nested `await`s are fine, right up until you need any of these:
+
+<IdeaCards :cols="4" :cards="needs" />
+
+Then you need the shape **as data**: a graph of steps with typed inputs and outputs, and run state written somewhere that outlives the process.
+
+<Callout type="analogy" title="Sheet music vs jazz">
+
+An agent loop is a jazz solo: the model decides what comes next. A workflow is sheet music: the bars are written down before anyone plays. You can stop the orchestra mid-symphony, hand the score to a different orchestra, and they'll pick up at bar 47. That's a snapshot.
+
+</Callout>
+
+<Quiz module="05" id="shape" question="Which job is shaped like a workflow?" :options="q_shape" />
+
+<StationDone module="05" :station="1" />
 
 <Journey :station="2" module="05" />
 
-## How it's built {#under-the-hood}
+## Under the hood {#under-the-hood}
 
 ### The step graph
 
-[`createWorkflow`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts) returns a builder. Each method appends a node to a serializable step graph:
+```ts
+const refund = createWorkflow({ id: 'refund', inputSchema, outputSchema })
+  .then(fetchOrder)
+  .then(approve)   // calls suspend() until a manager answers
+  .then(apply)
+  .then(notify)
+  .commit();
+```
 
-| Builder | Line | Meaning |
-|---|---|---|
-| `.then(step)` | [L2063](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2063) | sequence |
-| `.parallel([a, b])` | [L2546](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2546) | fan out, join |
-| `.branch([[cond, step], …])` | | conditional |
-| `.foreach(step, { concurrency })` | | map over an array |
-| `.dowhile(step, cond)` / `.dountil` | [L2670](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2670) / [L2723](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2723) | loops (the agent loop uses `dowhile`) |
-| `.map(fn)` | [L2375](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2375) | reshape data between steps |
-| `.sleep(ms)` / `.sleepUntil(date)` | [L2264](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2264) / [L2314](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2314) | timers |
-| `.waitForEvent(…)` | [L2360](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2360) | **removed**: throws `WORKFLOW_WAIT_FOR_EVENT_REMOVED`, use suspend/resume |
-| `.commit()` | [L2852](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2852) | freeze the graph |
+Each builder method appends a node to a serializable graph:
 
-Steps (`createStep`) have `inputSchema`, `outputSchema`, optional `suspendSchema`/`resumeSchema`, `retries`, and an `execute` that receives `inputData`, `suspend`, `resumeData`, `state`, `requestContext`, and more. Agents and tools can be steps directly (`createStepFromAgent`, `createStepFromTool`).
+<BuilderShapes />
 
-### Runs, engines and snapshots
+<ClickMap title="The parts of a workflow" :stations="parts" start-label="define" end-label="run anywhere" />
 
-`workflow.createRun()` ([L2883](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2883)) → `run.start()` ([L4212](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L4212)) executes on an **execution engine**:
+### Suspend, resume, snapshot
 
-- **Default engine** ([`default.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/default.ts)): in process. After every step, `persistStepUpdate` writes a **snapshot** (step results, execution path, suspended paths, serialized graph, retry counts, requestContext) to the `workflow_snapshots` table for `(workflowName, runId)`. `shouldPersistSnapshot` can thin writes ([entry.ts L195](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/handlers/entry.ts#L195)).
-- **Evented engine** ([`workflows/evented/`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/evented)): steps as PubSub events processed by workers; needs a store with atomic concurrent updates.
-- **Inngest / Temporal** ([`workflows/inngest`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/workflows/inngest), [`workflows/temporal`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/workflows/temporal)): the same workflow definition runs on another platform. The seams are `wrapDurableOperation` ([L173](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/default.ts#L173), a no-op by default, `step.run` on Inngest) and `executeSleepDuration` ([L140](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/default.ts#L140), `setTimeout` by default).
+This is Tuesday's refund. Run it, let it suspend, then try every ending. Turn on the bug, turn on the crash:
 
-### Suspend and resume
+<WorkflowTimeline />
 
-A step calls `suspend(payload)`; the run's status becomes `suspended` and the snapshot records the suspended path. Later, `run.resume({ step, resumeData })` ([L4781](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L4781)) continues from there, even in a different process. The resume is **CAS-claimed** ([`#claimResume` L4882](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L4882)): `suspended → running`, so two callers can't both resume. Tool approval in agents uses the same mechanism.
-
-### Loop-as-workflow
-
-The agent loop (Module 2) is `dowhile(iteration, predicate)`. The notification dispatcher (Module 6) is a cron workflow. Scheduled workflows, time travel ([L5648](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L5648)) and restart ([L4860](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L4860)) all operate on the same run state. The workflow is Mastra's universal "unit of observable, resumable work".
+<Quiz kind="predict" module="05" id="resume" question="A step called `suspend()` on Tuesday. On Thursday you call `run.resume({ step: 'approve', resumeData: { approved: true } })`. Which code runs?" :options="q_resume" />
 
 ```mermaid
 stateDiagram-v2
@@ -77,40 +149,133 @@ stateDiagram-v2
   running --> running: crash → restartAllActiveWorkflowRuns()\n(completed steps memoized,\nin-flight step re-runs)
 ```
 
+<TryIt cmd="npm run lab:workflows" :output="out1">
+
+Starts the refund on a libSQL **file**, suspends, then spawns a **brand-new process** that resumes it. The log shows which pid did what. Then two callers race to resume one run.
+
+</TryIt>
+
+### The agent loop is a workflow
+
+Module 2 showed that Mastra's loop is `dowhile(iteration, predicate)`. In the lab you build Module 1's loop the same way, in about 40 lines, and spy on the snapshots:
+
+<TryIt cmd="tsx m05-workflows/loop-as-workflow.ts" :output="out2">
+
+Each iteration's **input** (the transcript so far) is in the snapshot. Compare with [`loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/loop-builder.ts#L263).
+
+</TryIt>
+
+<MascotSays mood="alarmed">
+
+Fun fact we learned the hard way while building the lab: a workflow has a `.then()` method (it's the builder), so `return workflow` from an `async` function makes JavaScript think it's a promise. Your `await` then waits... forever. Return `{ workflow }` instead.
+
+</MascotSays>
+
+<DeepDive title="Engines, scheduled workflows and time travel">
+
+- **Default engine** ([`default.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/default.ts)): in process. `persistStepUpdate` writes the snapshot after every step.
+- **Evented engine** ([`workflows/evented/`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/evented)): steps as PubSub events processed by workers; needs a store with atomic concurrent updates.
+- **Inngest / Temporal** ([`workflows/inngest`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/workflows/inngest), [`workflows/temporal`](https://github.com/mastra-ai/mastra/tree/ebe143c4916cf20b671a84f942d65d5df469f6cd/workflows/temporal)): the same definition on another platform, through `wrapDurableOperation` and `executeSleepDuration`.
+- **`waitForEvent`** ([L2360](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L2360)) is removed: it throws `WORKFLOW_WAIT_FOR_EVENT_REMOVED`. Use suspend/resume.
+- **Restart** ([L4860](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L4860)) and **time travel** ([L5648](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/workflows/workflow.ts#L5648)) operate on the same run state. So do scheduled workflows; the notification dispatcher in Module 6 is one.
+- The workflow is Mastra's universal "unit of observable, resumable work": the agent loop, prepare-stream and processors are all workflow steps, which is why they all get spans (Module 9).
+
+</DeepDive>
+
+<StationDone module="05" :station="2" />
+
 <Journey :station="3" module="05" />
 
-## Where it falls down {#break-it}
+## Break it {#break-it}
 
-These are verified in [Module 7's crash lab](/m07/lab) or read directly from source at the pinned commit:
+Verified in Module 7's crash lab or read from source at the pinned commit:
 
-- **The in-flight step always re-runs after a crash.** Snapshots are written *between* steps. A step that charged a card and then died charges again on restart. Make steps idempotent.
-- **No ownership on restart.** `restartAllActiveWorkflowRuns()` has no claim or fence: a second replica booting while the first is alive **runs the in-flight step concurrently in both processes**. The crash lab shows `slow-step` and `final` executing in two pids. The docs tell you to disable `recovery.workflows` when replicas share a database.
-- **Timers aren't durable on the default engine.** `sleep` is `setTimeout`; a restart during a 1-hour sleep restarts the sleep (or the step). The evented engine stores waiting steps and replays them.
-- **`waitForEvent` is gone.** Correlated, timeout-bounded external events must be modeled with suspend/resume plus your own timeout.
-- **Retries are fixed-delay, in memory.** No exponential backoff, jitter, schedule-to-close timeouts or heartbeats.
-- **No versioning for in-flight code-defined workflows.** A restart replays against whatever code is deployed now.
+<IdeaCards :cards="breaks" />
+
+<Misconception myth="When a step resumes, execution continues right after the suspend() call.">
+
+It can't: JavaScript has no way to re-enter a function in the middle. The step's `execute` runs **again from the top**, this time with `resumeData`. Anything before your `if (resumeData)` check (an email, a charge, a log line you count on) happens twice.
+
+</Misconception>
+
+<Misconception myth="A snapshot after every step means every step runs exactly once.">
+
+Completed steps run once. The step that was **running** when the process died has no "done" record, so it runs again on restart. Snapshots give you exactly-once for finished steps and at-least-once for the in-flight one, which is Module 1's journal rule, again.
+
+</Misconception>
+
+### Your mission: the manager who got two emails
+
+<Callout type="tip" title="Exercise 5.1">
+
+The `approve` step emails the manager, then suspends. On Thursday the manager declines, and gets the same "please approve" email again, a second after clicking. Fix the step so the manager is asked **exactly once** and a declined refund is never applied. File: `exercises/ex1-approve-step.ts`.
+
+</Callout>
+
+<TryIt cmd="LAB_TARGET=exercises node --import tsx --test m05-workflows/break-it.test.ts">
+
+Fails with `manager emailed 2x` until you fix it. Solution on the [lab page](./lab#break-it-exercise-5-1-the-double-email).
+
+</TryIt>
+
+<Quiz kind="predict" module="05" id="race" question="Two managers tap **Approve** on the same suspended run within a millisecond. What happens?" :options="q_race" />
+
+<StationDone module="05" :station="3" />
 
 <Journey :station="4" module="05" />
 
-## When to choose something else {#choose-wisely}
+## Choose wisely {#choose-wisely}
 
-| Use a Mastra workflow when | Don't when | Alternatives |
-|---|---|---|
-| The shape of the work is known: steps, branches, fan-out | The model should decide the next action | Agent loop (Module 2) |
-| You need human-in-the-loop pauses (suspend/resume) | You need durable timers/events at scale on the default engine | Evented engine; Inngest/Temporal runners; Temporal/Restate directly |
-| You want observability per step and time travel | Steps aren't idempotent and you run multiple replicas with auto-restart | Single-instance + `recovery.workflows: 'off'`, or an engine with ownership (Temporal) |
-| The same definition should run in-process now and on Inngest/Temporal later | Long-running workflows must survive code deploys mid-run | Temporal (`patched()`/versioning), Restate, DBOS |
+<Choose subject="a Mastra workflow" :rows="choose" />
 
-**Compare: Temporal.** Temporal records an **event history** of every activity result and replays *workflow code* deterministically against it; activities are retried with rich policies; timers and signals are durable; in-flight code changes are handled with versioning. Mastra records **step results** in a snapshot and resumes from the graph position; it's simpler to adopt (no determinism constraints on your code) but coarser: the step is the unit of exactly-once, and ownership/versioning are on you. `@mastra/temporal` (experimental) compiles Mastra workflows into Temporal workflows + activities to get Temporal's guarantees.
+<Callout type="analogy" title="Temporal: the court stenographer">
 
-## Lab 5 spec: "suspend, crash, resume"
+Temporal keeps a stenographer in the room: an **event history** of every activity result, timer and signal. On recovery it replays your workflow **code** against that history, so your code must be deterministic, and in-flight code changes need versioning (`patched()`).
 
-Build `labs/m05-workflows/` on `@mastra/libsql` (file store, like Module 7):
+Mastra keeps a **photo of the whiteboard** after each step: the step results and where you are in the graph. No determinism rules for your code, so it's simpler to adopt, but coarser: the step is the unit of exactly-once, and ownership and versioning are on you. `@mastra/temporal` (experimental) compiles Mastra workflows into Temporal workflows and activities when you want the stenographer.
 
-1. A 4-step workflow: `fetch → approve (suspend) → apply → notify`. Start it, assert `status: 'suspended'` and the suspend payload.
-2. **New process** resumes it with `{ approved: true }` (spawn a child as in the crash lab). Assert `apply` and `notify` ran once and `fetch` didn't re-run.
-3. **Double resume.** Call `resume` twice concurrently. Assert exactly one wins (`#claimResume`) and the loser gets a clear error.
-4. **Loop-as-workflow.** Re-implement Module 1's agent loop as `createWorkflow().dowhile(iterationStep, predicate)` with your mock model. Compare the code with [`loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/loop-builder.ts#L263).
-5. **Break it:** make `apply` non-idempotent (append to a ledger file), `kill -9` during it, restart with `restartAllActiveWorkflowRuns()`, and show the double apply. Fix with an idempotency key built from `runId` + step id.
+</Callout>
 
-**Acceptance:** tests green; the double-resume test is deterministic (no sleeps longer than 100 ms).
+<StationDone module="05" :station="4" next="./lab" next-label="On to the lab" />
+
+## Wrap-up
+
+<Podcast title="Workflows, in four minutes" :minutes="4">
+
+**Host:** What is a Mastra workflow?
+
+**Loopy:** A graph of typed steps, built with then, parallel, branch, foreach and dowhile, and frozen with commit. Because it's data, Mastra can snapshot it, draw it, and run it on different engines.
+
+**Host:** What's in a snapshot?
+
+**Loopy:** The run's status, every finished step's result, where you are in the graph, any suspended paths, and the request context. The default engine writes one after every step.
+
+**Host:** So how does the refund wait until Thursday?
+
+**Loopy:** The approve step calls suspend. The snapshot says suspended, and the process can go away. On Thursday any process can call resume with the manager's answer. Completed steps aren't repeated; their results come from the snapshot.
+
+**Host:** What's the trap?
+
+**Loopy:** On resume, the suspended step's execute runs again from the top. If you sent an email before checking resumeData, you send it twice. And if two people resume at once, only one wins: the other gets an "already resumed" error.
+
+**Host:** And crashes?
+
+**Loopy:** The step that was running when the process died runs again. Make steps idempotent. Also, restart has no owner, so two replicas can both re-run it.
+
+**Host:** When would I reach for Temporal instead?
+
+**Loopy:** When you need durable timers, rich retries, ownership and versioning for long-running code. Mastra is simpler to adopt; Temporal gives stronger guarantees.
+
+</Podcast>
+
+<Recall module="05" :cards="recall" />
+
+<CheatCard module="05" title="Workflows" subtitle="Known shapes, snapshots, suspend and resume" :cells="cheat" />
+
+<Callout type="win" title="Where next">
+
+- **[Lab 5: suspend, crash, resume](./lab):** two processes, one run, and the double-email exercise.
+- **[Module 6: Signals](/m06/):** how news reaches a run that's already going.
+- **[Module 7: Durability](/m07/):** the crash lab, where in-flight steps really do run twice.
+
+</Callout>
