@@ -77,11 +77,13 @@ const out1 = "=== 1) Signal while push_branch is executing ===\nthread state whi
 
 # Module 6: Signals and notifications
 
-<p class="lead">Agents that only answer questions are easy. Agents that stay on, while the world keeps happening around them, need a mailbox. This module is about how news reaches a running agent, and what happens when nobody is home.</p>
+<p class="lead">Forty branches, one rate limit, one human typing "please stagger pushes". An agent that stays on while the world keeps happening needs a mailbox. This module covers how news reaches a running agent, and what happens when nobody is home.</p>
 
 <LessonHero module="06" :minutes="40" lab="Lab runs in ~6 s, no API keys" :outcomes="outcomes" mood="alarmed">
 
-**Friday, 5:58 pm.** Your ops agent is pushing 40 branches. GitHub starts rate-limiting. The on-call engineer types *"please stagger pushes"* into the ops channel.
+**Friday, 5:58 pm.** Your ops agent is pushing 40 branches.
+
+GitHub starts rate-limiting. The on-call engineer types *"please stagger pushes"* into the ops channel.
 
 The agent keeps hammering for ten more minutes. It wasn't ignoring anyone. It was in the middle of a tool call, and nobody had taught you where signals actually land.
 
@@ -91,7 +93,9 @@ The agent keeps hammering for ten more minutes. It wasn't ignoring anyone. It wa
 
 ## The problem {#problem}
 
-An always-on agent gets news it never asked for: CI failed, a reviewer commented, the user typed something, a meeting starts in ten minutes. For every single event, you have to answer four questions:
+An always-on agent gets news it never asked for: CI failed, a reviewer commented, the user typed something, a meeting starts in ten minutes.
+
+The *Principles* book's name for an agent like that: <Cite id="p-claw" /> Initiative needs inputs. For every single event, you have to answer four questions:
 
 <IdeaCards :cols="4" :cards="questions" />
 
@@ -219,9 +223,19 @@ Signals are young. Here's where they bend, each one checked in the lab or in the
 
 <Misconception myth="A signal can interrupt my agent at any moment.">
 
-**Cooperative, not preemptive.** A signal sent during a 10-minute tool is seen after the tool. Only requests that have streamed nothing but reasoning can be interrupted. If your tool takes ten minutes, so does your agent's reaction time.
+**Cooperative, not preemptive.** A signal sent during a 10-minute tool is seen after the tool. Only requests that have streamed nothing but reasoning can be interrupted.
+
+If your tool takes ten minutes, so does your agent's reaction time.
 
 </Misconception>
+
+<BookSays quote="p-control">
+
+As of 1.76, "steer" and "interrupt" are two different mechanisms. Steering is a signal, drained at the next safe point: after the current tool call, never during it.
+
+Interrupting a tool mid-flight is cancellation through `abortSignal`, and your tool has to honor it. A long tool should check `abortSignal` and split its work into steps.
+
+</BookSays>
 
 <Misconception myth="Once sendSignal accepts it, the signal is safe.">
 
@@ -275,6 +289,10 @@ The review a cautious platform team would write before putting this module's pri
 <ProdReadiness module="06" />
 
 <StationDone module="06" :station="4" next="./lab" next-label="On to the lab" />
+
+## Further reading {#further-reading}
+
+<FurtherReading module="06" />
 
 ## Wrap-up
 

@@ -8,7 +8,7 @@ npm install
 npm test
 ```
 
-`npm test` runs every lab test and every break-it test against the **solutions** (31 tests, about 45 seconds, most of it the crash lab).
+`npm test` runs every lab test and every break-it test against the **solutions** (48 tests as of 1.76.0, about 90 seconds, most of it the crash lab).
 
 ## The mock model
 

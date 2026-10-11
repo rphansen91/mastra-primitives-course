@@ -58,7 +58,9 @@ export function split(buf: string) {
 
 **File:** `exercises/ex2-per-run-state.ts`
 
-A "max 3 model steps per run" budget counts in a module-level `let steps = 0`. Run 1 uses 3 steps. Run 2 trips on its **first** step: `step budget of 3 exceeded`. In a server this is a cross-user bug.
+A "max 3 model steps per run" budget counts in a module-level `let steps = 0`. Run 1 uses 3 steps.
+
+Run 2 trips on its **first** step: `step budget of 3 exceeded`. In a server this is a cross-user bug.
 
 <Callout type="tip" title="Your mission">
 
@@ -93,6 +95,8 @@ On error, push a message to `errors` and pass the messages through unchanged. Th
 
 <Reveal title="Show the solution">
 
-Wrap the dependency call in `try/catch`; on failure record and `return messages`. Then decide **per processor**: guardrails fail closed (`abort`), enrichers fail open. Make the choice explicit in the processor's name or options so reviewers can see it. Mastra's house rule "fail open on coordination, fail loudly on correctness" is the same idea at framework level.
+Wrap the dependency call in `try/catch`; on failure record and `return messages`. Then decide **per processor**: guardrails fail closed (`abort`), enrichers fail open.
+
+Make the choice explicit in the processor's name or options so reviewers can see it. Mastra's house rule "fail open on coordination, fail loudly on correctness" is the same idea at framework level.
 
 </Reveal>

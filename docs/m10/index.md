@@ -74,7 +74,7 @@ const cheat = [
 
 # Module 10: Design a primitive
 
-<p class="lead">You've taken Mastra apart. Now design the piece you wish existed, the way a core contributor would: prove the gap with a failing test, borrow from prior art, find the smallest surface, name what can go wrong, and write it up.</p>
+<p class="lead">Nine modules, nine "Break it" lists, six named gaps. Now design the piece you wish existed, the way a core contributor would: prove the gap with a failing test, borrow from prior art, find the smallest surface, name what can go wrong, and write it up.</p>
 
 <LessonHero module="10" :minutes="120" lab="Your own primitive, your own lab" :outcomes="outcomes" mood="cheer">
 
@@ -92,7 +92,9 @@ What you deliver:
 
 <IdeaCards :cols="4" :cards="deliver" />
 
-Every gap below came out of a "Break it" section in this course, with a test or a lab that proves it. Explore them, and see what other systems do:
+Every gap below came out of a "Break it" section in this course, with a test or a lab that proves it. They cluster where the *Principles* book expects new work for long-running agents: <Cite id="p-new-primitives" />
+
+Explore them, and see what other systems do:
 
 <GapExplorer />
 
@@ -148,7 +150,9 @@ Most RFCs don't fail on the happy path. They fail in a reviewer's first question
 
 <Misconception myth="If I persist it, it's durable.">
 
-Persisting is half of it. The other half is **who is allowed to write, and when**. Without a fence (a claim generation, a CAS, a lease) two writers produce a well-recorded race. Every candidate below has a "hard parts" list, and fencing or ordering is on nearly all of them.
+Persisting is half of it. The other half is **who is allowed to write, and when**.
+
+Without a fence (a claim generation, a CAS, a lease) two writers produce a well-recorded race. Every candidate below has a "hard parts" list, and fencing or ordering is on nearly all of them.
 
 </Misconception>
 
@@ -162,44 +166,44 @@ Reviewers merge **small** things that solve a **proven** problem. A general "dur
 
 ### 1. Journaled tool results (`ctx.run` inside tools)
 
-**Gap (Module 7):** the in-flight tool re-runs after a crash; nothing inside a tool is memoized. Restate/DBOS/Temporal journal every side effect.
-**Shape:** `execute: async (input, ctx) => { const pr = await ctx.journal.run('open-pr', () => gh.createPr(...)); ... }`, keyed `runId:toolCallId:name`, stored in a storage domain, checked by the run fence.
-**Fit:** a tool wrapper + a storage domain; uses `wrapDurableOperation` on engines that already journal (Inngest).
-**Hard parts:** fencing (only the current claim generation may write), cleanup on run completion, non-serializable results.
+- **Gap (Module 7):** the in-flight tool re-runs after a crash; nothing inside a tool is memoized. Restate/DBOS/Temporal journal every side effect.
+- **Shape:** `execute: async (input, ctx) => { const pr = await ctx.journal.run('open-pr', () => gh.createPr(...)); ... }`, keyed `runId:toolCallId:name`, stored in a storage domain, checked by the run fence.
+- **Fit:** a tool wrapper + a storage domain; uses `wrapDurableOperation` on engines that already journal (Inngest).
+- **Hard parts:** fencing (only the current claim generation may write), cleanup on run completion, non-serializable results.
 
 ### 2. Idempotency keys on every tool call
 
-**Gap (Module 7, Exercise 7.1):** tools get no stable key, and on 1.75.0 the durable tool context lacks `runId` entirely.
-**Shape:** `ctx.idempotencyKey` = `hash(runId, iteration, toolCallId)`, identical across recovery, plus a `processToolResult`-style dedupe helper.
-**Fit:** small, generally useful context addition; tests are easy to write with the crash lab.
-**Hard parts:** stability across loop iterations (open PR #25400 on unique durable operation ids is relevant prior art), sub-agent delegations.
+- **Gap (Module 7, Exercise 7.1):** tools get no stable key, and on 1.75.0 the durable tool context lacks `runId` entirely.
+- **Shape:** `ctx.idempotencyKey` = `hash(runId, iteration, toolCallId)`, identical across recovery, plus a `processToolResult`-style dedupe helper.
+- **Fit:** small, generally useful context addition; tests are easy to write with the crash lab.
+- **Hard parts:** stability across loop iterations (open PR #25400 on unique durable operation ids is relevant prior art), sub-agent delegations.
 
 ### 3. Durable timers
 
-**Gap (Module 5):** `sleep` is `setTimeout` on the default engine; missed cron fires aren't replayed.
-**Shape:** a storage-backed timer table + a scheduler worker that claims due timers by CAS (the workflow scheduler already claims fires this way), used by `executeSleepDuration` on the default engine.
-**Fit:** engine-level, behind the existing `executeSleepDuration` seam.
-**Hard parts:** clock skew, catch-up policy (fire once vs fire all), single-instance scheduler assumption.
+- **Gap (Module 5):** `sleep` is `setTimeout` on the default engine; missed cron fires aren't replayed.
+- **Shape:** a storage-backed timer table + a scheduler worker that claims due timers by CAS (the workflow scheduler already claims fires this way), used by `executeSleepDuration` on the default engine.
+- **Fit:** engine-level, behind the existing `executeSleepDuration` seam.
+- **Hard parts:** clock skew, catch-up policy (fire once vs fire all), single-instance scheduler assumption.
 
 ### 4. `waitForSignal(name, { timeout })`
 
-**Gap (Modules 5, 6):** `waitForEvent` was removed; correlated, timeout-bounded external events need suspend/resume plus your own timer. Meanwhile agent signals have exactly the right shape (typed, addressed to a thread).
-**Shape:** a workflow step that suspends until a signal matching `{ tagName, attributes }` arrives for its thread/run, or a durable timer fires; resolves with the signal or a timeout result.
-**Fit:** unifies workflow events with agent signals; uses suspend/resume (CAS-claimed) and primitive 3.
-**Hard parts:** signals that arrive *before* the wait starts (buffering), durability of the waiting state, correlation keys.
+- **Gap (Modules 5, 6):** `waitForEvent` was removed; correlated, timeout-bounded external events need suspend/resume plus your own timer. Meanwhile agent signals have exactly the right shape (typed, addressed to a thread).
+- **Shape:** a workflow step that suspends until a signal matching `{ tagName, attributes }` arrives for its thread/run, or a durable timer fires; resolves with the signal or a timeout result.
+- **Fit:** unifies workflow events with agent signals; uses suspend/resume (CAS-claimed) and primitive 3.
+- **Hard parts:** signals that arrive *before* the wait starts (buffering), durability of the waiting state, correlation keys.
 
 ### 5. Durable signal queues
 
-**Gap (Module 6):** `pendingSignalsByThread`, `pendingIdleSignalsByThread`, queued messages and provider subscriptions are in memory. A crash loses accepted-but-undelivered signals (issues #25778/#25779, draft PR #25729).
-**Shape:** a storage-backed outbox per thread: `sendSignal` writes, drain sites read-and-ack, recovery re-drains. The durable engine's `'best-effort'` drain policy already assumes redelivery.
-**Fit:** behind the thread runtime; "swap the transport, not the API".
-**Hard parts:** exactly-once into the transcript (dedupe by signal id on drain), ordering, interaction with `transient`.
+- **Gap (Module 6):** `pendingSignalsByThread`, `pendingIdleSignalsByThread`, queued messages and provider subscriptions are in memory. A crash loses accepted-but-undelivered signals (issues #25778/#25779, draft PR #25729).
+- **Shape:** a storage-backed outbox per thread: `sendSignal` writes, drain sites read-and-ack, recovery re-drains. The durable engine's `'best-effort'` drain policy already assumes redelivery.
+- **Fit:** behind the thread runtime; "swap the transport, not the API".
+- **Hard parts:** exactly-once into the transcript (dedupe by signal id on drain), ordering, interaction with `transient`.
 
 ### 6. Processor-emitted parts (from Module 3)
 
-**Gap:** `processOutputStream` is one-chunk-in/one-chunk-out (plus `data-*` via `writer`), so buffering processors can't flush cleanly.
-**Shape:** allow returning an array of parts, or a `writer.emit(part)` for text parts, with ordering guarantees.
-**Fit:** a core processor API change, so it needs the "separate PR, generally useful" bar. Argue it with at least two independent processors that need it (redaction, batching, citation insertion).
+- **Gap:** `processOutputStream` is one-chunk-in/one-chunk-out (plus `data-*` via `writer`), so buffering processors can't flush cleanly.
+- **Shape:** allow returning an array of parts, or a `writer.emit(part)` for text parts, with ordering guarantees.
+- **Fit:** a core processor API change, so it needs the "separate PR, generally useful" bar. Argue it with at least two independent processors that need it (redaction, batching, citation insertion).
 
 </DeepDive>
 
@@ -221,6 +225,18 @@ There's no single right answer. A strong answer names the **failing test** (e.g.
 
 </Reflect>
 
+### A rubric in Mastra's own terms
+
+Mastra's launch post listed design principles you can hold an RFC to: object-sparse, explicit with no hidden indirection, and named with domain grammar.
+
+<FounderQuote id="f-concrete-nouns" />
+
+Before you submit, answer three questions in the RFC:
+
+1. **Does it add API surface?** If yes, why can't a processor, provider or tool carry it?
+2. **Is it a concrete noun or verb?** `waitForSignal` beats `SignalAwaitableRunnable`.
+3. **Does it hide indirection?** A retry, a prompt or a write the caller can't see is a debugging cost.
+
 ### Grading rubric
 
 | Criterion | Excellent |
@@ -241,6 +257,10 @@ The review a cautious platform team would write before putting this module's pri
 <ProdReadiness module="10" />
 
 <StationDone module="10" :station="4" next="./rfc-template" next-label="Open the RFC template" />
+
+## Further reading {#further-reading}
+
+<FurtherReading module="10" />
 
 ## Wrap-up
 
@@ -271,6 +291,8 @@ The review a cautious platform team would write before putting this module's pri
 <Recall module="10" :cards="recall" />
 
 <CheatCard module="10" title="Design a primitive" subtitle="Test first, smallest surface, RFC last" :cells="cheat" />
+
+One last line from the *Principles* book, because it applies to this course too: <Cite id="p-beginners" /> Every claim here is pinned to 1.76. Re-check it against the version you run.
 
 <Callout type="win" title="You finished the course">
 

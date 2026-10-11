@@ -86,13 +86,15 @@ const out1 = '{"type":"step-start","step":0}\n{"type":"model-request","step":0,"
 
 # Module 1: First principles before Mastra
 
-<p class="lead">Before we open a single Mastra file, you're going to build the three ideas everything else rests on, by hand: the agent loop, durable execution, and signals. When Mastra shows you its versions later, they'll feel like old friends in better clothes.</p>
+<p class="lead">Three ideas carry every agent framework: a loop, a journal and a mailbox. You'll build all three by hand, in about 190 lines of plain Node, before opening a single Mastra file. Later, when Mastra shows you its versions, you'll recognize each one.</p>
 
 <LessonHero module="01" :minutes="45" lab="Lab runs in < 1 s, plain Node" :outcomes="outcomes" mood="alarmed">
 
 **Saturday hackathon, 4:47 pm.** Your 190-line agent charges a customer's card, then kicks off a 10-minute deploy. At minute 6 the cloud reclaims your spot instance.
 
-The process restarts. Your code, very helpfully, starts the job from the top. **The customer gets charged again.** Their email to support has a lot of capital letters in it.
+The process restarts. Your code, very helpfully, starts the job from the top.
+
+**The customer gets charged again.** Their email to support has a lot of capital letters in it.
 
 </LessonHero>
 
@@ -111,7 +113,11 @@ repeat:
     for each call in turn.toolCalls: messages += execute(call)
 ```
 
-That's genuinely it. Everything else, in every agent framework, is **hardening**. And the napkin version breaks in at least six ways:
+That's genuinely it. Everything else, in every agent framework, is **hardening**.
+
+How much of that loop you hand to the model is a dial, not a switch. The *Principles* book: <Cite id="p-spectrum" />
+
+The napkin version breaks in at least six ways:
 
 <IdeaCards :cards="naive" />
 
@@ -156,6 +162,8 @@ Six decisions hide in there. Mastra makes every one of them too:
 
 <IdeaCards :cards="decisions" />
 
+A seventh decision lives outside the loop: the tool descriptions. The model picks a tool from its text alone. The *Principles* book's rule for that text: <Cite id="p-describe" />
+
 <Quiz kind="predict" module="01" id="call-order" question="The model asks for `weather(Lisbon)` then `weather(Oslo)` in one turn. Oslo's API answers first. In what order do the results land in the next prompt?" :options="q_order" />
 
 <TryIt cmd="npm run lab:loop-from-scratch" :output="out1">
@@ -166,9 +174,13 @@ Two parallel tool calls, folded back in call order (`c1` then `c2`), then a fina
 
 ### Stop 2: surviving a crash
 
-Back to the hackathon. On restart, re-running from scratch charges the card twice. Not re-running leaves the deploy half done. Durable engines (Temporal, Restate, DBOS, Inngest, Cloudflare and Vercel Workflows) all answer with the same three tools.
+Back to the hackathon. Re-running from scratch charges the card twice. Not re-running leaves the deploy half done.
 
-**Tool one: the journal.** Wrap every side effect in `ctx.run(key, fn)`. First time through, run `fn` and write down the result. On replay, hand back the written-down result instead of running `fn` again.
+Durable engines (Temporal, Restate, DBOS, Inngest, Cloudflare and Vercel Workflows) all answer with the same three tools.
+
+**Tool one: the journal.** Wrap every side effect in `ctx.run(key, fn)`.
+
+The first time through, run `fn` and write down the result. On replay, hand back the written-down result instead of running `fn` again.
 
 ```ts
 async run<T>(key: string, fn: () => Promise<T>): Promise<T> {
@@ -185,7 +197,9 @@ async run<T>(key: string, fn: () => Promise<T>): Promise<T> {
 
 <Callout type="analogy" title="The restaurant order pad">
 
-A waiter writes each dish on the pad *after* the kitchen fires it. If the waiter faints between "kitchen fired the steak" and "wrote it down", the next waiter reads the pad, sees no steak, and fires another one. The pad (journal) can't fix that gap. Only the kitchen can, by noticing "table 7 already has a steak" (an idempotency key).
+A waiter writes each dish on the pad *after* the kitchen fires it. If the waiter faints between "kitchen fired the steak" and "wrote it down", the next waiter reads the pad, sees no steak, and fires another one.
+
+The pad (journal) can't fix that gap. Only the kitchen can, by noticing "table 7 already has a steak" (an idempotency key).
 
 </Callout>
 
@@ -201,7 +215,9 @@ Journal plus idempotency key gives you **exactly-once-effective**. Go break it y
 
 <CrashSimulator variant="journal" />
 
-**Tool three: the fencing token.** What if *two* workers both think they own the run? Say worker A pauses for a long GC (or a laptop lid closes), its lease expires, and worker B takes over. Then A wakes up, not knowing any of this, and writes its stale result.
+**Tool three: the fencing token.** What if *two* workers both think they own the run?
+
+Say worker A pauses for a long GC (or a laptop lid closes), its lease expires, and worker B takes over. Then A wakes up, not knowing any of this, and writes its stale result.
 
 The fix (Martin Kleppmann's *fencing token*): every lease grant gets a bigger number, every write carries it, and **storage** rejects any write with a smaller number than it has already seen.
 
@@ -267,6 +283,12 @@ And four limits of what you built, each of which a later module fixes:
 
 ## Choose wisely {#choose-wisely}
 
+The tooling is young, and the people building it say so. This was written in 2024. As of 1.76, behavior still shifts between minor releases (Module 7's 1.75 → 1.76 changes are one example):
+
+<FounderQuote id="f-web-2012" />
+
+So pick the smallest layer that covers your needs, and expect it to change.
+
 <Callout type="analogy" title="The AI SDK is your napkin loop, professionally printed">
 
 The Vercel AI SDK's `generateText` / `streamText` with tools and `stopWhen: stepCountIs(n)` is very close to what you just built: steps, stop conditions, results folded back.
@@ -285,6 +307,10 @@ The review a cautious platform team would write before putting this module's pri
 <ProdReadiness module="01" />
 
 <StationDone module="01" :station="4" next="./lab" next-label="On to the lab" />
+
+## Further reading {#further-reading}
+
+<FurtherReading module="01" />
 
 ## Wrap-up
 

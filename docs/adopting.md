@@ -51,9 +51,17 @@ const q_adopt = [
 
 # Adopting Mastra in production
 
-<p class="lead">A decision guide for a platform team: what to adopt, what to augment with proven infrastructure, and what to build. Every claim links to evidence in a module, a lab, or the Mastra source at the pinned release (<code>@mastra/core@1.76.0</code>).</p>
+<p class="lead">One minor release, 1.75.0 → 1.76.0, brought new run claims, a different number of model calls in a notification flow, and a new span in every trace. This page is a decision guide for a platform team: what to adopt, what to augment with proven infrastructure, and what to build. Every claim links to evidence in a module, a lab, or the Mastra source at the pinned release (<code>@mastra/core@1.76.0</code>).</p>
 
-This page is deliberately skeptical. Mastra moves fast: in one minor release (1.75.0 → 1.76.0) the labs observed new run claims, a different number of model calls in a notification flow, and a new span in every trace. Speed like that is a strength if you **pin, test and upgrade on purpose**. It's a risk if you don't.
+This page is deliberately skeptical. Speed like Mastra's is a strength if you **pin, test and upgrade on purpose**. It's a risk if you don't.
+
+The gap it covers is the one the *Patterns* book opens with: <Cite id="pat-demo" />
+
+Skepticism is also the honest position from inside. One of Mastra's founders, writing about operating agents:
+
+<FounderQuote id="f-ai-ops" />
+
+That was written in January 2025. The questions it raises (rollbacks, drift, on-call) are still open as of 1.76, which is why this page leans on infrastructure you already trust.
 
 ## Three strategies
 
@@ -133,6 +141,10 @@ Tick it off for the system you're reviewing. It's saved in your browser.
 5. What does an upgrade from the pinned version to `@latest` change in your traces, prompts and model-call counts?
 6. Where do tenant boundaries get enforced, and is any `resourceId` client-controlled?
 7. What's the exit plan if a beta API changes shape?
+
+## Further reading {#further-reading}
+
+<FurtherReading module="adopting" />
 
 <MascotSays mood="thinking">
 

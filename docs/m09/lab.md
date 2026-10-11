@@ -47,7 +47,9 @@ Five experiments on Module 2's CI helper: read its trace, score it with a rule a
         model_inference  inference: 1
 ```
 
-The test asserts **names and nesting**, never timing. **Version note:** on 1.75.0 the `unsupported-file-handler` spans aren't there. A minor release added a built-in request processor, so the trace changed shape. That's a real reason to gate on the spans you care about (`tool_call`, `model_inference`), not on exact span counts.
+The test asserts **names and nesting**, never timing. **Version note:** on 1.75.0 the `unsupported-file-handler` spans aren't there.
+
+A minor release added a built-in request processor, so the trace changed shape. That's a real reason to gate on the spans you care about (`tool_call`, `model_inference`), not on exact span counts.
 
 ## 9.2 Scorers: a rule and a judge
 

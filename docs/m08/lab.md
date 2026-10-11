@@ -77,6 +77,21 @@ With the solution's guard:
   relays sent: 3 | stopped by the guard: true
 ```
 
+## 8.3 What a subagent sees {#subagent-context}
+
+The *Principles* book describes an isolated subagent. Mastra's default (as of 1.76) passes the parent's conversation along. This test shows the difference with a mock model and no API keys.
+
+```bash
+node --import tsx --test m08-multi-agent/subagent-context.test.ts
+```
+
+[`subagent-context.test.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m08-multi-agent/subagent-context.test.ts) puts `SECRET-CARD-4242` early in the parent conversation, then has the parent delegate to `agent-helper`. It records the helper model's prompt.
+
+- **Default:** the secret is in the helper's prompt.
+- **With `delegation: { messageFilter }`:** the secret is gone, and the delegation prompt still arrives.
+
+**Try it:** make the filter throw. What does the helper see now? Then set `hookErrorStrategy: 'throw'` and run it again.
+
 ## Break it: Exercise 8.1, two polite agents {#break-it-exercise-8-1-two-polite-agents}
 
 **File:** [`exercises/ex1-hop-guard.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m08-multi-agent/exercises/ex1-hop-guard.ts)

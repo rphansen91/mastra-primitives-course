@@ -87,13 +87,15 @@ const out1 = "=== A) kill -9 mid-flight, then a fresh process recovers ===\nreco
 
 # Module 7: Durability
 
-<p class="lead">"Durable" is one of those words that means whatever the person saying it hopes it means. In this module you'll kill real processes with <code>kill -9</code> and write down exactly what comes back, what runs twice, and what's just gone.</p>
+<p class="lead">One <code>SIGKILL</code>, one card charged twice, one durable agent that did exactly what it was built to do. In this module you'll kill real processes with <code>kill -9</code> and write down what comes back, what runs twice, and what's just gone.</p>
 
 <LessonHero module="07" :minutes="45" lab="Real kill -9 crash lab, ~40 s" :outcomes="outcomes" mood="alarmed">
 
 **Thursday, 11:03 pm.** You ship a small fix. Kubernetes rolls the deployment and sends `SIGKILL` to the old pod, which was in the middle of upgrading a customer to Pro.
 
-The new pod boots, finds the half-finished run, and helpfully recovers it. The card gets charged. Again. You were using a durable agent. **So what went wrong?**
+The new pod boots, finds the half-finished run, and helpfully recovers it. The card gets charged.
+
+Again. You were using a durable agent. **So what went wrong?**
 
 </LessonHero>
 
@@ -101,7 +103,15 @@ The new pod boots, finds the half-finished run, and helpfully recovers it. The c
 
 ## The problem {#problem}
 
-Module 1 gave you the rules: a journal makes finished steps exactly-once, the in-flight step stays at-least-once, and only an idempotency key at the receiver closes the gap. A fencing token keeps zombies from writing.
+Module 1 gave you the rules. A journal makes finished steps exactly-once.
+
+The in-flight step stays at-least-once, and only an idempotency key at the receiver closes the gap. A fencing token keeps zombies from writing.
+
+Mastra's own description of a long-running agent puts the record at the center:
+
+<FounderQuote id="f-durable-record" />
+
+A record makes recovery possible. It doesn't make re-running safe. The *Principles* book is blunt about that part: <Cite id="p-idempotent" />
 
 Agents add three twists:
 
@@ -121,7 +131,9 @@ Start by breaking things. This is Thursday night, with every knob exposed. Try e
 
 <Callout type="note" title="What you should have found">
 
-Plain `agent.stream()` keeps nothing, so a retry is a whole new run. A durable agent brings back every **completed** step, but re-runs the **in-flight** one from its start. Only the idempotency key stops the double charge. That's Thursday night explained.
+Plain `agent.stream()` keeps nothing, so a retry is a whole new run. A durable agent brings back every **completed** step, but re-runs the **in-flight** one from its start.
+
+Only the idempotency key stops the double charge. That's Thursday night explained.
 
 </Callout>
 
@@ -220,7 +232,19 @@ From [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f49
 
 ### Shutdown is part of durability
 
-`mastra.shutdown({ drainTimeout })` gives in-flight runs up to `drainTimeout` ms (**default 5000**) to settle ([`mastra/index.ts` L7679](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/mastra/index.ts#L7679)). Since 1.76.0 ([#26642](https://github.com/mastra-ai/mastra/pull/26642)), a durable agent writes a `running` checkpoint at each step boundary it reaches during the drain, **even with `recovery.durableAgents: 'off'`**. Runs still going at the deadline are abandoned without writing, and their claims are released, so the next boot can recover them right away instead of waiting about 30 s for the claims to lapse. A run stuck inside one long tool call for the whole drain gets no checkpoint.
+<Callout type="note" title="The book vs Mastra 1.76: walking away from a durable agent">
+
+<BookRef book="principles" chapter="ch. 16, &quot;Harnesses &amp; Claws&quot;" page="92" /> describes durable agents as something you can walk away from and resume later.
+
+That's true at 1.76 only if you opt in. `recovery.durableAgents` defaults to `'off'`.
+
+Without `'auto'`, the only checkpoints are the ones written during a graceful `mastra.shutdown()` drain. A hard kill (OOM, `kill -9`, a reclaimed spot instance) leaves nothing to recover.
+
+</Callout>
+
+`mastra.shutdown({ drainTimeout })` gives in-flight runs up to `drainTimeout` ms (**default 5000**) to settle ([`mastra/index.ts` L7679](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/mastra/index.ts#L7679)). Since 1.76.0 ([#26642](https://github.com/mastra-ai/mastra/pull/26642)), a durable agent writes a `running` checkpoint at each step boundary it reaches during the drain, **even with `recovery.durableAgents: 'off'`**.
+
+Runs still going at the deadline are abandoned without writing, and their claims are released, so the next boot can recover them right away instead of waiting about 30 s for the claims to lapse. A run stuck inside one long tool call for the whole drain gets no checkpoint.
 
 <StationDone module="07" :station="2" />
 
@@ -240,7 +264,9 @@ It runs every **completed step** exactly once. The step that was running when th
 
 <Misconception myth="Durable means my agent is checkpointed by default.">
 
-A plain `Agent.stream()` isn't checkpointed at all. Durable agents checkpoint `running` state at every step only with `recovery.durableAgents: 'auto'`. With recovery off (the default), they checkpoint only at step boundaries reached during `mastra.shutdown()`'s drain (1.76.0+), so a `kill -9` leaves nothing to recover. Timers and events aren't durable on the default engine (Module 5), and signal queues live in memory (Module 6).
+A plain `Agent.stream()` isn't checkpointed at all. Durable agents checkpoint `running` state at every step only with `recovery.durableAgents: 'auto'`.
+
+With recovery off (the default), they checkpoint only at step boundaries reached during `mastra.shutdown()`'s drain (1.76.0+), so a `kill -9` leaves nothing to recover. Timers and events aren't durable on the default engine (Module 5), and signal queues live in memory (Module 6).
 
 </Misconception>
 
@@ -288,6 +314,10 @@ The review a cautious platform team would write before putting this module's pri
 <ProdReadiness module="07" />
 
 <StationDone module="07" :station="4" next="./lab" next-label="On to the crash lab" />
+
+## Further reading {#further-reading}
+
+<FurtherReading module="07" />
 
 ## Wrap-up
 

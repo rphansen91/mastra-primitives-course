@@ -92,13 +92,17 @@ const cheat = [
 
 # Module 4: Memory
 
-<p class="lead">A language model is a goldfish with a very large vocabulary. Every request starts from zero. "Memory" is everything you decide to tape to the bowl before it swims past, and in Mastra that decision is made by a few small, readable processors.</p>
+<p class="lead">Every model request starts from zero. As of 1.76, Mastra's default is to load the last 10 messages of the thread, and that one number decides whether your agent still knows the user is vegetarian at message 30. In Mastra, "memory" is a few small, readable processors that decide what goes back into the prompt.</p>
 
 <LessonHero module="04" :minutes="40" lab="Memory lab, ~3 s, no API keys" :outcomes="outcomes" mood="thinking">
 
-**Week three of the pilot.** A user tells your dinner-planning assistant, for the fourth time, that they're vegetarian. You check the logs. The assistant *did* hear it, in message 1. By message 30 it's suggesting a steakhouse.
+**Week three of the pilot.** A user tells your dinner-planning assistant, for the fourth time, that they're vegetarian.
 
-Then the booking API sends a "table confirmed" signal. The woken run greets the user like a stranger. Nothing crashed. Nothing errored. It just... forgot.
+You check the logs. The assistant *did* hear it, in message 1. By message 30 it's suggesting a steakhouse.
+
+Then the booking API sends a "table confirmed" signal. The woken run greets the user like a stranger.
+
+Nothing crashed. Nothing errored. It just... forgot.
 
 </LessonHero>
 
@@ -112,7 +116,9 @@ An LLM is stateless. Every request must carry everything the model should "remem
 
 <Callout type="analogy" title="A goldfish with a notebook">
 
-The model is the goldfish: brilliant for three seconds, then nothing. Memory is the notebook you keep next to the bowl. Before each question you tape some pages to the glass: the last few things said (history), a sticky note of facts (working memory), and anything from the archive that looks related (recall). The bowl is only so big, so you can't tape the whole notebook.
+The model is the goldfish: brilliant for three seconds, then nothing. Memory is the notebook you keep next to the bowl.
+
+Before each question you tape some pages to the glass: the last few things said (history), a sticky note of facts (working memory), and anything from the archive that looks related (recall). The bowl is only so big, so you can't tape the whole notebook.
 
 </Callout>
 
@@ -178,11 +184,25 @@ Four experiments against the real package, each asserting on the **prompts the m
 
 ### Trimming, ordering and the prompt cache
 
-Which messages stay in the prompt also decides your **cost**, because provider prompt caches key on the unchanged prefix:
+Which messages stay in the prompt also decides your **cost**. Provider prompt caches only help when, in the *Principles* book's words, <Cite id="p-prefix" />
 
 - A count window (`lastMessages`) slides **every turn** once the thread is longer than the limit. The oldest message leaves, the prefix changes, and the cache misses ([`message-history.mdx` L115](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/memory/message-history.mdx#L115)). It also counts tool calls, tool results and signals, so one turn can use up several slots.
 - A token budget (`messageHistory: { maxTokens }`) removes history **in chunks** (`atMaxRemoveTokens`, default 25% of the budget), so the prefix stays stable across several turns. System messages, context, the current input and the agent's responses are never trimmed, and a tool call and its result are removed together ([L148–150](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/memory/message-history.mdx#L148)).
 - Context you inject matters too. A reminder appended as a signal keeps the prefix stable, while editing the system message busts the cache ([`processors.mdx` L655](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/agents/processors.mdx#L655)). A **transient** signal is in this call's prompt but never stored ([L740](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/agents/processors.mdx#L740)). Working memory normally sits in the system prompt, so every update invalidates the cache. `workingMemory.useStateSignals: true` delivers it as a state signal instead, deduped on `cacheKey` so an unchanged snapshot isn't sent again ([`working-memory.mdx` L443–464](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/memory/working-memory.mdx#L443)). Observational memory appends observations to keep the prefix cacheable ([`observational-memory.mdx` L262, L387](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/memory/observational-memory.mdx#L262)).
+
+The *Principles* book warns that token limiting and tool-call filtering <Cite id="p-cache-tradeoff" />
+
+**Rule of thumb:** trim by tokens, in chunks, and append rather than edit. Every change to the start of the prompt is a cache miss you pay for.
+
+<Callout type="note" title="The book vs Mastra 1.76: observational memory budgets">
+
+<BookRef book="principles" chapter="ch. 5, Observational memory" page="20" /> describes two blocks, observations first and raw messages second, and gives typical budgets of 30k tokens for the first block and 40k for the second.
+
+Mastra's defaults are the other way round. The Observer runs when **raw messages** reach `observation.messageTokens` (default **30,000**).
+
+The Reflector runs when **observations** reach `reflection.observationTokens` (default **40,000**) ([`observational-memory.mdx` L750–760](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/memory/observational-memory.mdx#L750)). Size your context window from the config, not the book.
+
+</Callout>
 
 <StationDone module="04" :station="2" />
 
@@ -210,7 +230,9 @@ History is loaded **once per run**. A message added to the thread by another run
 
 <Callout type="tip" title="Exercise 4.1">
 
-Two chats with the same user, web and mobile, each learn one fact at the same moment: "I'm vegetarian" and "I just moved to Lisbon". A `remember_fact` tool writes it to **resource-scoped** working memory. Afterwards, only Lisbon survived. Find the race and fix it. File: `exercises/ex1-remember-fact.ts`.
+Two chats with the same user, web and mobile, each learn one fact at the same moment: "I'm vegetarian" and "I just moved to Lisbon". A `remember_fact` tool writes it to **resource-scoped** working memory.
+
+Afterwards, only Lisbon survived. Find the race and fix it. File: `exercises/ex1-remember-fact.ts`.
 
 </Callout>
 
@@ -248,6 +270,10 @@ The review a cautious platform team would write before putting this module's pri
 <ProdReadiness module="04" />
 
 <StationDone module="04" :station="4" next="./lab" next-label="On to the lab" />
+
+## Further reading {#further-reading}
+
+<FurtherReading module="04" />
 
 ## Wrap-up
 

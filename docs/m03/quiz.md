@@ -47,6 +47,8 @@ Answer before reading the explanations. Your progress is saved in this browser.
 
 <Reflect question="A teammate proposes agent.setMaxCost(dollars) as a new Agent option. Argue for a processor instead, and name the hooks it needs.">
 
-Cost budgets are cross-cutting, optional and policy-shaped, which is exactly the processor criteria in `AGENTS.md`. Hooks: `processLLMResponse` (or `processOutputStep`) to accumulate usage in `state`, and `processInputStep` to `abort` before a request that would exceed the budget. It ships as a package without touching `agent.ts`. Mastra already has a built-in `CostGuardProcessor` export; read it.
+Cost budgets are cross-cutting, optional and policy-shaped, which is exactly the processor criteria in `AGENTS.md`. Hooks: `processLLMResponse` (or `processOutputStep`) to accumulate usage in `state`, and `processInputStep` to `abort` before a request that would exceed the budget.
+
+It ships as a package without touching `agent.ts`. Mastra already has a built-in `CostGuardProcessor` export; read it.
 
 </Reflect>

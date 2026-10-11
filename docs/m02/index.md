@@ -86,11 +86,13 @@ const out2 = '=== Same thread: serialized ===\n  first started\n  first finished
 
 # Module 2: The agent loop
 
-<p class="lead">You type one line: <code>agent.stream('…')</code>. Between that and the <code>finish</code> chunk, fifteen things happen in a precise order. By the end of this lesson you'll be able to recite them, and you'll know which ones bite.</p>
+<p class="lead">You call <code>agent.stream()</code>. Fifteen things happen before <code>finish</code>. Thirteen are boring. Two will page you on launch day. This lesson covers all fifteen, and especially those two.</p>
 
 <LessonHero module="02" :minutes="40" lab="Lab runs in ~3 s, no API keys" :outcomes="outcomes" mood="alarmed">
 
-**Launch day, 9:02 am.** Your booking agent tells a customer *"Done! Both seats are booked."* The database says one seat. Down the hall, your CI agent has called `search('flaky')` thirty times in a row and billed you for every one.
+**Launch day, 9:02 am.** Your booking agent tells a customer *"Done! Both seats are booked."* The database says one seat.
+
+Down the hall, your CI agent has called `search('flaky')` thirty times in a row and billed you for every one.
 
 Nobody touched Mastra's code. Both bugs live inside a loop you've never looked at. Let's look at it.
 
@@ -100,24 +102,26 @@ Nobody touched Mastra's code. Both bugs live inside a loop you've never looked a
 
 ## The problem {#problem}
 
-In Module 1 you wrote an agent loop in about 190 lines. It works great for **one caller, in one process, on a good day**.
+Your Module 1 loop works. One caller, one process, a good day.
 
-A framework loop has a longer to-do list. It has to:
+Production is none of those. Agent requests are unbounded: as the *Principles* book puts it, <Cite id="p-unbounded" /> So a framework loop has a longer to-do list. It has to:
 
 - **stream** every token and tool event to clients, in order;
 - serve **many callers at once** without two runs scribbling on one conversation;
 - load **memory** before the first request and save the transcript after;
 - offer **hooks** at every phase, so nobody has to fork the loop;
 - accept **signals** while it's running;
-- be rebuildable from **serializable state**, so a durable engine can checkpoint it.
+- **survive being written down**: rebuildable from serializable state, so a durable engine can checkpoint it.
 
-That last line is the one that shapes everything else.
+Hold onto that last one. It explains the whole shape of Mastra's loop.
 
 <Callout type="analogy" title="A recipe in your head vs a recipe card">
 
 A `for` loop is a recipe you keep in your head. Fast, but if you faint mid-souffle, nobody knows where you were.
 
-A workflow is the same recipe written on a card, with a tick next to each finished step. Anyone can pick it up. An inspector can see exactly which step you're on. That's what Mastra wants for its loop.
+A workflow is the same recipe written on a card, with a tick next to each finished step. Anyone can pick it up.
+
+An inspector can see exactly which step you're on. That's what Mastra wants for its loop.
 
 </Callout>
 
@@ -129,7 +133,7 @@ A workflow is the same recipe written on a card, with a tick next to each finish
 
 ## Under the hood {#under-the-hood}
 
-Enough talk. Here is one real run, the exact one Lab 2 checks against the published package. Press **Next** (or use your arrow keys) and watch the message list grow.
+Here is one real run, the exact one Lab 2 checks against the published package. Press **Next** (or use your arrow keys) and watch the message list grow.
 
 <LoopVisualizer />
 
@@ -145,13 +149,23 @@ createWorkflow({ id: 'agentic-loop', ... })
   .commit();
 ```
 
-That's it. The body of the loop is *another* workflow, and each phase is a step. Click through the seven stations of one lap:
+That's it. The body of the loop is *another* workflow, and each phase is a step.
+
+<FounderQuote id="f-indirection">
+
+Mastra's launch post said this about frameworks that hide their loop. The loop is a workflow you can read, so this lesson reads it instead of describing it.
+
+</FounderQuote>
+
+Click through the seven stations of one lap:
 
 <ClickMap title="One iteration, seven steps" :stations="iteration" start-label="step starts" end-label="predicate" loop />
 
 <Misconception myth="processOutputStep runs after the tools, so it can see their results.">
 
-It runs **before** them. `processOutputStep` sees the model's finished turn, including its tool calls, while nothing has happened yet in the outside world. That makes it the perfect place to say "no, you may not call `deploy` twice". Tool results get their own hook, `processToolResult`.
+It runs **before** them. `processOutputStep` sees the model's finished turn, including its tool calls, while nothing has happened yet in the outside world.
+
+That makes it the perfect place to say "no, you may not call `deploy` twice". Tool results get their own hook, `processToolResult`.
 
 </Misconception>
 
@@ -171,7 +185,7 @@ After every lap, the `dowhile` predicate decides whether to go round again. It c
 
 <MascotSays mood="thinking">
 
-My favourite comment in the codebase lives next to item 3: *"a signal replaces the physical request, not the logical step or its budget."* Remember it. It comes back in Station 3.
+The most useful comment in the codebase sits next to item 3: *"a signal replaces the physical request, not the logical step or its budget."* Remember it. It comes back in Station 3.
 
 </MascotSays>
 
@@ -269,6 +283,8 @@ Time to recreate launch day on purpose. Both bugs sit right on the edge of what 
 
 The model calls `search({ q: 'flaky' })` every single step. `maxSteps: 30` caps the damage at 30 calls. It doesn't *notice* anything is wrong.
 
+**Rule of thumb:** `maxSteps` is a budget. `stopWhen` is a policy. You usually want both.
+
 <LoopVisualizer initial="runaway" />
 
 <Callout type="tip" title="Your mission (Exercise 2.1)">
@@ -285,7 +301,9 @@ The model books two seats **in one turn**. The tool does read, then `await`, the
 
 <Callout type="tip" title="Your mission (Exercise 2.2)">
 
-Make the test see `seats_left = 8` without changing the model script. There are **two** valid fixes. One is a single option on the call. The other is better, because it protects the tool no matter who calls it.
+Make the test see `seats_left = 8` without changing the model script. There are **two** valid fixes.
+
+One is a single option on the call. The other is better, because it protects the tool no matter who calls it.
 
 </Callout>
 
@@ -309,6 +327,14 @@ A request preempted by a signal **doesn't spend a step** (that comment from Stat
 
 </Misconception>
 
+<BookSays quote="p-invoice">
+
+There's no built-in spend cap. `maxSteps` counts steps, not money, and a preempted request doesn't spend one.
+
+To enforce a budget *before* a call, sum `usage` over the `steps` a `processInputStep` processor receives and call `abort()` there (Module 3). `stopWhen` runs after the lap, so it can't stop the call that crosses the line.
+
+</BookSays>
+
 <Misconception myth="Thread reservation means one run per thread across all my servers.">
 
 It's **per process**, unless you configure a distributed PubSub (Module 6). Two server instances can each run "the only" run on a thread.
@@ -327,11 +353,15 @@ Mastra's loop is a fixed shape that you **hook** (processors) and **configure** 
 
 <Callout type="analogy" title="Train set vs finished railway">
 
-LangGraph hands you track pieces: an `agent` node, a `tools` node, a conditional edge, a checkpointer after every super-step. Build any layout you like.
+LangGraph gives you track pieces: an `agent` node, a `tools` node, a conditional edge, a checkpointer after every super-step.
 
-Mastra hands you one well-tested railway with lots of switches and signal boxes already wired: streaming, threads, memory and signals included. If your "agent" is really a custom state machine, don't fight the railway. Lay track with a workflow (Module 5) or LangGraph.
+Mastra gives you a finished railway with the switches already wired: streaming, threads, memory, signals.
 
 </Callout>
+
+**Rule of thumb:** if you can draw your control flow before the model runs, it's a workflow, not an agent. The *Principles* book doesn't treat this as either/or: <Cite id="p-not-exclusive" />
+
+**Note:** fighting the railway is the expensive option. If your "agent" is really a planner → executor → critic graph, lay track with a workflow (Module 5) or LangGraph.
 
 <Choose subject="the agent loop" :rows="choose" />
 
@@ -346,13 +376,17 @@ The review a cautious platform team would write before putting this module's pri
 
 <StationDone module="02" :station="4" next="./lab" next-label="On to the lab" />
 
+## Further reading {#further-reading}
+
+<FurtherReading module="02" />
+
 ## Wrap-up
 
 <Podcast title="The agent loop, in five minutes" :minutes="5">
 
 **Host:** So I call `agent.stream()` and text comes back. What's actually happening?
 
-**Loopy:** A loop! Ask the model, run whatever tools it asks for, fold the results back, ask again. It stops when the model answers without asking for a tool.
+**Loopy:** A loop. Ask the model, run whatever tools it asks for, fold the results back, ask again. It stops when the model answers without asking for a tool.
 
 **Host:** That's the loop we wrote by hand in Module 1. What's different in Mastra?
 

@@ -25,6 +25,8 @@ Each test **fails on the starter**. Fix the file until it passes, then open the 
 
 A real Mastra `Agent` whose model calls `search({ q: 'same' })` every step. With `maxSteps: 30` the test sees 30 tool executions; it wants 3.
 
+The *Principles* book has a stricter version of the same rule for failures: <Cite id="p-two-strikes" /> `stopOnRepeat` is the general form. Once it works, try a variant that only counts repeated **errors**.
+
 <Callout type="tip" title="Your mission">
 
 Implement `stopOnRepeat(n)`, a Mastra `stopWhen` condition. Mastra calls it with `{ steps }`; inspect a step's `toolCalls` to find the tool name and args (they're inside `payload` on Mastra chunks).
@@ -59,7 +61,9 @@ export function stopOnRepeat(n = 3) {
 
 **File:** `exercises/ex2-parallel-tools.ts`
 
-The model reserves two seats **in one step** (two tool calls). The tool does read → `await` → write. Mastra runs a step's tool calls concurrently (default limit 10), so both read `10` and both write `9`. The test expects `8`.
+The model reserves two seats **in one step** (two tool calls). The tool does read → `await` → write.
+
+Mastra runs a step's tool calls concurrently (default limit 10), so both read `10` and both write `9`. The test expects `8`.
 
 <Callout type="tip" title="Your mission">
 

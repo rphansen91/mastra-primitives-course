@@ -34,7 +34,7 @@ Requires Node.js 22.13+ (the `@mastra/core` engines field). No API keys: every l
 ```bash
 cd labs
 npm install
-npm test                         # 31 tests, ~45 s (includes a real kill -9 crash lab)
+npm test                         # 48 tests, ~1.5 min (includes a real kill -9 crash lab)
 npm run lab:anatomy              # print the agent loop's hook order
 npm run test:exercises           # run break-it tests against YOUR exercise files
 ```

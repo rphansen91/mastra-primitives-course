@@ -84,7 +84,9 @@ Read it carefully:
   signal(notification), signal(notification-summary), assistant, signal(notification-summary)
 ```
 
-The urgent event woke the idle thread; everything after it arrived while the thread was **active** and was summarized. The dispatcher batched the two lows into one summary signal; the medium calendar item was summarized immediately and joined the woken run. **Version note:** on 1.76.0 the calendar summary is drained into the woken run's *first* model request (one model call, 3 messages). On 1.75.0 the woken run made two model calls, the urgent item first and the summary second ([`core-1.75.0/m06-notifications.txt`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/expected-output/core-1.75.0/m06-notifications.txt)). Same signals, same history, different number of LLM calls: count model calls per version before you budget for them. `decide` may be called more than once per record (receipt time and delivery time), which is why deciders must be pure.
+The urgent event woke the idle thread; everything after it arrived while the thread was **active** and was summarized. The dispatcher batched the two lows into one summary signal; the medium calendar item was summarized immediately and joined the woken run. **Version note:** on 1.76.0 the calendar summary is drained into the woken run's *first* model request (one model call, 3 messages).
+
+On 1.75.0 the woken run made two model calls, the urgent item first and the summary second ([`core-1.75.0/m06-notifications.txt`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/expected-output/core-1.75.0/m06-notifications.txt)). Same signals, same history, different number of LLM calls: count model calls per version before you budget for them. `decide` may be called more than once per record (receipt time and delivery time), which is why deciders must be pure.
 
 ## 6.3 Write your own signal source
 

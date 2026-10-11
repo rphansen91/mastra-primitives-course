@@ -84,11 +84,13 @@ const cheat = [
 
 # Module 5: Workflows
 
-<p class="lead">Agents are improvisers. Workflows are sheet music: a known shape, written down as data. That's what lets Mastra pause a run for three days, resume it on a different machine, show you every step, and, it turns out, run the agent loop itself.</p>
+<p class="lead">A $49 refund waits three days for a manager. A workflow is a known shape written down as data, which is what lets Mastra pause that run, resume it on a different machine, and show you every step. It turns out Mastra's agent loop is one too.</p>
 
 <LessonHero module="05" :minutes="40" lab="Suspend/resume lab, ~5 s, two processes" :outcomes="outcomes" mood="thinking">
 
-**Tuesday, 4:40 pm.** A customer asks for a $49 refund. Policy says a manager must approve anything over $25. The manager is boarding a plane and will look at it Thursday.
+**Tuesday, 4:40 pm.** A customer asks for a $49 refund.
+
+Policy says a manager must approve anything over $25. The manager is boarding a plane and will look at it Thursday.
 
 Your code is a nice chain of `await`s, and your servers will be redeployed at least twice before Thursday. When the manager finally taps **Approve**, which process remembers what it was doing?
 
@@ -106,7 +108,9 @@ Then you need the shape **as data**: a graph of steps with typed inputs and outp
 
 <Callout type="analogy" title="Sheet music vs jazz">
 
-An agent loop is a jazz solo: the model decides what comes next. A workflow is sheet music: the bars are written down before anyone plays. You can stop the orchestra mid-symphony, hand the score to a different orchestra, and they'll pick up at bar 47. That's a snapshot.
+An agent loop is a jazz solo: the model decides what comes next. A workflow is sheet music: the bars are written down before anyone plays.
+
+You can stop the orchestra mid-symphony, hand the score to a different orchestra, and they'll pick up at bar 47. That's a snapshot.
 
 </Callout>
 
@@ -135,7 +139,19 @@ Each builder method appends a node to a serializable graph:
 
 <ClickMap title="The parts of a workflow" :stations="parts" start-label="define" end-label="run anywhere" />
 
+Two rules from the *Principles* book hold for Mastra at 1.76.
+
+**`.branch()` is not if/else.** Every condition that's true runs its step: <Cite id="p-no-else" /> If nothing matches, nothing runs, so write the fallback yourself. (Verified: the default engine evaluates every condition and runs all the truthy ones, [`control-flow.ts` L396](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/handlers/control-flow.ts#L396).)
+
+**One model call per step.** Snapshots, spans and retries work at step granularity, so <Cite id="p-one-call" />
+
 ### Suspend, resume, snapshot
+
+A step that waits for a manager is the workflow version of tool approval. The product case for it, from Mastra's tool-approval launch post:
+
+<FounderQuote id="f-teammates" />
+
+`suspend()` is how a workflow asks. The snapshot is what lets it wait until Thursday without holding a process open.
 
 This is Tuesday's refund. Run it, let it suspend, then try every ending. Turn on the bug, turn on the crash:
 
@@ -172,7 +188,7 @@ Each iteration's **input** (the transcript so far) is in the snapshot. Compare w
 
 <MascotSays mood="alarmed">
 
-Fun fact we learned the hard way while building the lab: a workflow has a `.then()` method (it's the builder), so `return workflow` from an `async` function makes JavaScript think it's a promise. Your `await` then waits... forever. Return `{ workflow }` instead.
+A trap found while building the lab: a workflow has a `.then()` method (it's the builder), so `return workflow` from an `async` function makes JavaScript treat it as a promise. Your `await` then waits forever. Return `{ workflow }` instead.
 
 </MascotSays>
 
@@ -192,6 +208,16 @@ Fun fact we learned the hard way while building the lab: a workflow has a `.then
 - `mastra.shutdown({ drainTimeout })` gives in-flight evented runs (including durable agents) up to `drainTimeout` ms, **default 5000**, to settle before workers and PubSub are torn down. Runs past the deadline are abandoned with a warning ([`mastra/index.ts` L7679](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/mastra/index.ts#L7679)). Before [#23168](https://github.com/mastra-ai/mastra/pull/23168), shutdown could tear down PubSub under a run mid-step. Wire `shutdown()` to SIGTERM.
 - Background tasks use the same idea as Module 7's run claims: a persisted, expiring **execution lease** that fences stale owners ([#24841](https://github.com/mastra-ai/mastra/pull/24841)). Once you've seen claims + fencing, you'll find the pattern in several places.
 - The Temporal runner is still marked *"experimental and not ready for production use"* in the docs ([`workflow-runners.mdx` L22](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/deployment/workflow-runners.mdx#L22)), and `@mastra/temporal` is pre-1.0 (0.4.14 on npm). Go by what the package and docs say, not by marketing copy.
+
+<Callout type="note" title="The book vs Mastra 1.76: timers and retries">
+
+<BookRef book="principles" chapter="ch. 9, &quot;Workflows&quot;" page="49–50" /> lists `.sleep()` and `.sleepUntil()` next to the other operators, and describes loops, retries and timeouts as special cases of those operators.
+
+At 1.76, two details differ. On the default engine, `sleep` is an in-process timer, so a restart during a long sleep doesn't resume at the original deadline.
+
+The evented engine persists waiting steps. Retries are also a separate setting, not an operator: per-step `retries` and workflow-level `retryConfig: { attempts, delay }`, with no backoff.
+
+</Callout>
 
 <StationDone module="05" :station="2" />
 
@@ -219,7 +245,9 @@ Completed steps run once. The step that was **running** when the process died ha
 
 <Callout type="tip" title="Exercise 5.1">
 
-The `approve` step emails the manager, then suspends. On Thursday the manager declines, and gets the same "please approve" email again, a second after clicking. Fix the step so the manager is asked **exactly once** and a declined refund is never applied. File: `exercises/ex1-approve-step.ts`.
+The `approve` step emails the manager, then suspends. On Thursday the manager declines, and gets the same "please approve" email again, a second after clicking.
+
+Fix the step so the manager is asked **exactly once** and a declined refund is never applied. File: `exercises/ex1-approve-step.ts`.
 
 </Callout>
 
@@ -255,6 +283,10 @@ The review a cautious platform team would write before putting this module's pri
 <ProdReadiness module="05" />
 
 <StationDone module="05" :station="4" next="./lab" next-label="On to the lab" />
+
+## Further reading {#further-reading}
+
+<FurtherReading module="05" />
 
 ## Wrap-up
 

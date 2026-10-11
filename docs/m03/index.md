@@ -101,11 +101,13 @@ const out1 = '=== Processor order ===\n  processInput A\n  processInput B\n  pro
 
 # Module 3: Processors
 
-<p class="lead">Every production agent needs the same boring, critical stuff: redaction, guardrails, budgets, memory, retries. Mastra's answer is one small interface with ten hooks. Learn it once and you can bend any agent without touching the framework.</p>
+<p class="lead">Redaction, guardrails, budgets, memory, retries: every production agent needs all five, and none of them is the agent's job. Mastra's answer is one interface with ten hooks. Learn it once and you can change any agent's behavior without touching the framework.</p>
 
 <LessonHero module="03" :minutes="35" lab="Lab runs in ~2 s, no API keys" :outcomes="outcomes" mood="alarmed">
 
-**Tuesday, 2:15 pm.** A customer pastes their API key into your support bot. You were careful: there's a redaction regex on the output stream. It runs on every chunk.
+**Tuesday, 2:15 pm.** A customer pastes their API key into your support bot.
+
+You were careful: there's a redaction regex on the output stream. It runs on every chunk.
 
 The screenshot on social media shows the bot cheerfully repeating `[REDACTED]c123` back at them. The regex worked perfectly. On half a secret.
 
@@ -119,9 +121,21 @@ Here's a normal week of feature requests for one agent:
 
 <IdeaCards :cards="needs" />
 
-You have two bad options. Make each one a **flag on `Agent`**, and the core grows forever while every feature becomes a risky change to the hottest code path. Or **fork the loop**, and nothing composes with anything.
+You have two bad options.
+
+Make each one a **flag on `Agent`**, and the core grows forever while every feature becomes a risky change to the hottest code path. Mastra's launch post named that cost:
+
+<FounderQuote id="f-surface" />
+
+Or **fork the loop**, and nothing composes with anything.
 
 What you actually want: **named, ordered, composable hooks at every phase of the loop**, with per-run state and a standard way to bail out. That's a processor.
+
+The *Principles* book calls this layer "middleware" and puts guardrails and authorization there: <Cite id="p-perimeter" />
+
+Same idea, different name: in Mastra it's processors. Authorization often sits one layer further out, in your server.
+
+For a threat model to design processors against, <BookRef book="patterns" chapter="ch. 4, &quot;Autonomy Is a Two-Edged Sword&quot;" /> covers the lethal trifecta: private data, untrusted content and a way to send data out. A processor can cut one of those legs.
 
 <Callout type="analogy" title="Checkpoints on a conveyor belt">
 
@@ -220,13 +234,17 @@ Five tests fail on the starters. Solutions and the limitation you'll discover ar
 
 <Misconception myth="If my streaming guardrail trips, the user never sees the bad output.">
 
-A streaming guardrail can **stop, not unsay**. When `processOutputStream` trips on chunk 2, chunk 1 has already reached the client. The lab shows it: `text-delta:"hello "` then `tripwire`. If one leaked chunk is too many, buffer (and accept latency) or guard in `processOutputStep` / `processOutputResult`.
+A streaming guardrail can **stop, not unsay**. When `processOutputStream` trips on chunk 2, chunk 1 has already reached the client.
+
+The lab shows it: `text-delta:"hello "` then `tripwire`. If one leaked chunk is too many, buffer (and accept latency) or guard in `processOutputStep` / `processOutputResult`.
 
 </Misconception>
 
 <Misconception myth="A buffering redactor can just emit the held-back text as an extra chunk at the end.">
 
-`processOutputStream` is **one chunk in, at most one chunk out**, and the `writer` only emits `data-*` parts. The solution has to flush its tail *in place of* `text-end`. The text ends up correct, the chunk sequence doesn't. That's a real gap, and a capstone candidate (Module 10).
+`processOutputStream` is **one chunk in, at most one chunk out**, and the `writer` only emits `data-*` parts. The solution has to flush its tail *in place of* `text-end`.
+
+The text ends up correct, the chunk sequence doesn't. That's a real gap, and a capstone candidate (Module 10).
 
 </Misconception>
 
@@ -256,6 +274,10 @@ The review a cautious platform team would write before putting this module's pri
 <ProdReadiness module="03" />
 
 <StationDone module="03" :station="4" next="./lab" next-label="On to the lab" />
+
+## Further reading {#further-reading}
+
+<FurtherReading module="03" />
 
 ## Wrap-up
 

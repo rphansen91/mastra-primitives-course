@@ -25,7 +25,11 @@ features:
 
 ## What this course is
 
-Most agent-framework tutorials teach you an API. This course teaches the **primitives underneath**: what an agent loop really is, why it is built as a workflow, where processors hook in, how a signal reaches a model mid-run, what "durable" does and does not mean, and how agents coordinate. You read the real [mastra-ai/mastra](https://github.com/mastra-ai/mastra) source at a pinned commit, run small labs against the published package, break things on purpose, and compare each primitive with the alternatives (Temporal, LangGraph, Inngest, the Vercel AI SDK, Restate, DBOS and others).
+Most agent-framework tutorials teach you an API. This course teaches the **primitives underneath**: the 15 things that happen inside `agent.stream()`, where processors hook in, how a signal reaches a model mid-run, what "durable" does and doesn't mean (as of 1.76), and how agents coordinate.
+
+You read the real [mastra-ai/mastra](https://github.com/mastra-ai/mastra) source at a pinned commit, run small labs against the published package, and break things on purpose. Each primitive is compared with the alternatives: Temporal, LangGraph, Inngest, the Vercel AI SDK, Restate, DBOS and others.
+
+The premise is the one the *Principles of Building AI Agents* foreword states: <Cite id="p-foreword" />
 
 The goal: by the end you can **explain each primitive from first principles, predict how it fails, and design a new one** that fits Mastra's house rules.
 
@@ -52,15 +56,15 @@ No API keys, no accounts, no network calls in the labs.
 | 1 | [First principles: a loop from scratch, durability, events vs requests](/m01/) | Full: lesson, lab, break-it, solutions, quiz |
 | 2 | [The agent loop](/m02/) | Full |
 | 3 | [Processors as the extension point](/m03/) | Full |
-| 4 | [Memory](/m04/) | Lesson + lab spec |
-| 5 | [Workflows](/m05/) | Lesson + lab spec |
+| 4 | [Memory](/m04/) | Lesson + built lab + break-it |
+| 5 | [Workflows](/m05/) | Lesson + built two-process lab + break-it |
 | 6 | [Signals and notifications](/m06/) | Lesson + **built labs** + break-it |
 | 7 | [Durability](/m07/) | Lesson + **built kill -9 crash lab** + break-it |
-| 8 | [Multi-agent coordination](/m08/) | Lesson + built relay lab |
-| 9 | [Evals and observability](/m09/) | Lesson + lab spec |
+| 8 | [Multi-agent coordination](/m08/) | Lesson + built relay and subagent-context labs + break-it |
+| 9 | [Evals and observability](/m09/) | Lesson + built lab + break-it |
 | 10 | [Capstone: building primitives](/m10/) | RFC template + candidate primitives + grading rubric |
 
-Every module ends with **where it falls down**, a comparison with at least one other framework, pointers to real source **and tests**, and a decision table that also feeds the cumulative [cheat sheet](/cheatsheet).
+Every module ends with **where it falls down**, a comparison with at least one other framework, pointers to real source **and tests**, a decision table that feeds the cumulative [cheat sheet](/cheatsheet), and **further reading** from Mastra's free books and its founders' essays (all collected on the [reading list](/reading)).
 
 ## Running the labs in 60 seconds
 
@@ -80,6 +84,6 @@ See [Running the labs](/guide/labs) for the exercise workflow.
 - Source links: `mastra-ai/mastra` at commit [`81299c94`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae) (the `@mastra/core@1.76.0` release tag, published 2026-10-11).
 - Labs: published **`@mastra/core@1.76.0`** + `@mastra/libsql@1.26.0` (pinned, so the source links and the package match). CI also runs every lab on the previous stable, `1.75.0`, and on a floating `@latest`, so you can see behavior change between versions. Modules 6, 7 and 9 show real differences.
 
-::: info Not an official Mastra project
-This is an independent course built from the public repository and public docs. Line references were correct at the pinned commit; on newer commits, search for the symbol name.
+::: info Independent course, not affiliated with or endorsed by Mastra
+This course is built from the public repository, public docs, Mastra's free books and its founders' public writing. Quotes are short, verbatim and attributed, with links to the source; none of them implies endorsement. Line references were correct at the pinned commit; on newer commits, search for the symbol name.
 :::

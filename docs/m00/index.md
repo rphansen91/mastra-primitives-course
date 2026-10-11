@@ -7,7 +7,9 @@ verified:
 
 # Module 0: Setup and how to read the Mastra codebase
 
-**Goal:** get the labs running, get a local clone of Mastra you can grep and test, and learn a reading strategy for a large TypeScript monorepo so the rest of the course goes fast.
+`agent.ts` is 11,000 lines. `thread-stream-runtime.ts` is another 5,900. You won't read them top to bottom, and you don't need to.
+
+This module gets three things in place: labs that run in under a minute, a clone of Mastra pinned to the course's commit, and a reading strategy for a large TypeScript monorepo.
 
 ## 0.1 Run the course labs
 
@@ -16,7 +18,7 @@ node -v            # must be >= 22.13 (@mastra/core engines)
 git clone https://github.com/rphansen91/mastra-primitives-course
 cd mastra-primitives-course/labs
 npm install
-npm test           # 31 tests, ~45 s
+npm test           # 48 tests, ~1.5 min (as of 1.76.0)
 ```
 
 If `npm test` is green you have everything you need for Modules 1 to 3 and the built labs in 6 to 8. Details: [Running the labs](/guide/labs).
@@ -50,6 +52,12 @@ Gotchas you will hit:
 - **Workspace deps:** packages that import other workspace packages need those built first (`pnpm turbo build --filter "<pkg>^..."`).
 
 ## 0.3 A map of the territory
+
+Every file below is TypeScript. That was a stated design choice from the start:
+
+<FounderQuote id="f-typescript" />
+
+For you, it means one language, one package manager and one test runner across the whole repo. `rg` and your editor's "go to definition" will take you most of the way.
 
 | Area | Where | Size at pinned SHA |
 |---|---|---|
@@ -96,5 +104,9 @@ Also read [`.mastracode/resources/CRITICAL_PATHS.md`](https://github.com/mastra-
 - [ ] You can open [`loop-builder.ts#L206`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L206) and find `signalDrainStep`.
 - [ ] You can explain in one sentence what `runScope` is for.
 - [ ] (Optional) You ran one Mastra test file locally.
+
+## Further reading {#further-reading}
+
+<FurtherReading module="00" />
 
 Next: [Module 1, first principles](/m01/).

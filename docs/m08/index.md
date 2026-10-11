@@ -105,11 +105,15 @@ One means a research helper. One means a pipeline. One means two always-on agent
 
 Each needs a different answer to the same five questions: **whose transcript? whose run? who pays the step budget? what happens when one fails? and when one crashes?**
 
+The first question matters most. The *Principles* book: <Cite id="p-split" />
+
 <FourWays />
 
 <Callout type="analogy" title="A kitchen">
 
-A **sub-agent** is the chef asking the sous-chef to taste the sauce and waiting for the verdict. A **network** was the head waiter deciding which station takes each order (Mastra now deprecates it in favor of the chef-as-supervisor). A **workflow** is the plating line: same stations, same order, every dish. **Signals** are the ticket rail: anyone can clip a note for the grill, and the grill reads it when they flip the next steak.
+A **sub-agent** is the chef asking the sous-chef to taste the sauce and waiting for the verdict. A **network** was the head waiter deciding which station takes each order (Mastra now deprecates it in favor of the chef-as-supervisor).
+
+A **workflow** is the plating line: same stations, same order, every dish. **Signals** are the ticket rail: anyone can clip a note for the grill, and the grill reads it when they flip the next steak.
 
 </Callout>
 
@@ -132,6 +136,22 @@ A **sub-agent** is the chef asking the sous-chef to taste the sauce and waiting 
 Also check what a subagent sees. <StabilityBadge id="subagents" /> By default, *"subagents receive the full conversation context from the parent agent"* ([`subagents.mdx` L247](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/subagents.mdx#L247)). That matters for data handling. Use `messageFilter` to drop sensitive or bulky messages before delegation.
 
 </Callout>
+
+<BookSays quote="p-isolated">
+
+The book defines the *isolated* subagent, then the *forked* one, which has the parent's full context up to the fork. Mastra's default is the forked kind.
+
+A subagent receives the **parent's conversation** unless you pass `delegation: { messageFilter }`. If the filter throws, delegation falls back to the unfiltered context (unless `hookErrorStrategy: 'throw'`). Lab 8.3 proves it with a mock model: a card number from earlier in the parent conversation shows up in the helper's prompt until the filter removes it.
+
+</BookSays>
+
+Networks are also a reminder that primitives get replaced. Mastra's write-up of how they evolved opens with:
+
+<FounderQuote id="f-flawed">
+
+`AgentNetwork` became `NewAgentNetwork`, then `.network()`. As of 1.76, `.network()` is itself deprecated in favor of supervisor agents. Expect your multi-agent code to move at least once.
+
+</FounderQuote>
 
 <ClickMap title="Where each one lives in the source" :stations="mechs" start-label="most coupled" end-label="least coupled" />
 
@@ -211,7 +231,9 @@ A blocking subagent makes the parent wait. For slow research (minutes, not secon
 4. Budgets keep it honest: heartbeat signals while working, a stall watchdog, a soft cap on total time, and a processor that nudges the expert to answer as the budget runs out.
 5. Guards: the expert can't call itself (recursion guard), and there's a kill switch.
 
-Every piece is a primitive from Modules 3, 4, 6 and 8, and every caveat from them applies. The reply signal sits in memory until it's drained, so persist anything you can't lose. Cross-process delivery needs a distributed PubSub. The `replyId` makes duplicates harmless.
+Every piece is a primitive from Modules 3, 4, 6 and 8, and every caveat from them applies. The reply signal sits in memory until it's drained, so persist anything you can't lose.
+
+Cross-process delivery needs a distributed PubSub. The `replyId` makes duplicates harmless.
 
 <StationDone module="08" :station="2" />
 
@@ -223,7 +245,9 @@ Every piece is a primitive from Modules 3, 4, 6 and 8, and every caveat from the
 
 <Misconception myth="maxSteps protects me from runaway multi-agent loops.">
 
-`maxSteps` bounds **one run**. When Bob relays to Alice, Alice gets a **new** run with a fresh budget, and her relay gives Bob a new one. Nothing in the loop exceeds any single limit. You need a guard that travels with the message.
+`maxSteps` bounds **one run**. When Bob relays to Alice, Alice gets a **new** run with a fresh budget, and her relay gives Bob a new one.
+
+Nothing in the loop exceeds any single limit. You need a guard that travels with the message.
 
 </Misconception>
 
@@ -237,7 +261,9 @@ Inside the parent's run, a sub-agent is **one tool call**. Module 7's journal ca
 
 <Callout type="tip" title="Exercise 8.1">
 
-Alice and Bob each acknowledge every notice they receive, and each acknowledgement is a notice. In the starter they relay 12 times until the lab's safety cap stops them. Make `nextHop()` stop the conversation after 3 hops. File: `exercises/ex1-hop-guard.ts`.
+Alice and Bob each acknowledge every notice they receive, and each acknowledgement is a notice. In the starter they relay 12 times until the lab's safety cap stops them.
+
+Make `nextHop()` stop the conversation after 3 hops. File: `exercises/ex1-hop-guard.ts`.
 
 </Callout>
 
@@ -259,7 +285,9 @@ Fails until the relay count is at most 4 and the conversation reports `stopped`.
 
 <Callout type="analogy" title="OpenAI Agents SDK: handoffs">
 
-A handoff transfers the **conversation** to another agent: the new agent continues the same run with the same transcript. That's routing within one run, closest to Mastra's deprecated network, or a supervisor agent today. Signals are the opposite: separate runs and transcripts that exchange messages. Know which one you want before you pick.
+A handoff transfers the **conversation** to another agent: the new agent continues the same run with the same transcript. That's routing within one run, closest to Mastra's deprecated network, or a supervisor agent today.
+
+Signals are the opposite: separate runs and transcripts that exchange messages. Know which one you want before you pick.
 
 </Callout>
 
@@ -271,6 +299,10 @@ The review a cautious platform team would write before putting this module's pri
 <ProdReadiness module="08" />
 
 <StationDone module="08" :station="4" next="./lab" next-label="On to the lab" />
+
+## Further reading {#further-reading}
+
+<FurtherReading module="08" />
 
 ## Wrap-up
 

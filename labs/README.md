@@ -4,7 +4,7 @@ Runnable labs for the [Mastra Primitives course](https://rphansen91.github.io/ma
 
 ```bash
 npm install
-npm test                          # everything, against solutions/ (46 tests, ~2.5 min)
+npm test                          # everything, against solutions/ (48 tests, ~1.5 min)
 npm run test:exercises            # break-it tests against exercises/ (fail until you fix them)
 npm run verify:exercises-are-broken
 npm run expected                  # regenerate expected-output/

@@ -69,7 +69,9 @@ Make the keys identify the effect, so a replay can never hand one effect another
 
 <Callout type="note" title="Why it matters">
 
-this is the "non-determinism" problem every replay engine fights. Temporal fails the workflow task with a non-determinism error; Restate and DBOS key by step name or ordinal and validate. Mastra keys workflow results by step id and its durable operation ids by `runId + execution path + phase`. Look at [`durable-operation-ids.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/durable-operation-ids.test.ts).
+this is the "non-determinism" problem every replay engine fights. Temporal fails the workflow task with a non-determinism error; Restate and DBOS key by step name or ordinal and validate.
+
+Mastra keys workflow results by step id and its durable operation ids by `runId + execution path + phase`. Look at [`durable-operation-ids.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/durable-operation-ids.test.ts).
 
 </Callout>
 
@@ -83,7 +85,9 @@ Key by the step's name (`getOrders`, `getUser`). For a step called in a loop, ad
 
 **File:** `exercises/ex3-fencing.ts`
 
-Worker A acquires the lease (token 1) and stalls past its TTL. Worker B acquires (token 2) and writes. A wakes up and writes its stale result. The starter store is last-writer-wins, so **A's stale write overwrites B's**.
+Worker A acquires the lease (token 1) and stalls past its TTL. Worker B acquires (token 2) and writes.
+
+A wakes up and writes its stale result. The starter store is last-writer-wins, so **A's stale write overwrites B's**.
 
 <Callout type="tip" title="Your mission">
 

@@ -82,7 +82,7 @@ const cheat = [
 
 # Module 9: Observability and evals
 
-<p class="lead">Everything in Modules 2 to 8 is invisible by default. This module makes agent behavior into data you can read (traces), grade (scorers), gate on (CI) and replay (tapes), using the same structure the loop already has.</p>
+<p class="lead">One confident, wrong answer at 3:07 am, and no record of why. Everything in Modules 2 to 8 is invisible by default. This module turns agent behavior into data you can read (traces), grade (scorers), gate on (CI) and replay (tapes), using the structure the loop already has.</p>
 
 <LessonHero module="09" :minutes="35" lab="Observe lab, ~3 s, no API keys" :outcomes="outcomes" mood="thinking">
 
@@ -102,9 +102,17 @@ At 3 am you need four answers:
 
 Unit tests with a mock model (this course's labs) prove **mechanics**. They can't prove **quality**, and they don't help you debug a run that already happened.
 
+Quality checks are still tests, just fuzzier ones. Mastra's CEO made the point in 2024 with deliberate repetition:
+
+<FounderQuote id="f-evals-tests" />
+
+The same post's caveat applies here: evals can return fractions, not just pass/fail, and they won't all pass all the time. Treat them like a flaky-but-useful test suite, not a launch gate you expect to be green.
+
 <Callout type="analogy" title="A flight recorder and a driving test">
 
-A **trace** is the flight recorder: after the fact, you can see every instrument at every moment. A **scorer** is the driving examiner with a checklist: did it signal, did it stop, did it name the failure reason? You want both. The recorder tells you what happened; the examiner tells you whether it was good.
+A **trace** is the flight recorder: after the fact, you can see every instrument at every moment. A **scorer** is the driving examiner with a checklist: did it signal, did it stop, did it name the failure reason?
+
+You want both. The recorder tells you what happened; the examiner tells you whether it was good.
 
 </Callout>
 
@@ -126,6 +134,8 @@ A **trace** is the flight recorder: after the fact, you can see every instrument
 
 <ScorerPlayground />
 
+Two warnings from the *Principles* book apply to every scorer you write. Measure outcomes: <Cite id="p-successes" /> And if the analysis step uses an LLM judge, remember that <Cite id="p-judges" /> Put a length check next to any judge, or pick a judge from a different model family.
+
 <OrderSteps module="09" id="stages" prompt="Order a scorer's stages." :items="order" explain="Extract what you need, analyze it (with a function or a judge), turn the analysis into a number, then explain the number." />
 
 <ClickMap title="The observability toolbox" :stations="parts" start-label="see" end-label="test" />
@@ -143,13 +153,18 @@ All five experiments in one run: trace tree, rule scorer over a dataset, LLM jud
 - **Time travel:** workflow [`timeTravel`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L5648) re-executes a run from a chosen step with new context ([docs](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/workflows/time-travel.mdx)). With snapshots (Module 5) it's a "what if this step had returned X" debugger.
 - **Durable recovery** keeps a single-rooted trace across a crash; see the crash-recovery tests in [`agent/durable/__tests__/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/__tests__).
 - **Tracing docs:** [`observability/tracing/overview.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/observability/tracing/overview.mdx). **Evals docs:** [`docs/evals/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/evals).
+- **Custom metrics:** <BookRef book="principles" chapter="ch. 12, &quot;Metrics&quot;" page="74" /> says steps and tools receive a metrics context. On a regular agent at 1.76 they do: `ctx.metrics.emit(name, value, labels)`, and `mastra.metrics.emit()` outside a request. In this course's durable-agent probe (Module 7), the tool context had no `metrics` key, so check before you rely on it there.
 - **Classifier scorers** wrap Mastra's `Classifier` primitive, the same one you might use to triage notifications (Module 6).
 
 </DeepDive>
 
 ### Goals: a scorer that gates the loop
 
-Goals (1.43.0+) put Module 9's judge *inside* Module 2's loop. A goal is a durable, thread-scoped objective, and after each iteration a judge model scores the output: `1` when the objective is met, `0` otherwise. The loop continues with feedback until the judge passes or the **run budget** runs out (`maxRuns`, default **50**). The objective is then marked `paused` ([`goals.mdx` L13–17, L62–76](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/goals.mdx#L13)). Without a judge, the goal step does nothing. `goal.tools` lets the judge verify the work rather than grade the text alone. Budget for it: that's one more model call per iteration.
+Goals (1.43.0+) put Module 9's judge *inside* Module 2's loop. A goal is a durable, thread-scoped objective. After each iteration, a judge model scores the output: `1` when the objective is met, `0` otherwise.
+
+The loop continues with feedback until the judge passes or the **run budget** runs out (`maxRuns`, default **50**). An exhausted budget marks the objective `paused` ([`goals.mdx` L13–17, L62–76](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/goals.mdx#L13)).
+
+Without a judge, the goal step does nothing. `goal.tools` lets the judge verify the work rather than grade the text alone. Budget for it: that's one more model call per iteration.
 
 <Callout type="note" title="Test utilities that ship in the package">
 
@@ -181,7 +196,9 @@ A judge is another model call: it can drift, be fooled, and cost money on every 
 
 <Callout type="tip" title="Exercise 9.1">
 
-The `mentions-reason` scorer should give 1 to answers that name the CI failure reason. Over the 3-item dataset it should score `[1, 0, 1]`. The starter scores `[0, 0, 0]`. Toggle the playground above to "reads the first part" to see why, then fix `exercises/ex1-mentions-reason.ts`.
+The `mentions-reason` scorer should give 1 to answers that name the CI failure reason. Over the 3-item dataset it should score `[1, 0, 1]`.
+
+The starter scores `[0, 0, 0]`. Toggle the playground above to "reads the first part" to see why, then fix `exercises/ex1-mentions-reason.ts`.
 
 </Callout>
 
@@ -215,6 +232,10 @@ The review a cautious platform team would write before putting this module's pri
 <ProdReadiness module="09" />
 
 <StationDone module="09" :station="4" next="./lab" next-label="On to the lab" />
+
+## Further reading {#further-reading}
+
+<FurtherReading module="09" />
 
 ## Wrap-up
 
