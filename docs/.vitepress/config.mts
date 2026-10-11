@@ -36,6 +36,7 @@ export default withMermaid(
         { text: 'Modules', link: '/m00/' },
         { text: 'Cheat sheet', link: '/cheatsheet' },
         { text: 'Adopting in production', link: '/adopting' },
+        { text: 'Reading', link: '/reading' },
         { text: 'Capstone RFC template', link: '/m10/rfc-template' },
       ],
       sidebar: [
@@ -47,6 +48,7 @@ export default withMermaid(
             { text: 'Running the labs', link: '/guide/labs' },
             { text: 'Decision-table cheat sheet', link: '/cheatsheet' },
             { text: 'Adopting Mastra in production', link: '/adopting' },
+            { text: 'Reading list: books and essays', link: '/reading' },
           ],
         },
         {
@@ -85,7 +87,7 @@ export default withMermaid(
       search: { provider: 'local' },
       outline: { level: [2, 3] },
       footer: {
-        message: 'Course text and code are MIT licensed. Not an official Mastra project.',
+        message: 'Independent course, not affiliated with or endorsed by Mastra. Course text and code are MIT licensed. Book and founder quotes are short, attributed excerpts.',
         copyright: 'Source links point to mastra-ai/mastra at a pinned commit.',
       },
     },

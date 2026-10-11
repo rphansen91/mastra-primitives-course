@@ -1,6 +1,7 @@
 import DefaultTheme from 'vitepress/theme';
 import type { Theme } from 'vitepress';
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, h } from 'vue';
+import { useData } from 'vitepress';
 import './style.css';
 
 // Every .vue file under components/ is registered globally under its file name,
@@ -13,6 +14,16 @@ const nameOf = (path: string) => path.split('/').pop()!.replace(/\.vue$/, '');
 
 export default {
   extends: DefaultTheme,
+  // VitePress hides its site footer on pages with a sidebar, so the independence note is
+  // also rendered after every doc page's prev/next links.
+  Layout() {
+    return h(DefaultTheme.Layout, null, {
+      'doc-after': () => {
+        const { theme } = useData();
+        return h('p', { class: 'mpc-doc-note' }, theme.value.footer?.message ?? '');
+      },
+    });
+  },
   enhanceApp({ app }) {
     for (const [path, mod] of Object.entries(kit)) app.component(nameOf(path), mod.default);
     for (const [path, load] of Object.entries(viz)) app.component(nameOf(path), defineAsyncComponent(load));
