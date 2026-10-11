@@ -6,8 +6,12 @@ const suites = [
   'm01-first-principles/break-it.test.ts',
   'm02-agent-loop/break-it.test.ts',
   'm03-processors/break-it.test.ts',
+  'm04-memory/break-it.test.ts',
+  'm05-workflows/break-it.test.ts',
   'm06-signals/break-it.test.ts',
   'm07-durability/crash-lab.test.ts',
+  'm08-multi-agent/break-it.test.ts',
+  'm09-evals/break-it.test.ts',
 ];
 let ok = true;
 for (const s of suites) {

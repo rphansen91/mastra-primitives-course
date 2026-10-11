@@ -9,10 +9,15 @@ const labs = {
   'm02-thread-reservation': 'm02-agent-loop/thread-reservation.ts',
   'm03-composition': 'm03-processors/composition.ts',
   'm03-guardrails': 'm03-processors/guardrails.ts',
+  'm04-memory': 'm04-memory/memory-under-pressure.ts',
+  'm05-suspend-resume': 'm05-workflows/suspend-resume.ts',
+  'm05-loop-as-workflow': 'm05-workflows/loop-as-workflow.ts',
   'm06-signal-mid-run': 'm06-signals/signal-mid-run.ts',
   'm06-notifications': 'm06-signals/notifications.ts',
   'm07-crash-lab': 'm07-durability/crash-lab.ts',
   'm08-coordinator-relay': 'm08-multi-agent/coordinator-relay.ts',
+  'm08-ping-pong': 'm08-multi-agent/ping-pong.ts',
+  'm09-observe': 'm09-evals/observe.ts',
 };
 const only = process.argv[2];
 mkdirSync('expected-output', { recursive: true });

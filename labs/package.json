@@ -5,6 +5,7 @@
   "dependencies": {
     "@mastra/core": "1.75.0",
     "@mastra/libsql": "1.25.1",
+    "@mastra/observability": "1.19.0",
     "zod": "^4.1.0"
   },
   "devDependencies": {
@@ -17,17 +18,21 @@
   },
   "scripts": {
     "test": "node --import tsx --test --test-concurrency=1 'm0*/**/*.test.ts'",
-    "test:fast": "node --import tsx --test 'm0[1-3]*/*.test.ts' 'm06*/*.test.ts' 'm08*/*.test.ts'",
+    "test:fast": "node --import tsx --test 'm0[1-5]*/*.test.ts' 'm06*/*.test.ts' 'm08*/*.test.ts' 'm09*/*.test.ts'",
     "test:exercises": "LAB_TARGET=exercises node --import tsx --test --test-concurrency=1 'm0*/break-it.test.ts' 'm07*/*.test.ts'",
     "verify:exercises-are-broken": "node scripts/verify-exercises-broken.mjs",
     "lab:loop-from-scratch": "tsx m01-first-principles/loop-from-scratch.ts",
     "lab:anatomy": "tsx m02-agent-loop/anatomy.ts",
     "lab:thread-reservation": "tsx m02-agent-loop/thread-reservation.ts",
     "lab:processors": "tsx m03-processors/composition.ts && tsx m03-processors/guardrails.ts",
+    "lab:memory": "tsx m04-memory/memory-under-pressure.ts",
+    "lab:workflows": "tsx m05-workflows/suspend-resume.ts && tsx m05-workflows/loop-as-workflow.ts",
     "lab:signals": "tsx m06-signals/signal-mid-run.ts",
     "lab:notifications": "tsx m06-signals/notifications.ts",
     "lab:crash": "tsx m07-durability/crash-lab.ts",
     "lab:relay": "tsx m08-multi-agent/coordinator-relay.ts",
+    "lab:ping-pong": "tsx m08-multi-agent/ping-pong.ts",
+    "lab:observe": "tsx m09-evals/observe.ts",
     "expected": "node scripts/write-expected.mjs"
   }
 }

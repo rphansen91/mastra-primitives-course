@@ -1,0 +1,7 @@
+
+=== Two polite agents, one relay tool each ================================
+  alice → bob (hops=1) "Heads up: CI is rate limited."
+  bob → alice (hops=2) "Thanks, noted!"
+  alice → bob (hops=3) "Thanks, noted!"
+  bob ✋ stops at hop 3
+  relays sent: 3 | stopped by the guard: true

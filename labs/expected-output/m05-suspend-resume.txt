@@ -1,0 +1,20 @@
+
+=== 1) Start: fetch → approve suspends ====================================
+status: suspended
+
+=== 2) The snapshot on disk while suspended ===============================
+{
+  status: 'suspended',
+  suspendedPaths: { approve: [ 1 ] },
+  stepResults: [ 'fetch', 'approve' ],
+  suspendPayload: { ask: 'Refund $49?' }
+}
+
+=== 3) A NEW process resumes with { approved: true } ======================
+result: { status: 'success', result: { message: 'Refunded $49' } }
+starter : [ 'fetch', 'EMAIL manager: Approve refund of $49 for order-1042?' ]
+resumer : [ 'apply refund $49', 'notify customer: Refunded $49' ]
+
+=== 4) Two callers resume the same run at once ============================
+  won → success
+  lost → This suspended workflow run was already resumed by another caller. Workflow "refund" run "<uuid>" moved from "suspended" to "running" before this resume could claim it. Only one resume() call may continue a given suspension; re-read the run state before resuming again.

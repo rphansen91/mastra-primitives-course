@@ -1,0 +1,41 @@
+
+=== 1) lastMessages: 5 after 8 exchanges (16 stored messages) =============
+stored messages: 16
+  system    You are a dinner planner.
+  assistant reply 5
+  user      message 6
+  assistant reply 6
+  user      message 7
+  assistant reply 7
+  user      message 8
+model still knows "vegetarian"? false
+
+=== 2) Tool call + result are ONE stored message, so the window keeps them together 
+  stored  user: text
+  stored  assistant: text
+  stored  user: text
+  stored  assistant: tool-invocation + step-start + text
+  stored  user: text
+  stored  assistant: text
+  prompt  system    You are a dinner planner.
+  prompt  assistant reply 1
+  prompt  user      message 2
+  prompt  assistant [tool-call find_menu]
+  prompt  tool      [tool-result find_menu: {"dishes":["mushroom risotto","dal"]}]
+  prompt  assistant reply 3
+  prompt  user      message 3
+
+=== 3) A signal wakes the idle thread =====================================
+WITHOUT memory: wake
+  system    You are a dinner planner.
+  user      <notification source="booking-api">Verde has a table at 7pm</notification>
+WITH memory: wake
+  system    You are a dinner planner.
+  user      I am vegetarian. Book dinner for two.
+  assistant Noted: vegetarian, dinner for two.
+  user      <notification source="booking-api">Verde has a table at 7pm</notification>
+
+=== 4) Resource-scoped working memory crosses threads =====================
+memory tools offered to the model: [ 'updateWorkingMemory' ]
+Friday thread sees "diet: vegetarian"? true
+Friday thread history: [ 'user      Plan Friday dinner.' ]

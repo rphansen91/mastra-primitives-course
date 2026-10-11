@@ -1,0 +1,18 @@
+
+=== The agent loop as createWorkflow().dowhile(iteration, predicate) ======
+  iteration 0: model → tool weather(Lisbon)
+  iteration 1: model → tool weather(Oslo)
+  iteration 2: model → "Lisbon (24°C) is warmer than Oslo (9°C)."
+  status: success | iterations: 3 | messages: 6
+  final: Lisbon (24°C) is warmer than Oslo (9°C).
+
+=== Snapshots written to storage while it ran =============================
+  #1 run pending: no steps yet
+  #2 run running: iteration #1 starting, input carries 1 messages
+  #3 run running: iteration #2 starting, input carries 3 messages
+  #4 run running: iteration #3 starting, input carries 5 messages
+  #5 run running: iteration success, output carries 6 messages
+  #6 run success: iteration success, output carries 6 messages
+
+=== Same loop with the predicate capped at 2 iterations ===================
+  iterations: 2 | last message: {"city":"Oslo","tempC":9}

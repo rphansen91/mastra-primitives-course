@@ -31,8 +31,12 @@ jobs:
         run: |
           npm run -s lab:loop-from-scratch > /dev/null
           npm run -s lab:anatomy
+          npm run -s lab:memory
+          npm run -s lab:workflows
           npm run -s lab:signals
           npm run -s lab:relay
+          npm run -s lab:ping-pong
+          npm run -s lab:observe
 
   next:
     name: Labs (next @mastra/core pre-release, informational)
