@@ -35,11 +35,12 @@ const P: Record<string, string> = {
 };
 </script>
 <template>
-  <svg :width="size ?? 18" :height="size ?? 18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+  <svg :width="size ?? 18" :height="size ?? 18" :style="{ width: `${size ?? 18}px`, height: `${size ?? 18}px` }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="mpc-icon">
     <path :d="P[name] ?? P.star" />
   </svg>
 </template>
 <style scoped>
-.mpc-icon { flex: none; vertical-align: -0.2em; display: inline-block; }
+/* Inline width/height win over any inherited `svg { width: 100% }` rule; never let flex squash or stretch it. */
+.mpc-icon { flex: 0 0 auto; flex-shrink: 0; vertical-align: -0.2em; display: inline-block; max-width: none; min-width: 0; }
 </style>

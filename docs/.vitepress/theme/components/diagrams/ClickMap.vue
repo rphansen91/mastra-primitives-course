@@ -51,7 +51,7 @@ function focus() { requestAnimationFrame(() => root.value?.querySelectorAll<HTML
 .track { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0; margin-top: 14px; row-gap: 12px; position: relative; }
 .conn { width: 14px; align-self: center; height: 3px; background: var(--mpc-ink); border-radius: 2px; }
 .end { align-self: center; font-size: 12.5px; font-weight: 800; padding: 6px 10px; border-radius: 99px; border: 2px dashed var(--mpc-ink); background: var(--mpc-paper); }
-.st { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; width: 128px; padding: 8px 10px; border: 2px solid var(--mpc-ink); border-radius: 12px; cursor: pointer; color: var(--vp-c-text-1); transition: transform 0.12s, box-shadow 0.12s; }
+.st { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; width: 128px; min-width: 0; padding: 8px 10px; border: 2px solid var(--mpc-ink); border-radius: 12px; cursor: pointer; color: var(--vp-c-text-1); transition: transform 0.12s, box-shadow 0.12s; }
 .st:hover { transform: translateY(-2px); }
 .st.on { box-shadow: 4px 4px 0 var(--mpc-shadow); transform: translateY(-3px); outline: 3px solid var(--mpc-violet); outline-offset: 1px; }
 .st:focus-visible { outline: 3px solid var(--mpc-sky); outline-offset: 2px; }
@@ -64,7 +64,7 @@ function focus() { requestAnimationFrame(() => root.value?.querySelectorAll<HTML
 .num { width: 22px; height: 22px; border-radius: 50%; background: var(--mpc-ink); color: var(--mpc-paper); font-size: 12px; font-weight: 800; display: grid; place-items: center; }
 .num.big { width: 30px; height: 30px; font-size: 15px; }
 .nm { font-family: var(--mpc-mono); font-size: 12px; font-weight: 800; overflow-wrap: anywhere; line-height: 1.25; }
-.sh { font-size: 12px; color: var(--vp-c-text-2); line-height: 1.3; }
+.sh { font-size: 12px; color: var(--vp-c-text-2); line-height: 1.3; overflow-wrap: anywhere; max-width: 100%; }
 .loopback { align-self: center; margin-left: 10px; font-size: 13px; font-weight: 800; color: var(--mpc-violet); }
 .detail { margin-top: 14px; border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 12px 14px; }
 .dh { display: flex; gap: 10px; align-items: center; }

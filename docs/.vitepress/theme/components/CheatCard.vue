@@ -95,7 +95,7 @@ function print() {
       <button type="button" class="mpc-btn small" :disabled="busy" @click="download"><Icon name="download" :size="15" /> Download PNG</button>
       <button type="button" class="mpc-btn small" @click="print"><Icon name="print" :size="15" /> Print</button>
     </div>
-    <svg ref="svgEl" xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${W} ${layout.height}`" :width="W" :height="layout.height"
+    <svg ref="svgEl" class="card-svg" xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${W} ${layout.height}`" :width="W" :height="layout.height"
       role="img" :aria-label="`${title}. ${cells.map((c) => c.title + ': ' + c.lines.map(clean).join('; ')).join('. ')}`"
       font-family="Inter, 'Segoe UI', system-ui, -apple-system, sans-serif">
       <rect x="0" y="0" :width="W" :height="layout.height" rx="22" :fill="C.paper" />
@@ -133,5 +133,10 @@ function print() {
 .cheat { margin: 32px 0; overflow: hidden; padding: 0 6px 6px 0; max-width: 100%; }
 .tools { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
 .sp { flex: 1; }
-svg { width: 100%; height: auto; display: block; filter: drop-shadow(4px 4px 0 var(--mpc-shadow)); }
+/* Target the card by class: a bare `svg` selector in scoped CSS also matches the root <svg> of child
+   components (Vue stamps the parent's scope id on a child's root), which blew <Icon> up to 100% width. */
+.card-svg { width: 100%; height: auto; display: block; filter: drop-shadow(4px 4px 0 var(--mpc-shadow)); }
+.tools .mpc-kicker { display: inline-flex; align-items: center; gap: 6px; }
+.tools .mpc-btn { white-space: nowrap; }
+@media (max-width: 520px) { .tools .mpc-kicker { flex-basis: 100%; } .sp { display: none; } }
 </style>

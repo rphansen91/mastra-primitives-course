@@ -97,7 +97,7 @@ const label = { shared: 'shared', separate: 'separate', mixed: 'partly' } as con
 .scene { width: 100%; height: auto; max-width: 640px; margin: 4px auto 0; display: block; }
 .code { margin: -6px 0 0; text-align: center; font-size: 13px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; }
-.dim { text-align: left; display: grid; gap: 6px; align-content: start; border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px; background: var(--mpc-paper); color: var(--mpc-ink); font: inherit; font-size: 13.5px; line-height: 1.45; cursor: pointer; box-shadow: 2px 2px 0 var(--mpc-shadow); }
+.dim { text-align: left; display: grid; gap: 6px; align-content: start; border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px; background: var(--mpc-paper); color: var(--mpc-ink); font: inherit; font-size: 13.5px; line-height: 1.45; cursor: pointer; min-width: 0; overflow-wrap: anywhere; box-shadow: 2px 2px 0 var(--mpc-shadow); }
 .dim.on { outline: 3px solid var(--mpc-violet); outline-offset: 1px; }
 .dim:focus-visible { outline: 3px solid var(--mpc-sky); }
 .dl { font-weight: 800; font-size: 14px; }

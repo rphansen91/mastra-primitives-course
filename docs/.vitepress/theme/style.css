@@ -169,7 +169,8 @@
 .ill .c-lime { fill: var(--mpc-lime); }
 
 .mpc-figure { margin: 32px 0; }
-.mpc-figure svg { width: 100%; height: auto; display: block; }
+.mpc-figure svg:not(.mpc-icon) { width: 100%; height: auto; display: block; }
+.mpc-btn svg.mpc-icon, .mpc-kicker svg.mpc-icon { flex-shrink: 0; }
 .mpc-figure figcaption { font-size: 14px; color: var(--vp-c-text-2); text-align: center; margin-top: 8px; }
 
 @media (prefers-reduced-motion: reduce) {
