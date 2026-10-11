@@ -1,0 +1,30 @@
+
+=== Input tripwire ========================================================
+{
+  tripwire: {
+    reason: 'possible SQL injection',
+    retry: undefined,
+    metadata: undefined,
+    processorId: 'sql-guard'
+  },
+  text: '',
+  modelCalls: 0
+}
+
+=== Output stream tripwire ================================================
+{
+  chunks: [
+    'start',
+    'step-start',
+    'text-start',
+    'text-delta:"hello "',
+    'tripwire'
+  ],
+  text: 'hello ',
+  tripwire: {
+    reason: 'policy violation',
+    retry: undefined,
+    metadata: undefined,
+    processorId: 'word-guard'
+  }
+}

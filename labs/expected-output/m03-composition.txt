@@ -1,0 +1,7 @@
+
+=== Processor order =======================================================
+  processInput A
+  processInput B
+  processOutputStream X sees "hi"
+  processOutputStream Y sees "hi[X]"
+final text: hi[X][Y]

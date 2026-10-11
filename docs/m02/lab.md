@@ -1,0 +1,62 @@
+# Lab 2: Loop anatomy and thread reservation
+
+**Code:** [`labs/m02-agent-loop`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs/m02-agent-loop) · **Runs against:** published `@mastra/core@1.75.0` · **Runs in:** ~3 s
+
+## 2.1 Anatomy
+
+```bash
+npm run lab:anatomy
+```
+
+[`anatomy.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m02-agent-loop/anatomy.ts) builds an agent with one tool (`check_ci`), an input processor and an output processor that log every hook, plus `onStepFinish` and `onIterationComplete` callbacks. The mock model calls the tool, then answers.
+
+Expected output ([full file](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/expected-output/m02-anatomy.txt)):
+
+```text
+=== fullStream chunk types ================================================
+start → step-start → tool-call → tool-result → step-finish → step-start → text-start → text-delta → text-end → step-finish → finish
+
+=== Prompt sent on each model step ========================================
+-- doStream #1
+   system    You triage CI.
+   user      Why is PR 42 red?
+-- doStream #2
+   system    You triage CI.
+   user      Why is PR 42 red?
+   assistant [tool-call check_ci]
+   tool      [tool-result check_ci: {"pr":42,"status":"failed","reason":"docker hub 429"}]
+```
+
+The test ([`lab.test.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m02-agent-loop/lab.test.ts)) pins the full 15-line hook order. If a Mastra release reorders hooks, the test tells you.
+
+## 2.2 Thread reservation
+
+```bash
+npm run lab:thread-reservation
+```
+
+Two `stream()` calls 10 ms apart, with a 300 ms model:
+
+```text
+=== Same thread: serialized ===============================================
+  first started
+  first finished: answer 1
+  second started
+  second finished: answer 2
+  request #2: system Be brief. / user first / assistant answer 1 / user second
+
+=== Different threads: concurrent =========================================
+  first started
+  second started
+  ...
+```
+
+On the same thread, the second call **doesn't start until the first finishes**, and its prompt contains the first exchange (loaded from memory). On different threads they overlap.
+
+## Tasks
+
+1. **Hook hunting.** Add `processLLMRequest` and `processToolResult` to the logging processors in `anatomy.ts`. Where do they land in the order? Update the test.
+2. **Two tool calls in one step.** Script the model to call `check_ci` twice in step 1. How many `tool-result` chunks, how many `step-finish`? What does prompt #2 look like?
+3. **Abort.** Pass an `abortSignal` and abort during the tool. Which chunks do you get? Is `processOutputResult` called?
+4. **Without memory.** Remove `memory` from the reservation lab. Do the runs still serialize? Why or why not? (Hint: what identifies a thread?)
+5. **Read along.** With the anatomy output open, walk [`loop-builder.ts` L263-416](https://github.com/mastra-ai/mastra/blob/ebe143c4916cf20b671a84f942d65d5df469f6cd/packages/core/src/loop/loop-builder.ts#L263) and label each output line with the step that produced it.

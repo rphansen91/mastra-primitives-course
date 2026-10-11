@@ -1,0 +1,16 @@
+
+=== Same thread: serialized ===============================================
+  first started
+  first finished: answer 1
+  second started
+  second finished: answer 2
+  request #1: system    Be brief. / user      first
+  request #2: system    Be brief. / user      first / assistant answer 1 / user      second
+
+=== Different threads: concurrent =========================================
+  first started
+  second started
+  first finished: answer 1
+  second finished: answer 2
+  request #1: system    Be brief. / user      first
+  request #2: system    Be brief. / user      second

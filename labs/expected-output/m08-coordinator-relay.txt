@@ -1,0 +1,16 @@
+
+=== Worker claims + advertises its thread; coordinator discovers peers ====
+  worker claim: true
+  peers: [
+  {
+    agentId: 'worker',
+    threadId: 'worker-auth-refactor',
+    label: 'api (auth refactor)'
+  }
+]
+
+=== Ops notification wakes the coordinator → relay tool → worker mid-run ==
+  coordinator accepted: wake
+  relay tool result: { routed: 'deliver' }
+  coordinator says: Relayed the rate-limit notice to the worker agent.
+  worker final text: Got it from the coordinator: batching pushes, max 1 per 10 min.

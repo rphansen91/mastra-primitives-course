@@ -1,0 +1,54 @@
+name: Labs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * 1' # weekly: catch upstream behavior changes
+
+jobs:
+  stable:
+    name: Labs (pinned @mastra/core 1.75.0)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: labs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: labs/package-lock.json
+      - run: npm ci
+      - name: Run all labs and break-it solutions
+        run: npm test
+      - name: Verify every exercise starter still exhibits its bug
+        run: npm run verify:exercises-are-broken
+      - name: Lab scripts run and print
+        run: |
+          npm run -s lab:loop-from-scratch > /dev/null
+          npm run -s lab:anatomy
+          npm run -s lab:signals
+          npm run -s lab:relay
+
+  next:
+    name: Labs (next @mastra/core pre-release, informational)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: labs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: labs/package-lock.json
+      - run: npm ci
+      - run: npm i --no-save @mastra/core@1.76.0-alpha.9 @mastra/libsql@1.26.0-alpha.3
+      - run: node -e "console.log('core', require('@mastra/core/package.json').version)"
+      - run: npm test

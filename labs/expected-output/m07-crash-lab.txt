@@ -1,0 +1,66 @@
+
+=== A) kill -9 mid-flight, then a fresh process recovers ==================
+persisted runs after crash: [
+  'crash-wf/wf-run-1=running',
+  'durable-agentic-execution/agent-run-1=running',
+  'durable-agentic-loop/agent-run-1=running'
+]
+active durable runs: [ 'agent-run-1' ]
+recoverAllDurableAgents t+4s {"t":4,"agents":1,"recovered":1,"succeeded":1,"failed":0}
+side-effect counts: {
+  'WF step send-email executed': 1,
+  'WF step slow-step started': 2,
+  'LLM call (tool results so far: none)': 1,
+  'TOOL charge_card executed': 1,
+  'LLM call (tool results so far: charge_card)': 1,
+  'TOOL slow_deploy started': 2,
+  'DEPLOY API applied': 1,
+  '--- recovery process start ---': 1,
+  'DEPLOY API deduped': 1,
+  'WF step slow-step finished': 1,
+  'WF step final executed': 1,
+  'WF restartAllActiveWorkflowRuns returned': 1,
+  'TOOL slow_deploy finished': 1,
+  'LLM call (tool results so far: charge_card,slow_deploy)': 1
+}
+deploy API ledger (effects actually applied): [ 'applied agent-run-1:c2' ]
+
+=== B) second replica boots while the first is alive ======================
+side-effect counts: {
+  'WF step send-email executed': 1,
+  'WF step slow-step started': 2,
+  'LLM call (tool results so far: none)': 1,
+  'TOOL charge_card executed': 1,
+  'LLM call (tool results so far: charge_card)': 1,
+  'TOOL slow_deploy started': 2,
+  'DEPLOY API applied': 1,
+  '--- second replica boots while first is alive ---': 1,
+  'DEPLOY API deduped': 1,
+  'WF step slow-step finished': 2,
+  'WF step final executed': 2,
+  'WF finished status=success': 1,
+  'TOOL slow_deploy finished': 2,
+  'LLM call (tool results so far: charge_card,slow_deploy)': 2,
+  'AGENT text: charged and deployed': 1,
+  'AGENT stream ended (should not happen when killed)': 1,
+  'second replica recoverAllDurableAgents recovered=1': 1
+}
+distinct pids per effect: {
+  'WF step send-email executed': 1,
+  'WF step slow-step started': 2,
+  'LLM call (tool results so far: none)': 1,
+  'TOOL charge_card executed': 1,
+  'LLM call (tool results so far: charge_card)': 1,
+  'TOOL slow_deploy started': 2,
+  'DEPLOY API applied': 1,
+  '--- second replica boots while first is alive ---': 1,
+  'DEPLOY API deduped': 1,
+  'WF step slow-step finished': 2,
+  'WF step final executed': 2,
+  'WF finished status=success': 1,
+  'TOOL slow_deploy finished': 2,
+  'LLM call (tool results so far: charge_card,slow_deploy)': 2,
+  'AGENT text: charged and deployed': 1,
+  'AGENT stream ended (should not happen when killed)': 1,
+  'second replica recoverAllDurableAgents recovered=1': 1
+}

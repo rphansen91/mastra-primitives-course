@@ -1,0 +1,33 @@
+
+=== Hook / chunk order ====================================================
+ 1 processInput (once) msgs=1
+ 2 processInputStep step=0 msgs=1
+ 3 processOutputStep step=0 finish=tool-calls toolCalls=1
+ 4 tool.execute check_ci(pr=42)
+ 5 chunk tool-result
+ 6 onIterationComplete iteration=1 isFinal=false
+ 7 onStepFinish finishReason=tool-calls
+ 8 chunk step-finish
+ 9 processInputStep step=1 msgs=2
+10 processOutputStep step=1 finish=stop toolCalls=0
+11 onIterationComplete iteration=2 isFinal=true
+12 onStepFinish finishReason=stop
+13 chunk step-finish
+14 processOutputResult (once) msgs=1
+15 chunk finish
+
+=== fullStream chunk types ================================================
+start → step-start → tool-call → tool-result → step-finish → step-start → text-start → text-delta → text-end → step-finish → finish
+
+=== Prompt sent on each model step ========================================
+-- doStream #1
+   system    You triage CI.
+   user      Why is PR 42 red?
+-- doStream #2
+   system    You triage CI.
+   user      Why is PR 42 red?
+   assistant [tool-call check_ci]
+   tool      [tool-result check_ci: {"pr":42,"status":"failed","reason":"docker hub 429"}]
+
+=== Result ================================================================
+text: PR 42 failed on a Docker Hub 429; re-run later. | steps: 2 | finishReason: stop
