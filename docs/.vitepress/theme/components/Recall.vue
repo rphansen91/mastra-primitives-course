@@ -75,7 +75,7 @@ const boxOf = (i: number) => store.value[keyOf(i)]?.box ?? 0;
       </div>
     </template>
     <div v-else class="done">
-      <Mascot mood="cheer" :size="64" />
+      <span class="ok" aria-hidden="true"><Icon name="check" :size="18" /></span>
       <div>
         <strong>All caught up.</strong>
         <span v-if="nextDue"> Next review {{ nextDue }}. Come back then and it'll stick.</span>
@@ -86,7 +86,7 @@ const boxOf = (i: number) => store.value[keyOf(i)]?.box ?? 0;
 </template>
 
 <style scoped>
-.recall { background: var(--mpc-lime-soft); }
+.recall { background: var(--vp-c-bg); }
 .head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
 .sub { font-size: var(--fs-sm); color: var(--vp-c-text-2); margin: 4px 0 10px !important; }
 .boxes { display: flex; gap: 4px; flex-wrap: wrap; max-width: 120px; justify-content: flex-end; }
@@ -101,5 +101,6 @@ const boxOf = (i: number) => store.value[keyOf(i)]?.box ?? 0;
 .back { margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--vp-c-divider); font-size: var(--fs-md); line-height: 1.6; }
 .actions { display: flex; gap: 10px; margin-top: 12px; }
 .done { display: flex; gap: 12px; align-items: center; }
+.ok { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--mpc-tip); color: #fff; flex: none; }
 .done .mpc-btn { margin-top: 8px; }
 </style>

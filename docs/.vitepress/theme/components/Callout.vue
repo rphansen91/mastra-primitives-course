@@ -13,28 +13,24 @@ const meta = computed(() => ({
 <template>
   <aside class="callout mpc-card" :class="`c-${meta.color}`" :aria-label="title ?? meta.label">
     <div class="head">
-      <span class="ico"><Icon :name="meta.icon" :size="18" /></span>
+      <span class="ico" aria-hidden="true"><Icon :name="meta.icon" :size="16" /></span>
       <span class="mpc-kicker">{{ meta.label }}</span>
       <strong v-if="title" class="t">{{ title }}</strong>
     </div>
     <div class="body"><slot /></div>
-    <Mascot v-if="type === 'analogy'" class="peek" mood="thinking" :size="64" />
   </aside>
 </template>
 <style scoped>
-.callout { position: relative; padding: 14px 18px; }
-.head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
-.t { font-size: var(--fs-body); }
-.ico { width: 30px; height: 30px; border-radius: var(--r-md); display: grid; place-items: center; border: 1px solid var(--mpc-line); background: var(--mpc-paper); }
-.c-violet { background: var(--mpc-violet-soft); }
-.c-teal { background: var(--mpc-teal-soft); }
-.c-coral { background: var(--mpc-coral-soft); }
-.c-amber { background: var(--mpc-amber-soft); }
-.c-sky { background: var(--mpc-sky-soft); }
-.c-lime { background: var(--mpc-lime-soft); }
-.body :deep(p) { margin: 8px 0; }
+.callout { position: relative; padding: 14px 18px 14px 16px; border: 0; border-left: 3px solid var(--rule); border-radius: 0 var(--r-md) var(--r-md) 0; background: var(--fill); }
+.head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 2px; color: var(--ink); }
+.head .mpc-kicker { color: var(--ink); }
+.t { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--vp-c-text-1); }
+.ico { display: inline-grid; place-items: center; }
+.c-violet { --rule: var(--mod-accent); --fill: var(--mpc-surface-2); --ink: var(--mod-accent); }
+.c-amber { --rule: var(--mpc-line-strong); --fill: var(--mpc-surface-2); --ink: var(--vp-c-text-2); }
+.c-teal, .c-lime { --rule: var(--mpc-tip); --fill: var(--mpc-tip-bg); --ink: var(--mpc-tip-ink); }
+.c-coral { --rule: var(--mpc-warn); --fill: var(--mpc-warn-bg); --ink: var(--mpc-warn-ink); }
+.c-sky { --rule: var(--mpc-info); --fill: var(--mpc-info-bg); --ink: var(--mpc-info-ink); }
+.body :deep(p) { margin: 6px 0; }
 .body :deep(> :last-child) { margin-bottom: 0; }
-.c-violet .body { padding-right: 64px; }
-.peek { position: absolute; right: 10px; bottom: 8px; }
-@media (max-width: 520px) { .c-violet .body { padding-right: 0; } .peek { display: none; } }
 </style>

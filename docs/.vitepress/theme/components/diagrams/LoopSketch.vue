@@ -15,7 +15,7 @@
       <text x="700" y="22" text-anchor="end" font-size="13" class="t-strong" style="fill: var(--mpc-coral)">no tool calls → answer</text>
       <text x="360" y="32" text-anchor="middle" font-size="12.5" class="t-dim">turn</text>
       <text x="360" y="352" text-anchor="middle" font-size="12.5" class="t-dim">step + 1 (until maxSteps or stopWhen)</text>
-      <foreignObject x="310" y="130" width="100" height="100"><div style="display:flex;justify-content:center"><Mascot mood="happy" :size="96" label="Loopy, in the middle of the loop" /></div></foreignObject>
+      <text x="360" y="196" text-anchor="middle" font-size="22" class="t-strong" style="fill: var(--mod-accent)">the loop</text>
     </svg>
     <figcaption>Everything an agent framework does is a hardening of this loop.</figcaption>
   </figure>

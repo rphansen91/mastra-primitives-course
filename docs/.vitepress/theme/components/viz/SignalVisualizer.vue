@@ -191,7 +191,7 @@ const FLAB = ['1 · compose', '2 · route', '3 · land'];
 .hotpath { stroke: var(--mpc-violet) !important; stroke-width: 4 !important; }
 .env { transition: transform 0.6s cubic-bezier(0.5, 0, 0.2, 1); }
 .fr { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
-.fr .mpc-chip { color: var(--vp-c-text-3); }
+.fr .mpc-chip { color: var(--vp-c-text-2); }
 .fr .mpc-chip.on { color: var(--mpc-violet); background: var(--mpc-violet-soft); }
 .out { margin-top: 12px; }
 .proj, .result { background: var(--mpc-paper); border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 12px 14px; }
@@ -209,6 +209,6 @@ const FLAB = ['1 · compose', '2 · route', '3 · land'];
 .rh p { margin: 6px 0 0 !important; font-size: var(--fs-md); line-height: 1.6 !important; }
 .tl { width: 100%; height: auto; margin-top: 10px; }
 .sees { margin-top: 10px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-size: var(--fs-sm); }
-.dimtxt { color: var(--vp-c-text-3); }
+.dimtxt { color: var(--vp-c-text-2); }
 @media (prefers-reduced-motion: reduce) { .env, .br { transition: none; } }
 </style>

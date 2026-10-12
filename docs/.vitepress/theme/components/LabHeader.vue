@@ -12,7 +12,6 @@ const REPO = 'https://github.com/rphansen91/mastra-primitives-course/tree/main/l
       <span class="chip" v-if="tests"><Icon name="star" :size="15" /> {{ tests }} tests in CI</span>
     </div>
     <div class="row">
-      <Mascot :mood="mood as any" :size="64" />
       <div class="txt">
         <slot />
         <p class="code"><Icon name="book" :size="15" /> Code: <a :href="REPO + folder" target="_blank" rel="noopener"><code>labs/{{ folder }}</code></a> · against the published <code>@mastra/core@1.76.0</code></p>
@@ -21,9 +20,12 @@ const REPO = 'https://github.com/rphansen91/mastra-primitives-course/tree/main/l
   </section>
 </template>
 <style scoped>
-.lab-hero { background: var(--mpc-teal-soft); margin: 18px 0 28px; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.chip { display: inline-flex; gap: 5px; align-items: center; font-size: var(--fs-sm); font-weight: var(--fw-semibold); padding: 3px 10px; border: 1px solid var(--mpc-line); border-radius: var(--r-pill); background: var(--mpc-paper); }
+.lab-hero { background: var(--mpc-surface-2); margin: 18px 0 28px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-bottom: 10px; }
+.chips { color: var(--vp-c-text-2); }
+.chip { display: inline-flex; gap: 5px; align-items: center; font-size: var(--fs-sm); font-weight: var(--fw-medium); }
+.chip + .chip::before { content: "·"; margin: 0 8px 0 2px; color: var(--vp-c-text-3); }
+@media (max-width: 560px) { .chips { gap: 4px 14px; } .chip + .chip::before { content: none; } }
 .row { display: flex; gap: 14px; align-items: flex-start; }
 .txt { min-width: 0; flex: 1; }
 .txt :deep(p) { margin: 4px 0 8px !important; }

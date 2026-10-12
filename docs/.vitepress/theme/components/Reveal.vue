@@ -16,14 +16,16 @@ withDefaults(defineProps<{ title?: string; kicker?: string; color?: 'violet' | '
 </template>
 <style scoped>
 .reveal { padding: 0; }
-.r-teal { background: var(--mpc-teal-soft); } .r-violet { background: var(--mpc-violet-soft); } .r-amber { background: var(--mpc-amber-soft); }
-.r-coral { background: var(--mpc-coral-soft); } .r-sky { background: var(--mpc-sky-soft); } .r-lime { background: var(--mpc-lime-soft); }
-summary { list-style: none; display: flex; gap: 12px; align-items: center; padding: 12px 16px; cursor: pointer; border-radius: var(--r-md); }
+.r-teal, .r-lime { --ink: var(--mpc-tip-ink); } .r-amber { --ink: var(--mpc-warn-ink); } .r-coral { --ink: var(--mpc-danger-ink); } .r-sky { --ink: var(--mpc-info-ink); } .r-violet { --ink: var(--mod-accent); }
+
+summary { list-style: none; display: flex; gap: 12px; align-items: center; padding: 12px 16px; cursor: pointer; border-radius: var(--r-lg); transition: background var(--mpc-dur) var(--mpc-ease); }
+summary:hover { background: var(--mpc-surface-2); }
 summary::-webkit-details-marker { display: none; }
-.ico { width: 34px; height: 34px; border-radius: var(--r-md); display: grid; place-items: center; border: 1px solid var(--mpc-line); background: var(--mpc-paper); flex: none; }
+.ico { width: 32px; height: 32px; border-radius: var(--r-md); display: grid; place-items: center; background: var(--mpc-surface-2); color: var(--ink, var(--vp-c-text-2)); flex: none; }
 summary > span:nth-child(2) { flex: 1; line-height: 1.35; }
-.chev { transition: transform 0.2s; }
+summary strong { font-weight: var(--fw-semibold); }
+.chev { transition: transform var(--mpc-dur) var(--mpc-ease); color: var(--vp-c-text-2); }
 details[open] .chev { transform: rotate(180deg); }
-.body { padding: 4px 18px 16px; border-top: 1px dashed var(--mpc-line-strong); background: var(--mpc-paper); border-radius: 0 0 12px 12px; min-width: 0; }
-@media (prefers-reduced-motion: reduce) { .chev { transition: none; } }
+details[open] > summary { border-radius: var(--r-lg) var(--r-lg) 0 0; }
+.body { padding: 4px 18px 16px; border-top: 1px solid var(--mpc-line); min-width: 0; }
 </style>

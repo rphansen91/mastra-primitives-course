@@ -268,7 +268,7 @@ const tok = computed(() => NODES[cur.value.node]);
 .panel { background: var(--mpc-paper); border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 8px 10px; }
 .ph :deep(code), .ph code { text-transform: none; }
 .ph { font-size: var(--fs-xs); font-weight: var(--fw-semibold); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
-.dim { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--vp-c-text-3); font-size: var(--fs-xs); }
+.dim { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--vp-c-text-2); font-size: var(--fs-xs); }
 .msgs { list-style: none; padding: 0 !important; margin: 0 !important; max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
 .msgs li { margin: 0 !important; display: flex; gap: 8px; font-size: var(--fs-sm); line-height: 1.4 !important; padding: 4px 6px; border-radius: var(--r-md); transition: background 0.4s; }
 .msgs li.fresh { background: var(--mpc-amber-soft); box-shadow: inset 3px 0 0 var(--mpc-amber); }

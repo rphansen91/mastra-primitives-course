@@ -21,11 +21,11 @@ const title = computed(() => [meta.value.label + ': ' + meta.value.meaning, entr
 <style scoped>
 .sb { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; border: 1px solid var(--mpc-line); border-radius: var(--r-pill); padding: 1px 8px 1px 2px; font-size: var(--fs-xs); line-height: 1.6; background: var(--mpc-paper); vertical-align: middle; max-width: 100%; }
 .st { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; font-weight: var(--fw-semibold); text-transform: uppercase; letter-spacing: .04em; font-size: var(--fs-xs); border-radius: var(--r-pill); padding: 1px 8px; border: 1px solid var(--mpc-line); }
-.s-stable .st { background: var(--mpc-lime-soft); }
-.s-beta .st { background: var(--mpc-amber-soft); }
-.s-experimental .st { background: var(--mpc-coral-soft); }
+.s-stable .st { background: var(--mpc-tip-bg); color: var(--mpc-tip-ink); }
+.s-beta .st { background: var(--mpc-warn-bg); color: var(--mpc-warn-ink); }
+.s-experimental .st { background: var(--mpc-danger-bg); color: var(--mpc-danger-ink); }
 .s-deprecated .st { background: var(--mpc-ink); color: var(--mpc-paper); }
-.s-changed .st { background: var(--mpc-sky-soft); }
+.s-changed .st { background: var(--mpc-info-bg); color: var(--mpc-info-ink); }
 .nm { font-weight: var(--fw-semibold); }
 .since { color: var(--vp-c-text-2); font-family: var(--mpc-mono); font-size: var(--fs-xs); }
 .src { font-size: var(--fs-xs); font-weight: var(--fw-semibold); }

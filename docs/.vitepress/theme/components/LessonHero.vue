@@ -15,26 +15,21 @@ withDefaults(
 
 <template>
   <section class="hero" aria-label="Lesson overview">
-    <div class="chips">
-      <span class="chip"><Icon name="map" :size="15" /> Module {{ Number(module) }}</span>
-      <span class="chip"><Icon name="clock" :size="15" /> ~{{ minutes }} min</span>
-      <span class="chip" v-if="lab"><Icon name="flask" :size="15" /> {{ lab }}</span>
-      <span class="chip" v-if="recap"><Icon name="headphones" :size="15" /> Listen-friendly recap</span>
-    </div>
+    <p class="meta">
+      <span>Module {{ Number(module) }}</span>
+      <span><Icon name="clock" :size="14" /> ~{{ minutes }} min</span>
+      <span v-if="lab"><Icon name="flask" :size="14" /> {{ lab }}</span>
+      <span v-if="recap"><Icon name="headphones" :size="14" /> Listen-friendly recap</span>
+    </p>
     <div class="grid">
-      <div class="story mpc-card">
-        <div class="story-head">
-          <Mascot :mood="mood" :size="84" />
-          <div>
-            <div class="mpc-kicker">{{ scenarioTitle }}</div>
-            <div class="story-body"><slot /></div>
-          </div>
-        </div>
+      <div class="story">
+        <div class="mpc-kicker">{{ scenarioTitle }}</div>
+        <div class="story-body"><slot /></div>
       </div>
-      <div class="outcomes mpc-card">
+      <div class="outcomes">
         <div class="mpc-kicker">By the end you'll be able to</div>
         <ul>
-          <li v-for="(o, i) in outcomes" :key="i"><span class="tick"><Icon name="check" :size="14" /></span><span v-html="o" /></li>
+          <li v-for="(o, i) in outcomes" :key="i"><span class="tick" aria-hidden="true"><Icon name="check" :size="12" /></span><span v-html="o" /></li>
         </ul>
       </div>
     </div>
@@ -43,20 +38,23 @@ withDefaults(
 </template>
 
 <style scoped>
-.hero { margin: 20px 0 8px; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-sm); font-weight: var(--fw-semibold); padding: 4px 12px; border-radius: var(--r-pill); background: var(--vp-c-bg-soft); border: 1.5px solid var(--vp-c-divider); }
-.grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 18px; }
-.grid .mpc-card { margin: 18px 0 0; }
-.story { background: var(--mpc-amber-soft); }
-.story-head { display: flex; gap: 14px; align-items: flex-start; }
-.story-body :deep(p) { margin: 6px 0; font-size: var(--fs-md); line-height: 1.65; }
-.outcomes { background: var(--mpc-teal-soft); }
-.outcomes ul { list-style: none; padding: 0 !important; margin: 10px 0 0 !important; }
+.hero { margin: 12px 0 8px; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; margin: 0 0 20px !important; font-size: var(--fs-sm); color: var(--vp-c-text-2); }
+.meta span { display: inline-flex; align-items: center; gap: 5px; }
+.meta span + span::before { content: '·'; margin: 0 10px; color: var(--vp-c-text-3); }
+.meta :deep(svg) { color: var(--vp-c-text-3); }
+.grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; }
+.story, .outcomes { border-radius: var(--r-lg); padding: 16px 20px; }
+.story { background: var(--mpc-surface-2); border: 1px solid var(--mpc-line); }
+.story .mpc-kicker { color: var(--mpc-danger-ink); }
+.story-body :deep(p) { margin: 8px 0; font-size: var(--fs-md); line-height: 1.65; }
+.story-body :deep(> :last-child) { margin-bottom: 0; }
+.outcomes { border: 1px solid var(--mpc-line); }
+.outcomes .mpc-kicker { color: var(--mod-accent); }
+.outcomes ul { list-style: none; padding: 0 !important; margin: 8px 0 0 !important; }
 .outcomes li { display: flex; gap: 10px; margin: 8px 0 !important; line-height: 1.5 !important; font-size: var(--fs-md); }
-.tick { width: 22px; height: 22px; border-radius: 50%; background: var(--mpc-teal); color: #fff; display: grid; place-items: center; flex: none; margin-top: 2px; }
-@media (max-width: 760px) {
-  .grid { grid-template-columns: 1fr; }
-  .story-head { flex-direction: column; }
-}
+.tick { width: 18px; height: 18px; border-radius: 50%; background: var(--mod-accent); color: #fff; display: grid; place-items: center; flex: none; margin-top: 3px; }
+.dark .tick { color: #14112b; }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .meta { gap: 4px 14px; } .meta span + span::before { content: none; } }
 </style>

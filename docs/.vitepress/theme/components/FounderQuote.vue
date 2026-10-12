@@ -14,7 +14,7 @@ const q = computed(() => { const x = QUOTES[props.id]; return x && x.kind === 'f
   <span v-else class="cite-missing">[missing founder quote {{ id }}]</span>
 </template>
 <style scoped>
-.fq { margin: 18px 0; padding: 12px 18px 12px 22px; background: var(--mpc-paper); border-left-width: 6px !important; }
+.fq { margin: 24px 0; padding: 4px 18px 4px 20px; background: transparent; border: 0 !important; border-left: 3px solid var(--mod-accent) !important; border-radius: 0; }
 blockquote { margin: 0 !important; padding: 0 !important; border: 0 !important; }
 .mpc-quote { margin: 0 !important; font-size: var(--fs-body); line-height: 1.5; font-style: italic; color: var(--vp-c-text-1); }
 .mpc-quote::before { content: '“'; }

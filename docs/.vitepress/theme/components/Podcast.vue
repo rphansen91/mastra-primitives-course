@@ -58,7 +58,7 @@ function stop() { window.speechSynthesis.cancel(); speaking.value = false; pause
 </template>
 
 <style scoped>
-.pod { background: linear-gradient(135deg, var(--mpc-violet-soft), var(--mpc-sky-soft)); }
+.pod { background: var(--mpc-surface-2); }
 .head { display: flex; gap: 14px; align-items: center; }
 .meta strong { font-size: var(--fs-body); }
 .sub { font-size: var(--fs-sm); color: var(--vp-c-text-2); margin: 2px 0 0 !important; }

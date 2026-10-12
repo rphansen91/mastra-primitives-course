@@ -11,8 +11,10 @@ defineProps<{ quote: string; version?: string }>();
 <style scoped>
 .bs { display: grid; grid-template-columns: 1fr 1fr; margin: 18px 0; overflow: hidden; padding: 0 !important; }
 .col { padding: 12px 16px; }
-.book { background: var(--mpc-amber-soft); border-right: 2px solid var(--mpc-ink); }
-.fw { background: var(--mpc-lime-soft); }
+.book { background: var(--mpc-warn-bg); border-right: 1px solid var(--mpc-line); }
+.book .mpc-kicker { color: var(--mpc-warn-ink); }
+.fw { background: var(--vp-c-bg); }
+.fw .mpc-kicker { color: var(--mod-accent); }
 .col p, .body :deep(p) { margin: 6px 0 0 !important; font-size: var(--fs-md); line-height: 1.55; }
 .mpc-kicker { display: inline-flex; gap: 5px; align-items: center; }
 @media (max-width: 640px) { .bs { grid-template-columns: 1fr; } .book { border-right: 0; border-bottom: 1px solid var(--mpc-line); } }

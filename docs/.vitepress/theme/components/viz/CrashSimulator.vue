@@ -238,7 +238,7 @@ const pct = (x: number) => `${(x / N) * 100}%`;
 .ledger { background: var(--mpc-paper); border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 10px 12px; }
 .lg { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; font-size: var(--fs-sm); }
 .lg strong { min-width: 100%; font-size: var(--fs-sm); }
-.none { color: var(--vp-c-text-3); font-size: var(--fs-xs); }
+.none { color: var(--vp-c-text-2); font-size: var(--fs-xs); }
 .ent { font-family: var(--mpc-mono); font-size: var(--fs-xs); padding: 2px 8px; border-radius: var(--r-pill); border: 1.5px solid var(--mpc-line-strong); background: var(--mpc-teal-soft); }
 .ent.dup { background: var(--mpc-coral); color: #fff; font-weight: var(--fw-semibold); }
 .ent.deduped { background: var(--mpc-sky-soft); text-decoration: line-through; }

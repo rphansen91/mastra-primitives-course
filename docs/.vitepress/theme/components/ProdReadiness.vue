@@ -41,11 +41,9 @@ h3 { margin: 0 0 6px !important; display: flex; gap: 6px; align-items: center; f
 ul { margin: 0 !important; padding-left: 18px !important; }
 li { font-size: var(--fs-sm); line-height: 1.5; margin: 4px 0 !important; overflow-wrap: break-word; }
 .checks { list-style: '☐  '; }
-.c-lime { background: var(--mpc-lime-soft); }
-.c-amber { background: var(--mpc-amber-soft); }
-.c-sky { background: var(--mpc-sky-soft); }
-.c-violet { background: var(--mpc-violet-soft); }
-.fm { background: var(--mpc-coral-soft); }
+.col { background: var(--vp-c-bg); border-top: 3px solid var(--rule) !important; }
+.c-lime { --rule: var(--mpc-tip); } .c-amber { --rule: var(--mpc-warn); } .c-sky { --rule: var(--mpc-info); } .c-violet { --rule: var(--mod-accent); }
+.fm { background: var(--mpc-danger-bg); border-left: 3px solid var(--mpc-danger) !important; }
 .row { display: grid; grid-template-columns: 1fr 22px 1fr; gap: 8px; padding: 7px 0; border-top: 1.5px dashed var(--vp-c-divider); font-size: var(--fs-sm); line-height: 1.5; }
 .row:first-of-type { border-top: 0; }
 .mode { font-weight: 600; overflow-wrap: break-word; }
