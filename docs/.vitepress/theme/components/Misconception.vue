@@ -21,8 +21,8 @@ const id = useId();
 .mis { background: var(--mpc-coral-soft); padding: 14px 18px; }
 .myth { font-size: 17px !important; font-weight: 700; margin: 8px 0 10px !important; }
 .myth > span:last-child { text-decoration: line-through; text-decoration-color: var(--mpc-coral); text-decoration-thickness: 2px; }
-.tag { display: inline-block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 6px; background: var(--mpc-coral); color: #fff; vertical-align: 2px; }
-.tag.ok { background: var(--mpc-teal); }
+.tag { display: inline-block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 6px; background: var(--mpc-danger); color: #fff; vertical-align: 2px; }
+.tag.ok { background: var(--mpc-tip); }
 .dark .tag { color: #14112b; }
 .reality { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--mpc-paper); border: 2px solid var(--mpc-ink); }
 .rbody :deep(p) { margin: 6px 0; }

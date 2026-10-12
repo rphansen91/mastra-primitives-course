@@ -37,7 +37,7 @@ const sizeText = { S: 'small: a weekend', M: 'medium: a week', L: 'large: a few 
         </li>
       </ul>
       <article class="card" :class="`g-${p.color}`" aria-live="polite">
-        <h4>{{ p.name }}</h4>
+        <h3>{{ p.name }}</h3>
         <div class="flow">
           <div class="fbox"><div class="fk">The gap</div><div v-html="fmt(p.gap)" /></div>
           <div class="arr" aria-hidden="true">→</div>
@@ -73,16 +73,16 @@ const sizeText = { S: 'small: a weekend', M: 'medium: a week', L: 'large: a few 
 .g-coral { background: var(--mpc-coral-soft); } .g-amber { background: var(--mpc-amber-soft); } .g-sky { background: var(--mpc-sky-soft); }
 .g-violet { background: var(--mpc-violet-soft); } .g-teal { background: var(--mpc-teal-soft); } .g-lime { background: var(--mpc-lime-soft); }
 .card { border: 2px solid var(--mpc-ink); border-radius: 14px; padding: 12px 14px; min-width: 0; display: grid; gap: 8px; box-shadow: 3px 3px 0 var(--mpc-shadow); }
-.card h4 { margin: 0 !important; font-size: 18px; }
+.card h3 { margin: 0 !important; font-size: 18px; }
 .flow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; align-items: stretch; }
 .fbox { background: var(--mpc-paper); border: 2px solid var(--mpc-ink); border-radius: 10px; padding: 8px 10px; font-size: 13.5px; }
 .arr { align-self: center; font-weight: 800; font-size: 20px; }
 .fk { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mpc-ink-2); margin-bottom: 2px; }
-.card pre { margin: 0 !important; padding: 8px 10px !important; border-radius: 10px; background: var(--mpc-paper) !important; border: 2px solid var(--mpc-ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+.card pre { margin: 0 !important; padding: 8px 10px !important; border-radius: 10px; background: var(--mpc-paper) !important; border: 2px solid var(--mpc-ink); white-space: pre-wrap; overflow-wrap: break-word; }
 .card pre code { font-size: 12px !important; background: none !important; padding: 0 !important; white-space: pre-wrap !important; }
 .prior { display: table; width: 100%; margin: 0 !important; font-size: 12.5px; border-collapse: collapse; background: var(--mpc-paper); }
 .prior th, .prior td { padding: 4px 6px !important; border: 1.5px solid var(--mpc-ink) !important; }
-.prior code { font-size: 11.5px; overflow-wrap: anywhere; }
+.prior code { font-size: 11.5px; overflow-wrap: break-word; }
 .meta { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { font-size: 12.5px; border: 2px solid var(--mpc-ink); border-radius: 999px; padding: 1px 10px; background: var(--mpc-paper); }
 .hard { margin: 0; padding-left: 18px; font-size: 13.5px; }

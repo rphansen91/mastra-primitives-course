@@ -1,5 +1,5 @@
 ---
-pageClass: lesson
+pageClass: wide lesson
 aside: false
 ---
 

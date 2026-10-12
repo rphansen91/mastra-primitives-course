@@ -1,6 +1,7 @@
 ---
 title: Adopting Mastra in production
-outline: [2, 3]
+pageClass: wide
+aside: false
 ---
 
 <script setup>
@@ -73,16 +74,16 @@ Score your system one requirement at a time. Most real systems end up in **augme
 
 | Requirement | Adopt Mastra | Augment | Build | Evidence |
 |---|---|---|---|---|
-| Request/response agents, chat, copilots | ✅ | | | The stable core ([M2](./m02/)–[M4](./m04/), [M9](./m09/)) covers it |
-| Runs that must survive crashes mid-tool-call | ⚠️ durable agents are **beta** | ✅ Temporal / Restate / DBOS, or Inngest | | [M7](./m07/#production-readiness): recovery re-runs the in-flight step; tools must be idempotent |
-| Multi-replica deployment | ⚠️ needs a fencing store + distributed PubSub (pre-1.0 packages) | ✅ sticky routing or a queue in front | | [M2](./m02/#production-readiness), [M6](./m06/#production-readiness), [M7](./m07/#production-readiness): default PubSub is per-process; workflow boot restart has no claim |
-| Long timers, versioned long-running processes | ❌ default-engine timers are `setTimeout` | ✅ Temporal | | [M5](./m05/#production-readiness): no run versioning, fixed-delay retries |
-| Guaranteed delivery of external events | ⚠️ `persist` to the inbox | ✅ a durable queue → `agent.stream` | | [M6](./m06/#production-readiness): pending queues live in memory |
-| Multi-tenant data isolation | ⚠️ your app must enforce it | ✅ authz in your API layer | | [M4](./m04/#production-readiness): *"The memory system doesn't enforce access control."* |
-| Delegation among specialist agents | ✅ supervisor agents | | | [M8](./m08/#production-readiness): networks are deprecated; subagents see the parent context by default |
-| Agents coordinating peer-to-peer across hosts | ❌ experimental pieces | ✅ a message bus | ⚙️ if it's core to your product | [M8](./m08/#production-readiness): ownership/discovery are undocumented; cross-agent is experimental |
-| Org-wide guardrails and model policy | ✅ processors per agent | ✅ plus an LLM gateway | | [M3](./m03/#production-readiness): processors are per-agent code on the hot path |
-| Evals and tracing in CI | ✅ scorers + tracing | ✅ export to your APM or eval platform | | [M9](./m09/#production-readiness): stable; move trace storage off the app DB at scale |
+| Request/response agents, chat, copilots | <Status kind="yes" /> | | | The stable core ([M2](./m02/)–[M4](./m04/), [M9](./m09/)) covers it |
+| Runs that must survive crashes mid-tool-call | <Status kind="caveat" /> durable agents are **beta** | <Status kind="yes" /> Temporal / Restate / DBOS, or Inngest | | [M7](./m07/#production-readiness): recovery re-runs the in-flight step; tools must be idempotent |
+| Multi-replica deployment | <Status kind="caveat" /> needs a fencing store + distributed PubSub (pre-1.0 packages) | <Status kind="yes" /> sticky routing or a queue in front | | [M2](./m02/#production-readiness), [M6](./m06/#production-readiness), [M7](./m07/#production-readiness): default PubSub is per-process; workflow boot restart has no claim |
+| Long timers, versioned long-running processes | <Status kind="no" /> default-engine timers are `setTimeout` | <Status kind="yes" /> Temporal | | [M5](./m05/#production-readiness): no run versioning, fixed-delay retries |
+| Guaranteed delivery of external events | <Status kind="caveat" /> `persist` to the inbox | <Status kind="yes" /> a durable queue → `agent.stream` | | [M6](./m06/#production-readiness): pending queues live in memory |
+| Multi-tenant data isolation | <Status kind="caveat" /> your app must enforce it | <Status kind="yes" /> authz in your API layer | | [M4](./m04/#production-readiness): *"The memory system doesn't enforce access control."* |
+| Delegation among specialist agents | <Status kind="yes" /> supervisor agents | | | [M8](./m08/#production-readiness): networks are deprecated; subagents see the parent context by default |
+| Agents coordinating peer-to-peer across hosts | <Status kind="no" /> experimental pieces | <Status kind="yes" /> a message bus | <Status kind="build" /> if it's core to your product | [M8](./m08/#production-readiness): ownership/discovery are undocumented; cross-agent is experimental |
+| Org-wide guardrails and model policy | <Status kind="yes" /> processors per agent | <Status kind="yes" /> plus an LLM gateway | | [M3](./m03/#production-readiness): processors are per-agent code on the hot path |
+| Evals and tracing in CI | <Status kind="yes" /> scorers + tracing | <Status kind="yes" /> export to your APM or eval platform | | [M9](./m09/#production-readiness): stable; move trace storage off the app DB at scale |
 
 <Quiz module="adopt" id="payments" question="A team runs an agent that charges cards, on four replicas behind a load balancer. Which plan would you approve?" :options="q_adopt" />
 

@@ -1,3 +1,8 @@
+---
+pageClass: wide
+aside: false
+---
+
 # Decision-table cheat sheet
 
 Every module's "when to choose something else" table in one place. **Bold** = the Mastra primitive.

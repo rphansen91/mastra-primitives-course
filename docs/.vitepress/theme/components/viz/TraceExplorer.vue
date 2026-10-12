@@ -118,7 +118,7 @@ const calls = computed(() => (changed.value
 .detail p { margin: 6px 0; font-size: 14px; }
 .detail dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; margin: 0; font-size: 13px; }
 .detail dt { font-weight: 800; }
-.detail dd { margin: 0; overflow-wrap: anywhere; min-width: 0; }
+.detail dd { margin: 0; overflow-wrap: break-word; min-width: 0; }
 .intro { margin: 0; font-size: 14.5px; }
 .tapes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
 .tape { border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px; background: var(--mpc-paper); display: grid; gap: 8px; align-content: start; min-width: 0; }

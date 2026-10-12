@@ -137,7 +137,7 @@ const last = computed(() => hops.value[hops.value.length - 1]);
 .stage pre { margin: 0 !important; padding: 8px !important; border-radius: 8px; background: var(--vp-c-bg-soft) !important; white-space: pre-wrap; word-break: break-word; }
 .stage pre code { font-size: 12px !important; background: none !important; padding: 0 !important; white-space: pre-wrap !important; }
 .log { border: 2px dashed var(--mpc-ink-2); border-radius: 12px; padding: 8px 12px; font-family: var(--mpc-mono); font-size: 12px; min-width: 0; }
-.ll { margin: 3px 0; overflow-wrap: anywhere; }
+.ll { margin: 3px 0; overflow-wrap: break-word; }
 .ll.end { font-weight: 800; font-family: var(--vp-font-family-base); font-size: 13.5px; }
 .ll.ok { color: var(--mpc-teal); } .ll.bad { color: var(--mpc-coral); }
 .intro { margin: 0; font-size: 14.5px; }

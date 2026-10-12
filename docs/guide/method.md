@@ -2,13 +2,7 @@
 
 Every primitive in this course is taught in the same four passes. The passes are deliberately in this order: you can't judge alternatives until you know the failure modes, and you can't find failure modes until you've read how it's built.
 
-```mermaid
-flowchart LR
-  P1["1. Problem<br/>What breaks without it?"] --> P2["2. Built<br/>Real source at a pinned SHA"]
-  P2 --> P3["3. Breaks<br/>Deliberate break-it exercise"]
-  P3 --> P4["4. Choose<br/>Decision table vs alternatives"]
-  P4 -.->|"gaps become"| C["Capstone:<br/>a new primitive"]
-```
+<MethodFlow />
 
 ## How a lesson feels
 

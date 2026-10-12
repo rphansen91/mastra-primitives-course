@@ -159,16 +159,7 @@ This is Tuesday's refund. Run it, let it suspend, then try every ending. Turn on
 
 <Quiz kind="predict" module="05" id="resume" question="A step called `suspend()` on Tuesday. On Thursday you call `run.resume({ step: 'approve', resumeData: { approved: true } })`. Which code runs?" :options="q_resume" />
 
-```mermaid
-stateDiagram-v2
-  [*] --> running: start()
-  running --> running: step done → snapshot
-  running --> suspended: suspend(payload)
-  suspended --> running: resume() (CAS-claimed)
-  running --> success
-  running --> failed: retries exhausted
-  running --> running: crash → restartAllActiveWorkflowRuns()\n(completed steps memoized,\nin-flight step re-runs)
-```
+<WorkflowStates />
 
 <TryIt cmd="npm run lab:workflows" :output="out1">
 

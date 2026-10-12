@@ -160,7 +160,7 @@ const fmt = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt
 .verdict p { margin: 4px 0 0 !important; font-size: 14.5px !important; }
 .prompt { border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px; background: var(--mpc-paper); min-width: 0; }
 .prompt ol { list-style: none; padding: 0 !important; margin: 6px 0 0 !important; display: grid; gap: 4px; }
-.prompt li { margin: 0 !important; font-size: 13px !important; line-height: 1.4; padding: 3px 7px; border-radius: 7px; overflow-wrap: anywhere; }
+.prompt li { margin: 0 !important; font-size: 13px !important; line-height: 1.4; padding: 3px 7px; border-radius: 7px; overflow-wrap: break-word; }
 .prompt li b { font-family: var(--mpc-mono); font-size: 11.5px; margin-right: 4px; }
 .prompt li em { color: var(--mpc-ink-2); }
 .p-violet { background: var(--mpc-violet-soft); } .p-lime { background: var(--mpc-lime-soft); } .p-sky { background: var(--mpc-sky-soft); }

@@ -239,7 +239,7 @@ const tok = computed(() => NODES[cur.value.node]);
     </div>
 
     <div class="controls">
-      <button type="button" class="mpc-btn" @click="prev" :disabled="i === 0" aria-label="Previous step"><Icon name="prev" :size="15" /> Back</button>
+      <button type="button" class="mpc-btn" @click="prev" :disabled="i === 0" aria-label="Back, previous step"><Icon name="prev" :size="15" /> Back</button>
       <button type="button" class="mpc-btn primary" @click="next" :disabled="i === frames.length - 1" aria-label="Next step">Next <Icon name="next" :size="15" /></button>
       <button type="button" class="mpc-btn" @click="play" :aria-pressed="playing"><Icon :name="playing ? 'pause' : 'play'" :size="15" /> {{ playing ? 'Pause' : 'Auto-play' }}</button>
       <button type="button" class="mpc-btn small" @click="reset"><Icon name="reset" :size="14" /> Restart</button>

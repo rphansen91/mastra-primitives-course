@@ -221,18 +221,7 @@ Say worker A pauses for a long GC (or a laptop lid closes), its lease expires, a
 
 The fix (Martin Kleppmann's *fencing token*): every lease grant gets a bigger number, every write carries it, and **storage** rejects any write with a smaller number than it has already seen.
 
-```mermaid
-sequenceDiagram
-  participant A as Worker A
-  participant L as Lease store
-  participant B as Worker B
-  participant S as Storage
-  A->>L: acquire → token 1
-  Note over A: GC pause longer than TTL
-  B->>L: acquire (A expired) → token 2
-  B->>S: write(result, token 2) ✓
-  A->>S: write(stale, token 1) ✗ rejected (1 < 2)
-```
+<LeaseFencing />
 
 <Quiz module="01" id="fence" question="Both workers write a result for the same run. Whose result survives?" :options="q_fence" explain="Mastra's durable agents do exactly this at the pinned commit: run claims with generations, and `RunFenceConflictError` on stale writes. You'll meet it in Module 7." />
 

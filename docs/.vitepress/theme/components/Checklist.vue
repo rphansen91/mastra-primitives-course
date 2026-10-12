@@ -21,7 +21,7 @@ const whyHtml = (w: string) => ' ' + fmt(w);
       <button type="button" class="mpc-btn" @click="reset"><Icon name="reset" :size="14" /> Reset</button>
     </div>
     <div v-for="(g, gi) in groups" :key="gi" class="grp">
-      <h4>{{ g.title }}</h4>
+      <h3>{{ g.title }}</h3>
       <label v-for="(it, ii) in g.items" :key="ii" class="it" :class="{ on: done[`${gi}-${ii}`] }">
         <input type="checkbox" v-model="done[`${gi}-${ii}`]" />
         <span><span v-html="fmt(it.text)" /><span v-if="it.why" class="why" v-html="whyHtml(it.why)" /></span>
@@ -35,7 +35,7 @@ const whyHtml = (w: string) => ' ' + fmt(w);
 .ct { font-size: 14px; }
 .bar { flex: 1; min-width: 120px; height: 10px; border: 2px solid var(--mpc-ink); border-radius: 999px; overflow: hidden; background: var(--mpc-paper); }
 .bar span { display: block; height: 100%; background: var(--mpc-lime); transition: width .2s; }
-h4 { margin: 14px 0 4px !important; font-size: 15.5px; }
+h3 { margin: 14px 0 4px !important; font-size: 15.5px; }
 .it { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; padding: 6px 4px; border-radius: 8px; cursor: pointer; font-size: 14.5px; line-height: 1.5; }
 .it:hover { background: var(--mpc-violet-soft); }
 .it.on > span { text-decoration: line-through; text-decoration-thickness: 1.5px; color: var(--vp-c-text-2); }

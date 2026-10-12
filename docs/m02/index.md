@@ -227,32 +227,7 @@ What [`Agent.stream()`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499
 6. `#execute` builds the [prepare-stream workflow](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/workflows/prepare-stream/index.ts#L230): `parallel([prepareToolsStep, prepareMemoryStep]) → mapResultsStep → streamStep`, and `streamStep` calls `loop()`.
 7. [`registerRun`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9744) makes the run the thread's active run. On error, the reservation is released.
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant C as Caller
-  participant A as Agent.stream
-  participant RT as ThreadStreamRuntime
-  participant P as prepare-stream WF
-  participant L as AgenticLoop (dowhile)
-  participant M as Model
-  participant T as Tools
-  C->>A: stream(messages, {memory:{thread, resource}})
-  A->>RT: waitForCrossAgentThreadRun (reserve thread)
-  A->>RT: prepareRunOptions (signal drain wiring)
-  A->>P: prepareTools ∥ prepareMemory → map
-  P->>L: streamStep → loop()
-  A->>RT: registerRun (thread active)
-  loop each iteration
-    L->>M: input processors → doStream(prompt + pending signals)
-    M-->>L: chunks → processOutputStream → processOutputStep
-    L->>T: foreach toolCall → execute → processToolResult
-    L->>L: mapping (call order) → bg check → signal drain → goal
-    L->>L: predicate: inline drain · preempted? · decideContinuation
-  end
-  L-->>A: processOutputResult → finish
-  A->>RT: run ends → thread idle → release reservation
-```
+<LoopSequence />
 
 **The predicate:** [`loop-builder.ts#L419`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L419), `signalPreempted` at [L499](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L499).
 

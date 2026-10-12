@@ -9,7 +9,7 @@ verified:
 
 `agent.ts` is 11,000 lines. `thread-stream-runtime.ts` is another 5,900. You won't read them top to bottom, and you don't need to.
 
-This module gets three things in place: labs that run in under a minute, a clone of Mastra pinned to the course's commit, and a reading strategy for a large TypeScript monorepo.
+This module gets three things in place: labs that run in about 90 seconds, a clone of Mastra pinned to the course's commit, and a reading strategy for a large TypeScript monorepo.
 
 ## 0.1 Run the course labs
 

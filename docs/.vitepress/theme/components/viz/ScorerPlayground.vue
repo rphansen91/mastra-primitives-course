@@ -98,7 +98,7 @@ const acc = computed(() => shown.value.map((x) => x.text).join(''));
           <div class="it-t">“{{ x.text }}”</div>
           <div class="sc" :class="x.score ? 's1' : 's0'">citations: {{ x.score }}</div>
           <div v-if="!x.score" class="fb">feedback added: <code>#### Completion Check Results Overall: ❌ NOT COMPLETE</code> → loop continues</div>
-          <div v-else class="fb ok">✅ complete → loop stops</div>
+          <div v-else class="fb ok"><Icon name="check" :size="13" /> complete → loop stops</div>
         </div>
       </div>
       <div class="mpc-btn-row">
@@ -121,7 +121,7 @@ const acc = computed(() => shown.value.map((x) => x.text).join(''));
 .drow.on { outline: 3px solid var(--mpc-violet); }
 .dq { font-weight: 800; font-size: 13.5px; }
 .parts { display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
-.part { font-family: var(--mpc-mono); font-size: 11px; border: 1.5px solid var(--mpc-ink); border-radius: 6px; padding: 0 5px; background: var(--vp-c-bg-soft); overflow-wrap: anywhere; }
+.part { font-family: var(--mpc-mono); font-size: 11px; border: 1.5px solid var(--mpc-ink); border-radius: 6px; padding: 0 5px; background: var(--vp-c-bg-soft); overflow-wrap: break-word; }
 .part.tool { background: var(--mpc-amber-soft); } .part.text { background: var(--mpc-sky-soft); }
 .sc { justify-self: center; font-weight: 800; border: 2px solid var(--mpc-ink); border-radius: 999px; padding: 0 9px; font-size: 13px; }
 .s1 { background: var(--mpc-teal-soft); } .s0 { background: var(--mpc-coral-soft); }
@@ -132,16 +132,16 @@ const acc = computed(() => shown.value.map((x) => x.text).join(''));
 .pipe li.skip { opacity: 0.5; border-style: dashed; }
 .pipe li.llm { background: var(--mpc-violet-soft); }
 .sn { font-weight: 800; background: none !important; padding: 0 !important; }
-.pipe pre { margin: 0 !important; padding: 0 !important; background: none !important; font-family: var(--mpc-mono); font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.pipe pre { margin: 0 !important; padding: 0 !important; background: none !important; font-family: var(--mpc-mono); font-size: 12px; white-space: pre-wrap; overflow-wrap: break-word; }
 .note, .intro { margin: 0; font-size: 13.5px; }
 .iters { display: grid; gap: 8px; }
 .iter { display: grid; gap: 4px; border: 2px solid var(--mpc-ink); border-radius: 10px; padding: 8px 10px; background: var(--mpc-paper); }
 .it-h { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mpc-ink-2); }
 .it-t { font-size: 14px; }
 .iter .sc { justify-self: start; }
-.fb { font-size: 12.5px; overflow-wrap: anywhere; }
+.fb { font-size: 12.5px; overflow-wrap: break-word; }
 .fb.ok { color: var(--mpc-teal); font-weight: 700; }
-.res { border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px 12px; background: var(--mpc-amber-soft); font-size: 14px; overflow-wrap: anywhere; }
+.res { border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px 12px; background: var(--mpc-amber-soft); font-size: 14px; overflow-wrap: break-word; }
 .res p { margin: 6px 0 0; }
 @media (max-width: 560px) { .drow { grid-template-columns: minmax(0, 1fr) 34px; } .parts { grid-column: 1 / -1; grid-row: 2; } .pipe li { grid-template-columns: 1fr; } }
 </style>

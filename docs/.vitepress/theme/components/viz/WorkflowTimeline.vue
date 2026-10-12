@@ -194,7 +194,7 @@ const emailsToManager = computed(() => outbox.value.filter((o) => o.to === 'mana
 .json { margin: 6px 0 0 !important; font-size: 12px; line-height: 1.5; background: var(--vp-c-bg-soft) !important; border-radius: 8px; padding: 6px 8px !important; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
 .json code { background: none !important; padding: 0 !important; font-size: 11.5px !important; white-space: pre-wrap !important; }
 .log { list-style: none; padding: 0 !important; margin: 6px 0 0 !important; display: grid; gap: 4px; }
-.log li { margin: 0 !important; font-size: 12.5px !important; line-height: 1.4; padding: 2px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+.log li { margin: 0 !important; font-size: 12.5px !important; line-height: 1.4; padding: 2px 6px; border-radius: 6px; overflow-wrap: break-word; }
 .pid { font-weight: 800; font-size: 11px; text-transform: uppercase; margin-right: 4px; }
 .pA .pid { color: var(--mpc-violet); } .pB .pid { color: var(--mpc-sky); } .pC .pid { color: var(--mpc-teal); }
 .log .effect { background: var(--mpc-amber-soft); }

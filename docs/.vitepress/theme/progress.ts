@@ -1,4 +1,6 @@
 import { reactive } from 'vue';
+import { breakIdent } from './ident';
+export { breakIdent };
 
 /**
  * Tiny localStorage-backed progress store shared by every component.
@@ -55,7 +57,7 @@ export function fmt(s: string): string {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/`([^`]+)`/g, (_, c) => `<code>${breakIdent(c)}</code>`)
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>');
 }

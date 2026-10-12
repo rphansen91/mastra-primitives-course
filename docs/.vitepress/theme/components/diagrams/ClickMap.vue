@@ -63,8 +63,8 @@ function focus() { requestAnimationFrame(() => root.value?.querySelectorAll<HTML
 .c-lime { background: var(--mpc-lime-soft); }
 .num { width: 22px; height: 22px; border-radius: 50%; background: var(--mpc-ink); color: var(--mpc-paper); font-size: 12px; font-weight: 800; display: grid; place-items: center; }
 .num.big { width: 30px; height: 30px; font-size: 15px; }
-.nm { font-family: var(--mpc-mono); font-size: 12px; font-weight: 800; overflow-wrap: anywhere; line-height: 1.25; }
-.sh { font-size: 12px; color: var(--vp-c-text-2); line-height: 1.3; overflow-wrap: anywhere; max-width: 100%; }
+.nm { font-family: var(--mpc-mono); font-size: 12px; font-weight: 800; overflow-wrap: break-word; line-height: 1.25; }
+.sh { font-size: 12px; color: var(--vp-c-text-2); line-height: 1.3; overflow-wrap: break-word; max-width: 100%; }
 .loopback { align-self: center; margin-left: 10px; font-size: 13px; font-weight: 800; color: var(--mpc-violet); }
 .detail { margin-top: 14px; border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 12px 14px; }
 .dh { display: flex; gap: 10px; align-items: center; }

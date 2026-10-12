@@ -175,21 +175,7 @@ Step through the lab's relay, then flip to ping-pong and turn the guard off:
 
 <OrderSteps module="08" id="relay" prompt="Put the coordinator relay in order." :items="relayOrder" explain="Ownership first (so discovery finds the worker), then the wake, then the relay tool, then delivery at the worker's next safe point." />
 
-```mermaid
-flowchart LR
-  subgraph sources[External sources]
-    GH[GitHub] --> P
-    CH[Chat] --> P
-    CAL[Calendar / schedules] --> P
-  end
-  P["SignalProvider<br/>poll/webhook → classify → notify()"] --> N["sendNotificationSignal<br/>delivery policy: deliver / summarize / persist"]
-  N --> CO["Coordinator agent<br/>memory + inbox tool + one thread"]
-  CO -- "discoverThreadPeers()" --> DIR[(PubSub peer directory)]
-  CO -- "relay tool → sendSignal (deliver)" --> W1["Worker agent A<br/>(running)"]
-  CO -- "sendSignal (wake / persist)" --> W2["Worker agent B<br/>(idle)"]
-  W1 -. "claimThreadOwnership + advertise" .-> DIR
-  W2 -. "claimThreadOwnership + advertise" .-> DIR
-```
+<NotifyFlow />
 
 <TryIt cmd="npm run lab:relay && npm run lab:ping-pong" :output="outRelay">
 

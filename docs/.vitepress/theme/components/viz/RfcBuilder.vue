@@ -160,5 +160,5 @@ const showMd = ref(false);
 .note { display: grid; gap: 4px; font-size: 13px; }
 .note textarea { width: 100%; box-sizing: border-box; border: 2px solid var(--mpc-ink); border-radius: 8px; padding: 6px 8px; font: inherit; font-size: 13.5px; background: var(--mpc-paper); color: var(--mpc-ink); }
 .md { max-height: 360px; overflow: auto; margin: 0 !important; padding: 10px !important; border: 2px solid var(--mpc-ink); border-radius: 10px; background: var(--vp-c-bg-soft) !important; white-space: pre-wrap; }
-.md code { font-size: 12px !important; background: none !important; padding: 0 !important; white-space: pre-wrap !important; overflow-wrap: anywhere; }
+.md code { font-size: 12px !important; background: none !important; padding: 0 !important; white-space: pre-wrap !important; overflow-wrap: break-word; }
 </style>

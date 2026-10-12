@@ -147,17 +147,7 @@ Mastra's durability is a set of parts that fit together. Click through them:
 
 ### Recovery modes
 
-```mermaid
-flowchart LR
-  subgraph boot["Process boot"]
-    W["recovery.workflows: 'auto' (default)<br/>restartAllActiveWorkflowRuns()"]
-    D["recovery.durableAgents: 'auto' (opt-in)<br/>recoverAllDurableAgents()"]
-  end
-  W --> WS["re-run from last snapshot<br/>completed steps memoized<br/>in-flight step re-runs<br/><b>no claim</b>"]
-  D --> C{"run claim held by<br/>a live owner?"}
-  C -- "1.76.0+: yes → skip,<br/>retry after TTL" --> C
-  C -- "no / expired" --> R["recover: rebuild state,<br/>re-drive from step-boundary checkpoint"]
-```
+<RecoveryFlow />
 
 ### Two versions, two behaviors
 
