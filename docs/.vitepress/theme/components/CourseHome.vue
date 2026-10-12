@@ -52,10 +52,10 @@ const OUTCOMES = [
     </section>
 
     <dl class="stats" aria-label="Course at a glance">
-      <div><dt>Modules</dt><dd>{{ MODULES.length }}</dd><span>setup to capstone</span></div>
-      <div><dt>Lesson time</dt><dd>~{{ hours }} h</dd><span>from module estimates</span></div>
-      <div><dt>Labs</dt><dd>{{ labs.labs }}</dd><span>{{ labs.tests }} tests, green in CI</span></div>
-      <div><dt>Verified on</dt><dd class="v"><code>@mastra/core@{{ VERIFIED.core }}</code></dd><span>source pinned to {{ VERIFIED.sha.slice(0, 7) }}</span></div>
+      <div><dt>Modules</dt><dd>{{ MODULES.length }}</dd><dd class="s">setup to capstone</dd></div>
+      <div><dt>Lesson time</dt><dd>~{{ hours }} h</dd><dd class="s">from module estimates</dd></div>
+      <div><dt>Labs</dt><dd>{{ labs.labs }}</dd><dd class="s">{{ labs.tests }} tests, green in CI</dd></div>
+      <div><dt>Verified on</dt><dd class="v"><code>@mastra/core@{{ VERIFIED.core }}</code></dd><dd class="s">source pinned to {{ VERIFIED.sha.slice(0, 7) }}</dd></div>
     </dl>
 
     <section class="sec" aria-labelledby="ch-out">
@@ -119,7 +119,7 @@ dt { order: 1; font-size: var(--fs-xs); font-weight: var(--fw-semibold); text-tr
 dd { order: 2; margin: 2px 0 0; font-size: var(--fs-h2); font-weight: var(--fw-semibold); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 dd.v { font-size: var(--fs-md); padding-top: 8px; }
 dd.v code { font-size: inherit; overflow-wrap: anywhere; }
-.stats span { order: 3; font-size: var(--fs-sm); color: var(--vp-c-text-2); }
+.stats dd.s { order: 3; margin: 0; font-size: var(--fs-sm); font-weight: var(--fw-regular); letter-spacing: 0; color: var(--vp-c-text-2); }
 
 .sec { padding: 48px 0 0; }
 h2 { font-size: var(--fs-h2); letter-spacing: -0.02em; font-weight: var(--fw-semibold); margin: 0 0 18px; }
