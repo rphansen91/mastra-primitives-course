@@ -1,27 +1,18 @@
 ---
-layout: home
-hero:
-  name: Mastra Primitives
-  text: Understand the core. Then build the next primitive.
-  tagline: A source-level course on the agent loop, processors, memory, workflows, signals, durability and multi-agent coordination in the open-source Mastra framework, with runnable labs that need no API keys.
-  actions:
-    - theme: brand
-      text: Start with the method
-      link: /guide/method
-    - theme: alt
-      text: Module 0, setup
-      link: /m00/
-    - theme: alt
-      text: Cheat sheet
-      link: /cheatsheet
-features:
-  - title: Four passes per primitive
-    details: "The problem it solves, how it is built in real source (pinned links), where it breaks (a break-it exercise), and when to choose something else (a decision table)."
-  - title: Runnable, keyless labs
-    details: "Every lab uses a 100-line mock model and the published @mastra/core package. npm test runs them all, including a real kill -9 crash lab. CI runs them on every push."
-  - title: Built for framework designers
-    details: "The capstone is an RFC plus an implementation of a new primitive: journaled tool results, idempotency keys, durable timers, waitForSignal, durable signal queues."
+layout: page
+title: Mastra Primitives
+titleTemplate: A source-level course on the Mastra agent framework
+description: A source-level course on the agent loop, processors, memory, workflows, signals, durability and multi-agent coordination in the open-source Mastra framework, with runnable labs that need no API keys.
+sidebar: false
+aside: false
+footer: false
 ---
+
+<main class="home" id="main">
+
+<CourseHome />
+
+<div class="vp-doc home-prose">
 
 ## What this course is
 
@@ -33,11 +24,19 @@ The premise is the one the *Principles of Building AI Agents* foreword states: <
 
 The goal: by the end you can **explain each primitive from first principles, predict how it fails, and design a new one** that fits Mastra's house rules.
 
+Every module ends with **where it falls down**, a comparison with at least one other framework, pointers to real source **and tests**, a decision table that feeds the cumulative [cheat sheet](/cheatsheet), and **further reading** from Mastra's free books and its founders' essays (all collected on the [reading list](/reading)).
+
+<div class="home-cols">
+<div>
+
 ## Who it is for
 
 - Engineers building production agents on Mastra who want to stop guessing.
 - Contributors who want to work on Mastra's core (the loop, processors, signals, durability).
 - Anyone designing an agent framework and looking for a worked, source-level case study.
+
+</div>
+<div>
 
 ## Prerequisites
 
@@ -48,23 +47,8 @@ The goal: by the end you can **explain each primitive from first principles, pre
 
 No API keys, no accounts, no network calls in the labs.
 
-## How the course is organized
-
-| # | Module | Depth |
-|---|---|---|
-| 0 | [Setup and how to read the Mastra codebase](/m00/) | Full |
-| 1 | [First principles: a loop from scratch, durability, events vs requests](/m01/) | Full: lesson, lab, break-it, solutions, quiz |
-| 2 | [The agent loop](/m02/) | Full |
-| 3 | [Processors as the extension point](/m03/) | Full |
-| 4 | [Memory](/m04/) | Lesson + built lab + break-it |
-| 5 | [Workflows](/m05/) | Lesson + built two-process lab + break-it |
-| 6 | [Signals and notifications](/m06/) | Lesson + **built labs** + break-it |
-| 7 | [Durability](/m07/) | Lesson + **built kill -9 crash lab** + break-it |
-| 8 | [Multi-agent coordination](/m08/) | Lesson + built relay and subagent-context labs + break-it |
-| 9 | [Evals and observability](/m09/) | Lesson + built lab + break-it |
-| 10 | [Capstone: building primitives](/m10/) | RFC template + candidate primitives + grading rubric |
-
-Every module ends with **where it falls down**, a comparison with at least one other framework, pointers to real source **and tests**, a decision table that feeds the cumulative [cheat sheet](/cheatsheet), and **further reading** from Mastra's free books and its founders' essays (all collected on the [reading list](/reading)).
+</div>
+</div>
 
 ## Running the labs in 60 seconds
 
@@ -84,6 +68,67 @@ See [Running the labs](/guide/labs) for the exercise workflow.
 - Source links: `mastra-ai/mastra` at commit [`81299c94`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae) (the `@mastra/core@1.76.0` release tag, published 2026-10-11).
 - Labs: published **`@mastra/core@1.76.0`** + `@mastra/libsql@1.26.0` (pinned, so the source links and the package match). CI also runs every lab on the previous stable, `1.75.0`, and on a floating `@latest`, so you can see behavior change between versions. Modules 6, 7 and 9 show real differences.
 
-::: info Independent course, not affiliated with or endorsed by Mastra
-This course is built from the public repository, public docs, Mastra's free books and its founders' public writing. Quotes are short, verbatim and attributed, with links to the source; none of them implies endorsement. Line references were correct at the pinned commit; on newer commits, search for the symbol name.
-:::
+## About the author
+
+<div class="author">
+<div class="mono" aria-hidden="true">RH</div>
+<div>
+
+**Ryan Hansen** wrote this course by reading the Mastra source at a pinned commit, building every lab against the published package and breaking things on purpose. Corrections are welcome: [open an issue](https://github.com/rphansen91/mastra-primitives-course/issues) or a pull request on [GitHub](https://github.com/rphansen91/mastra-primitives-course).
+
+<p class="indep"><strong>Independent course, not affiliated with or endorsed by Mastra.</strong> This course is built from the public repository, public docs, Mastra's free books and its founders' public writing. Quotes are short, verbatim and attributed, with links to the source; none of them implies endorsement. Line references were correct at the pinned commit; on newer commits, search for the symbol name. Course text and code are MIT licensed.</p>
+
+</div>
+</div>
+
+## FAQ
+
+<div class="faq">
+
+<details><summary>Do I need API keys or an account?</summary>
+
+No. Every lab uses a small scripted mock model and the published `@mastra/core` package: no API keys, no accounts, no network calls. `npm test` runs them all, including a real `kill -9` crash lab.
+
+</details>
+
+<details><summary>What do I need installed?</summary>
+
+Node.js 22.13 or newer, and comfort with TypeScript and async JavaScript. A local clone of `mastra-ai/mastra` is optional; Module 0 shows how to use one for reading source and running its tests.
+
+</details>
+
+<details><summary>How long does it take?</summary>
+
+The module estimates add up to about eight and a half hours of reading, plus the labs. Each lab runs in seconds; the whole suite takes about 45 seconds. The capstone is open-ended.
+
+</details>
+
+<details><summary>Which Mastra version does it cover?</summary>
+
+`@mastra/core@1.76.0`, with source links pinned to the matching release commit. CI also runs the labs on `1.75.0` and on `@latest`, and each module's Production readiness panel shows the date it was last verified.
+
+</details>
+
+<details><summary>Where is my progress stored?</summary>
+
+Only in your browser (`localStorage`). Nothing is sent anywhere. Each module's tracker has a reset button.
+
+</details>
+
+<details><summary>Is there a certificate?</summary>
+
+Yes. Finish every lesson, lab, break-it and quiz page and the [certificate page](/certificate) will draw a PNG with your name on it, right in your browser.
+
+</details>
+
+<details><summary>Where do the quotes come from?</summary>
+
+Short, verbatim excerpts from Mastra's free books and its founders' public writing, each attributed and linked. The [reading list](/reading) collects them all.
+
+</details>
+
+</div>
+
+</div>
+
+</main>

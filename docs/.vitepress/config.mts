@@ -24,6 +24,7 @@ const COURSE_PAGES = [
   { text: 'Decision-table cheat sheet', link: '/cheatsheet' },
   { text: 'Production guide', link: '/adopting' },
   { text: 'Reading list', link: '/reading' },
+  { text: 'Certificate', link: '/certificate' },
 ];
 const byGroup = (g: string) => MODULES.filter((m) => m.group === g).map(moduleSidebar);
 const capstone = MODULES.find((m) => m.n === '10')!;
@@ -31,11 +32,12 @@ const capstone = MODULES.find((m) => m.n === '10')!;
 // Flat reading order with human labels, used for prev/next ("Module 1 · Quiz").
 type Stop = { link: string; label: string };
 const ORDER: Stop[] = [
-  ...COURSE_PAGES.filter((p) => p.link !== '/').map((p) => ({ link: p.link, label: p.text })),
+  ...COURSE_PAGES.filter((p) => p.link !== '/' && p.link !== '/certificate').map((p) => ({ link: p.link, label: p.text })),
   ...MODULES.flatMap((m) => [
     ...m.pages.map((p) => ({ link: pageLink(m.n, p), label: `Module ${Number(m.n)} · ${PAGE_LABEL[p]}` })),
     ...(m.n === '10' ? [{ link: '/m10/rfc-template', label: 'Module 10 · RFC template' }] : []),
   ]),
+  { link: '/certificate', label: 'Certificate' },
 ];
 const linkOf = (relativePath: string) => '/' + relativePath.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '');
 
