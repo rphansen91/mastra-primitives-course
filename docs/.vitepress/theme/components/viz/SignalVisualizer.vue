@@ -109,35 +109,37 @@ const FLAB = ['1 · compose', '2 · route', '3 · land'];
       </div>
     </div>
 
-    <svg class="ill tree" viewBox="0 0 680 300" role="img" :aria-label="`Routing: thread ${thread}, result ${action}`">
-      <defs>
-        <marker id="sv-a" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0 0 L10 5 L0 10z" class="f-ink" /></marker>
-      </defs>
-      <rect x="18" y="122" width="150" height="56" rx="14" class="shadow" transform="translate(4 4)" />
-      <rect x="18" y="122" width="150" height="56" rx="14" class="f-amber outline" />
-      <text x="93" y="146" text-anchor="middle" font-size="14" class="t-strong">sendSignal()</text>
-      <text x="93" y="165" text-anchor="middle" font-size="11" class="t-mono t-dim">CI failed on PR 42</text>
-      <path d="M170 150 L208 150" class="stroke" marker-end="url(#sv-a)" />
-      <g transform="translate(250 150)">
-        <path d="M0 -40 L46 0 L0 40 L-46 0Z" class="shadow" transform="translate(4 4)" />
-        <path d="M0 -40 L46 0 L0 40 L-46 0Z" class="f-violet outline" />
-        <text y="-2" text-anchor="middle" font-size="12.5" class="t-strong">thread</text>
-        <text y="13" text-anchor="middle" font-size="12.5" class="t-strong">state?</text>
-      </g>
-      <g v-for="(lbl, b) in ['active, this process', 'active elsewhere / suspended', 'idle']" :key="b" :class="{ dim: frame > 0 && branch !== b }" class="br">
-        <path :d="`M296 150 Q320 ${branchY[b]} 336 ${branchY[b]}`" class="stroke" :class="{ hotpath: frame > 0 && branch === b }" marker-end="url(#sv-a)" />
-        <rect x="340" :y="branchY[b] - 22" width="128" height="44" rx="12" class="f-paper outline" />
-        <text x="404" :y="branchY[b] - 2" text-anchor="middle" font-size="11.5" class="t-strong">{{ lbl.split(' / ')[0] }}</text>
-        <text x="404" :y="branchY[b] + 13" text-anchor="middle" font-size="11" class="t-dim">{{ lbl.includes(' / ') ? '/ ' + lbl.split(' / ')[1] : b === 0 ? `ifActive: ${ifActive}` : `ifIdle: ${ifIdle}` }}</text>
-        <path :d="`M470 ${branchY[b]} L516 ${branchY[b]}`" class="stroke" :class="{ hotpath: frame > 1 && branch === b }" marker-end="url(#sv-a)" />
-        <rect x="520" :y="branchY[b] - 20" width="130" height="40" rx="20" :class="`f-${ACOLOR[branchAction(b)]}`" class="outline" />
-        <text x="585" :y="branchY[b] + 5" text-anchor="middle" font-size="14" class="t-strong t-mono">{{ branchAction(b) }}</text>
-      </g>
-      <g class="env" :style="{ transform: `translate(${env.x}px, ${env.y - 34}px)` }" aria-hidden="true">
-        <rect x="-17" y="-11" width="34" height="23" rx="4" class="c-amber outline" stroke-width="2" />
-        <path d="M-17 -10 L0 3 L17 -10" class="stroke" stroke-width="2" />
-      </g>
-    </svg>
+    <div class="vscroll" tabindex="0" style="--vw: 680px">
+      <svg class="ill tree" viewBox="0 0 680 300" role="img" :aria-label="`Routing: thread ${thread}, result ${action}`">
+        <defs>
+          <marker id="sv-a" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M0 0 L10 5 L0 10z" class="f-ink" /></marker>
+        </defs>
+        <rect x="18" y="122" width="150" height="56" rx="14" class="shadow" transform="translate(4 4)" />
+        <rect x="18" y="122" width="150" height="56" rx="14" class="f-amber outline" />
+        <text x="93" y="146" text-anchor="middle" font-size="14" class="t-strong">sendSignal()</text>
+        <text x="93" y="165" text-anchor="middle" font-size="11" class="t-mono t-dim">CI failed on PR 42</text>
+        <path d="M170 150 L208 150" class="stroke" marker-end="url(#sv-a)" />
+        <g transform="translate(250 150)">
+          <path d="M0 -40 L46 0 L0 40 L-46 0Z" class="shadow" transform="translate(4 4)" />
+          <path d="M0 -40 L46 0 L0 40 L-46 0Z" class="f-violet outline" />
+          <text y="-2" text-anchor="middle" font-size="12.5" class="t-strong">thread</text>
+          <text y="13" text-anchor="middle" font-size="12.5" class="t-strong">state?</text>
+        </g>
+        <g v-for="(lbl, b) in ['active, this process', 'active elsewhere / suspended', 'idle']" :key="b" :class="{ dim: frame > 0 && branch !== b }" class="br">
+          <path :d="`M296 150 Q320 ${branchY[b]} 336 ${branchY[b]}`" class="stroke" :class="{ hotpath: frame > 0 && branch === b }" marker-end="url(#sv-a)" />
+          <rect x="340" :y="branchY[b] - 22" width="128" height="44" rx="12" class="f-paper outline" />
+          <text x="404" :y="branchY[b] - 2" text-anchor="middle" font-size="11.5" class="t-strong">{{ lbl.split(' / ')[0] }}</text>
+          <text x="404" :y="branchY[b] + 13" text-anchor="middle" font-size="11" class="t-dim">{{ lbl.includes(' / ') ? '/ ' + lbl.split(' / ')[1] : b === 0 ? `ifActive: ${ifActive}` : `ifIdle: ${ifIdle}` }}</text>
+          <path :d="`M470 ${branchY[b]} L516 ${branchY[b]}`" class="stroke" :class="{ hotpath: frame > 1 && branch === b }" marker-end="url(#sv-a)" />
+          <rect x="520" :y="branchY[b] - 20" width="130" height="40" rx="20" :class="`f-${ACOLOR[branchAction(b)]}`" class="outline" />
+          <text x="585" :y="branchY[b] + 5" text-anchor="middle" font-size="14" class="t-strong t-mono">{{ branchAction(b) }}</text>
+        </g>
+        <g class="env" :style="{ transform: `translate(${env.x}px, ${env.y - 34}px)` }" aria-hidden="true">
+          <rect x="-17" y="-11" width="34" height="23" rx="4" class="c-amber outline" stroke-width="2" />
+          <path d="M-17 -10 L0 3 L17 -10" class="stroke" stroke-width="2" />
+        </g>
+      </svg>
+    </div>
 
     <div class="fr" role="group" aria-label="Animation steps">
       <button type="button" class="mpc-btn primary" @click="send"><Icon name="mail" :size="15" /> Send signal</button>

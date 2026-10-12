@@ -16,7 +16,7 @@ withDefaults(
 <template>
   <section class="hero" aria-label="Lesson overview">
     <p class="meta">
-      <span>Module {{ Number(module) }}</span>
+      <span class="mod"><ModuleArt :module="module" :size="22" /> Module {{ Number(module) }}</span>
       <span><Icon name="clock" :size="14" /> ~{{ minutes }} min</span>
       <span v-if="lab"><Icon name="flask" :size="14" /> {{ lab }}</span>
       <span v-if="recap"><Icon name="headphones" :size="14" /> Listen-friendly recap</span>
@@ -42,7 +42,8 @@ withDefaults(
 .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; margin: 0 0 20px !important; font-size: var(--fs-sm); color: var(--vp-c-text-2); }
 .meta span { display: inline-flex; align-items: center; gap: 5px; }
 .meta span + span::before { content: '·'; margin: 0 10px; color: var(--vp-c-text-3); }
-.meta :deep(svg) { color: var(--vp-c-text-3); }
+.meta :deep(svg.mpc-icon) { color: var(--vp-c-text-3); }
+.meta .mod { font-weight: var(--fw-semibold); color: var(--mod-accent); }
 .grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; }
 .story, .outcomes { border-radius: var(--r-lg); padding: 16px 20px; }
 .story { background: var(--mpc-surface-2); border: 1px solid var(--mpc-line); }

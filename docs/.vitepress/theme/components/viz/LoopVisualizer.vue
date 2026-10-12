@@ -150,6 +150,7 @@ function onKey(e: KeyboardEvent) {
 watch([scenario, serial, guard], () => reset());
 onBeforeUnmount(stop);
 const tok = computed(() => NODES[cur.value.node]);
+const RAIL: NodeId[] = ['input', 'prep', 'model', 'vet', 'tools', 'fold', 'stop', 'output'];
 </script>
 
 <template>
@@ -204,6 +205,18 @@ const tok = computed(() => NODES[cur.value.node]);
         </g>
       </svg>
 
+      <!-- narrow screens: the same loop as a rail with real-size text instead of a shrunken SVG -->
+      <div class="rail" aria-hidden="true">
+        <div class="rail-head">
+          <Mascot :mood="cur.warn ? 'alarmed' : cur.win ? 'cheer' : 'thinking'" :size="36" />
+          <span class="rail-step">step {{ step }} <span>/ maxSteps {{ maxSteps }}</span></span>
+        </div>
+        <ol>
+          <li v-for="id in RAIL" :key="id" :class="{ on: cur.node === id, loop: id === 'stop' }">
+            <span class="rt">{{ NODES[id].title }}</span><code class="rs">{{ NODES[id].sub }}</code>
+          </li>
+        </ol>
+      </div>
       <div class="panels">
         <div class="panel">
           <div class="ph">Message list <span class="dim">(the next prompt)</span></div>
@@ -264,6 +277,19 @@ const tok = computed(() => NODES[cur.value.node]);
 .node.active text.t-strong { fill: var(--mpc-violet); }
 .token { transition: transform 0.55s cubic-bezier(0.5, 0, 0.2, 1); }
 .ctr { display: flex; justify-content: center; }
+.rail { display: none; }
+.rail-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.rail-step { font-weight: var(--fw-semibold); font-size: var(--fs-md); font-variant-numeric: tabular-nums; }
+.rail-step span { font-weight: var(--fw-regular); color: var(--vp-c-text-2); font-family: var(--mpc-mono); font-size: var(--fs-xs); }
+.rail ol { list-style: none; margin: 0 !important; padding: 0 0 0 14px !important; border-left: 2px solid var(--mpc-line-strong); display: grid; gap: 2px; }
+.rail li { position: relative; margin: 0 !important; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding: 5px 10px; border-radius: var(--r-md); transition: background 0.25s; }
+.rail li::before { content: ''; position: absolute; left: -21px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: var(--vp-c-bg); border: 2px solid var(--mpc-line-strong); transition: background 0.25s, border-color 0.25s; }
+.rail li.on { background: var(--mod-tint); }
+.rail li.on::before { background: var(--mod-accent); border-color: var(--mod-accent); }
+.rail li.loop::after { content: 'tool calls? continue back to Prepare request'; flex-basis: 100%; font-size: var(--fs-xs); color: var(--vp-c-text-2); }
+.rt { font-weight: var(--fw-semibold); font-size: var(--fs-sm); }
+.rail li.on .rt { color: var(--mod-accent); }
+.rs { font-size: 12px !important; color: var(--vp-c-text-2) !important; background: none !important; border: 0 !important; padding: 0 !important; }
 .panels { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .panel { background: var(--mpc-paper); border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 8px 10px; }
 .ph :deep(code), .ph code { text-transform: none; }
@@ -303,6 +329,8 @@ const tok = computed(() => NODES[cur.value.node]);
 @container (max-width: 540px) {
   .panels { grid-template-columns: 1fr; }
   .dots { display: none; }
+  .diagram { display: none; }
+  .rail { display: block; background: var(--mpc-paper); border: 1px solid var(--mpc-line); border-radius: var(--r-lg); padding: 10px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .token, .edge, .msgs li { transition: none; }

@@ -57,33 +57,35 @@ const last = computed(() => hops.value[hops.value.length - 1]);
     </div>
 
     <template v-if="mode === 'relay'">
-      <svg class="ill map" viewBox="0 0 660 230" role="img" :aria-label="`Step ${i + 1} of ${stages.length}: ${s.title}. Coordinator: ${s.coord}. Worker: ${s.worker}.`">
-        <ArrowDefs />
-        <g :class="{ hot: on('ops', 'coord') }">
-          <rect x="10" y="30" width="150" height="76" rx="14" class="f-amber outline" />
-          <text x="85" y="62" text-anchor="middle" font-size="15" class="t-strong">ops source</text>
-          <text x="85" y="84" text-anchor="middle" font-size="11.5" class="t-dim">CI, chat, calendar</text>
-        </g>
-        <path d="M162 68 L242 68" class="stroke edge" :class="{ hot: on('ops', 'coord') }" marker-end="url(#ill-arrow)" />
-        <rect x="246" y="20" width="170" height="96" rx="14" class="f-violet outline" />
-        <text x="331" y="52" text-anchor="middle" font-size="15" class="t-strong">coordinator</text>
-        <text x="331" y="74" text-anchor="middle" font-size="11.5" class="t-dim">thread: coord</text>
-        <rect x="254" y="84" width="154" height="22" rx="11" class="f-paper outline" stroke-width="1.5" />
-        <text x="331" y="99.5" text-anchor="middle" font-size="10" class="t-mono">{{ s.coord }}</text>
-        <path d="M418 68 L494 68" class="stroke edge" :class="{ hot: on('coord', 'worker') }" marker-end="url(#ill-arrow)" />
-        <rect x="498" y="20" width="152" height="96" rx="14" class="f-teal outline" />
-        <text x="574" y="52" text-anchor="middle" font-size="15" class="t-strong">worker</text>
-        <text x="574" y="74" text-anchor="middle" font-size="11" class="t-dim">worker-auth-refactor</text>
-        <rect x="503" y="84" width="142" height="22" rx="11" class="f-paper outline" stroke-width="1.5" />
-        <text x="574" y="99.5" text-anchor="middle" font-size="9" class="t-mono">{{ s.worker }}</text>
-        <ellipse cx="452" cy="178" rx="92" ry="14" class="f-sky outline" />
-        <path d="M360 178 L360 206 A92 14 0 0 0 544 206 L544 178" class="f-sky outline" />
-        <text x="452" y="204" text-anchor="middle" font-size="12.5" class="t-strong">PubSub peer directory</text>
-        <path d="M340 120 L400 166" class="stroke edge" :class="{ hot: on('coord', 'dir') }" stroke-dasharray="5 5" marker-end="url(#ill-arrow)" />
-        <path d="M560 120 L510 166" class="stroke edge" :class="{ hot: on('worker', 'dir') }" stroke-dasharray="5 5" marker-end="url(#ill-arrow)" />
-        <circle v-if="i === 2" cx="202" cy="68" r="9" class="c-amber outline dot" />
-        <circle v-if="i === 3" cx="456" cy="68" r="9" class="c-violet outline dot" />
-      </svg>
+      <div class="vscroll" tabindex="0" style="--vw: 660px">
+        <svg class="ill map" viewBox="0 0 660 230" role="img" :aria-label="`Step ${i + 1} of ${stages.length}: ${s.title}. Coordinator: ${s.coord}. Worker: ${s.worker}.`">
+          <ArrowDefs />
+          <g :class="{ hot: on('ops', 'coord') }">
+            <rect x="10" y="30" width="150" height="76" rx="14" class="f-amber outline" />
+            <text x="85" y="62" text-anchor="middle" font-size="15" class="t-strong">ops source</text>
+            <text x="85" y="84" text-anchor="middle" font-size="11.5" class="t-dim">CI, chat, calendar</text>
+          </g>
+          <path d="M162 68 L242 68" class="stroke edge" :class="{ hot: on('ops', 'coord') }" marker-end="url(#ill-arrow)" />
+          <rect x="246" y="20" width="170" height="96" rx="14" class="f-violet outline" />
+          <text x="331" y="52" text-anchor="middle" font-size="15" class="t-strong">coordinator</text>
+          <text x="331" y="74" text-anchor="middle" font-size="11.5" class="t-dim">thread: coord</text>
+          <rect x="254" y="84" width="154" height="22" rx="11" class="f-paper outline" stroke-width="1.5" />
+          <text x="331" y="99.5" text-anchor="middle" font-size="10" class="t-mono">{{ s.coord }}</text>
+          <path d="M418 68 L494 68" class="stroke edge" :class="{ hot: on('coord', 'worker') }" marker-end="url(#ill-arrow)" />
+          <rect x="498" y="20" width="152" height="96" rx="14" class="f-teal outline" />
+          <text x="574" y="52" text-anchor="middle" font-size="15" class="t-strong">worker</text>
+          <text x="574" y="74" text-anchor="middle" font-size="11" class="t-dim">worker-auth-refactor</text>
+          <rect x="503" y="84" width="142" height="22" rx="11" class="f-paper outline" stroke-width="1.5" />
+          <text x="574" y="99.5" text-anchor="middle" font-size="9" class="t-mono">{{ s.worker }}</text>
+          <ellipse cx="452" cy="178" rx="92" ry="14" class="f-sky outline" />
+          <path d="M360 178 L360 206 A92 14 0 0 0 544 206 L544 178" class="f-sky outline" />
+          <text x="452" y="204" text-anchor="middle" font-size="12.5" class="t-strong">PubSub peer directory</text>
+          <path d="M340 120 L400 166" class="stroke edge" :class="{ hot: on('coord', 'dir') }" stroke-dasharray="5 5" marker-end="url(#ill-arrow)" />
+          <path d="M560 120 L510 166" class="stroke edge" :class="{ hot: on('worker', 'dir') }" stroke-dasharray="5 5" marker-end="url(#ill-arrow)" />
+          <circle v-if="i === 2" cx="202" cy="68" r="9" class="c-amber outline dot" />
+          <circle v-if="i === 3" cx="456" cy="68" r="9" class="c-violet outline dot" />
+        </svg>
+      </div>
       <div class="stage" aria-live="polite">
         <div class="num">{{ i + 1 }}/{{ stages.length }}</div>
         <div>

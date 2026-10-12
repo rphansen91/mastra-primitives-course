@@ -55,24 +55,26 @@ const label = { shared: 'shared', separate: 'separate', mixed: 'partly' } as con
       <button v-for="x in mechs" :key="x.key" type="button" role="radio" class="mpc-toggle" :aria-checked="sel === x.key" @click="sel = x.key">{{ x.name }}</button>
     </div>
 
-    <svg class="ill scene" viewBox="0 0 640 150" role="img" :aria-label="`${m.name}: ${m.across[0]} goes to the helper; ${m.across[1]} comes back.`">
-      <ArrowDefs />
-      <rect x="23" y="23" width="170" height="104" rx="16" class="shadow" />
-      <rect x="20" y="20" width="170" height="104" rx="16" class="f-paper outline" />
-      <text x="105" y="62" text-anchor="middle" font-size="16" class="t-strong">{{ sel === 'sig' ? 'agent A' : sel === 'wf' ? 'step 1' : 'parent' }}</text>
-      <text x="105" y="86" text-anchor="middle" font-size="12" class="t-dim">{{ sel === 'sig' ? 'its own thread + run' : sel === 'wf' ? 'workflow run' : 'one run' }}</text>
-      <rect x="453" y="23" width="170" height="104" rx="16" class="shadow" />
-      <rect x="450" y="20" width="170" height="104" rx="16" :class="`f-${m.color} outline`" />
-      <text x="535" y="62" text-anchor="middle" font-size="16" class="t-strong">{{ sel === 'sig' ? 'agent B' : sel === 'wf' ? 'agent step' : 'helper' }}</text>
-      <text x="535" y="86" text-anchor="middle" font-size="12" class="t-dim">{{ sel === 'sig' ? 'its own thread + run' : sel === 'wf' ? 'snapshot after it' : 'inside the parent\'s run' }}</text>
-      <rect v-if="sel === 'sub' || sel === 'net'" x="8" y="8" width="624" height="134" rx="22" fill="none" class="stroke" stroke-dasharray="7 6" />
-      <text v-if="sel === 'sub' || sel === 'net'" x="320" y="136" text-anchor="middle" font-size="11.5" class="t-dim">one run, the parent waits</text>
-      <Arrow d="M196 54 L444 54" :color="m.color === 'sky' ? undefined : m.color" />
-      <text x="320" y="44" text-anchor="middle" font-size="12.5" class="t-strong">{{ m.across[0] }}</text>
-      <Arrow v-if="sel !== 'sig'" d="M444 94 L196 94" />
-      <path v-else d="M444 94 L196 94" class="stroke" stroke-dasharray="3 7" opacity="0.5" />
-      <text x="320" y="114" text-anchor="middle" font-size="12.5" class="t-dim">{{ m.across[1] }}</text>
-    </svg>
+    <div class="vscroll" tabindex="0" style="--vw: 640px">
+      <svg class="ill scene" viewBox="0 0 640 150" role="img" :aria-label="`${m.name}: ${m.across[0]} goes to the helper; ${m.across[1]} comes back.`">
+        <ArrowDefs />
+        <rect x="23" y="23" width="170" height="104" rx="16" class="shadow" />
+        <rect x="20" y="20" width="170" height="104" rx="16" class="f-paper outline" />
+        <text x="105" y="62" text-anchor="middle" font-size="16" class="t-strong">{{ sel === 'sig' ? 'agent A' : sel === 'wf' ? 'step 1' : 'parent' }}</text>
+        <text x="105" y="86" text-anchor="middle" font-size="12" class="t-dim">{{ sel === 'sig' ? 'its own thread + run' : sel === 'wf' ? 'workflow run' : 'one run' }}</text>
+        <rect x="453" y="23" width="170" height="104" rx="16" class="shadow" />
+        <rect x="450" y="20" width="170" height="104" rx="16" :class="`f-${m.color} outline`" />
+        <text x="535" y="62" text-anchor="middle" font-size="16" class="t-strong">{{ sel === 'sig' ? 'agent B' : sel === 'wf' ? 'agent step' : 'helper' }}</text>
+        <text x="535" y="86" text-anchor="middle" font-size="12" class="t-dim">{{ sel === 'sig' ? 'its own thread + run' : sel === 'wf' ? 'snapshot after it' : 'inside the parent\'s run' }}</text>
+        <rect v-if="sel === 'sub' || sel === 'net'" x="8" y="8" width="624" height="134" rx="22" fill="none" class="stroke" stroke-dasharray="7 6" />
+        <text v-if="sel === 'sub' || sel === 'net'" x="320" y="136" text-anchor="middle" font-size="11.5" class="t-dim">one run, the parent waits</text>
+        <Arrow d="M196 54 L444 54" :color="m.color === 'sky' ? undefined : m.color" />
+        <text x="320" y="44" text-anchor="middle" font-size="12.5" class="t-strong">{{ m.across[0] }}</text>
+        <Arrow v-if="sel !== 'sig'" d="M444 94 L196 94" />
+        <path v-else d="M444 94 L196 94" class="stroke" stroke-dasharray="3 7" opacity="0.5" />
+        <text x="320" y="114" text-anchor="middle" font-size="12.5" class="t-dim">{{ m.across[1] }}</text>
+      </svg>
+    </div>
     <p class="code"><code>{{ m.code }}</code></p>
 
     <div class="grid">
