@@ -462,3 +462,4 @@ body { font-feature-settings: 'kern', 'calt'; -webkit-font-smoothing: antialiase
   .vscroll::after { content: 'Swipe sideways to see the whole drawing'; position: sticky; left: 0; display: block; font-size: var(--fs-xs); color: var(--vp-c-text-2); padding: 4px 2px 0; }
   .vscroll:focus-visible { outline: 2px solid var(--vp-c-brand-1); outline-offset: 2px; }
 }
+.home-prose div[class*='language-'] { margin-left: 0 !important; margin-right: 0 !important; border-radius: var(--r-md) !important; }

@@ -110,15 +110,15 @@ function print() {
         <rect x="31" y="50" width="58" height="38" rx="16" :fill="C.paper" :stroke="C.ink" stroke-width="3" />
         <path d="M44 67 Q48 61 52 67 M68 67 Q72 61 76 67 M52 76 Q60 83 68 76" fill="none" :stroke="C.ink" stroke-width="3.2" stroke-linecap="round" />
       </g>
-      <text x="32" y="44" font-size="15" font-weight="800" letter-spacing="1.5" :fill="C.dim">MASTRA PRIMITIVES · MODULE {{ Number(module) }} · CHEAT CARD</text>
-      <text x="32" y="82" font-size="32" font-weight="800" :fill="C.ink">{{ title }}</text>
+      <text x="32" y="44" font-size="15" font-weight="600" letter-spacing="1.5" :fill="C.dim">MASTRA PRIMITIVES · MODULE {{ Number(module) }} · CHEAT CARD</text>
+      <text x="32" y="82" font-size="32" font-weight="600" :fill="C.ink">{{ title }}</text>
       <text v-if="subtitle" x="32" y="106" font-size="15" :fill="C.dim">{{ subtitle }}</text>
       <g v-for="(c, i) in layout.cells" :key="i">
         <rect :x="c.x + 4" :y="c.y + 4" :width="COLW" :height="c.h" rx="14" :fill="C.ink" />
         <rect :x="c.x" :y="c.y" :width="COLW" :height="c.h" rx="14" :fill="C[c.color ?? 'sky']" :stroke="C.ink" stroke-width="2.5" />
         <circle :cx="c.x + 30" :cy="c.y + 32" r="15" :fill="C.paper" :stroke="C.ink" stroke-width="2.5" />
-        <text :x="c.x + 30" :y="c.y + 38" font-size="15" font-weight="800" text-anchor="middle" :fill="C.ink">{{ i + 1 }}</text>
-        <text :x="c.x + 56" :y="c.y + 39" font-size="19" font-weight="800" :fill="C.ink">{{ c.title }}</text>
+        <text :x="c.x + 30" :y="c.y + 38" font-size="15" font-weight="600" text-anchor="middle" :fill="C.ink">{{ i + 1 }}</text>
+        <text :x="c.x + 56" :y="c.y + 39" font-size="19" font-weight="600" :fill="C.ink">{{ c.title }}</text>
         <g v-for="(l, j) in c.lines" :key="j">
           <circle :cx="c.x + 24" :cy="l.start - 5" r="3.5" :fill="C.ink" />
           <text v-for="(w, k) in l.w" :key="k" :x="c.x + 36" :y="l.start + k * LH" :font-size="FS" :fill="C.ink">{{ w }}</text>
