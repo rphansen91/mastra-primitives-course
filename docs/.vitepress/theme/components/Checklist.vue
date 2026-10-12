@@ -13,7 +13,7 @@ const reset = () => { done.value = {}; };
 const whyHtml = (w: string) => ' ' + fmt(w);
 </script>
 <template>
-  <section class="cl mpc-card" :aria-label="`Checklist: ${count} of ${total} done`">
+  <section class="cl mpc-card mpc-toy" :aria-label="`Checklist: ${count} of ${total} done`">
     <div class="top">
       <span class="mpc-kicker"><Icon name="check" :size="14" /> Production checklist</span>
       <span class="ct"><strong>{{ count }}</strong> / {{ total }}</span>
@@ -32,11 +32,11 @@ const whyHtml = (w: string) => ' ' + fmt(w);
 <style scoped>
 .cl { padding: 14px 16px; margin: 20px 0; }
 .top { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.ct { font-size: 14px; }
-.bar { flex: 1; min-width: 120px; height: 10px; border: 2px solid var(--mpc-ink); border-radius: 999px; overflow: hidden; background: var(--mpc-paper); }
+.ct { font-size: var(--fs-sm); }
+.bar { flex: 1; min-width: 120px; height: 10px; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-pill); overflow: hidden; background: var(--mpc-paper); }
 .bar span { display: block; height: 100%; background: var(--mpc-lime); transition: width .2s; }
-h3 { margin: 14px 0 4px !important; font-size: 15.5px; }
-.it { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; padding: 6px 4px; border-radius: 8px; cursor: pointer; font-size: 14.5px; line-height: 1.5; }
+h3 { margin: 14px 0 4px !important; font-size: var(--fs-md); }
+.it { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; padding: 6px 4px; border-radius: var(--r-md); cursor: pointer; font-size: var(--fs-sm); line-height: 1.5; }
 .it:hover { background: var(--mpc-violet-soft); }
 .it.on > span { text-decoration: line-through; text-decoration-thickness: 1.5px; color: var(--vp-c-text-2); }
 .it input { width: 17px; height: 17px; margin-top: 3px; accent-color: var(--mpc-violet); }

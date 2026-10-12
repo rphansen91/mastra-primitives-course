@@ -24,8 +24,8 @@ const meta = computed(() => ({
 <style scoped>
 .callout { position: relative; padding: 14px 18px; }
 .head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
-.t { font-size: 16.5px; }
-.ico { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; border: 2px solid var(--mpc-ink); background: var(--mpc-paper); }
+.t { font-size: var(--fs-body); }
+.ico { width: 30px; height: 30px; border-radius: var(--r-md); display: grid; place-items: center; border: 1px solid var(--mpc-line); background: var(--mpc-paper); }
 .c-violet { background: var(--mpc-violet-soft); }
 .c-teal { background: var(--mpc-teal-soft); }
 .c-coral { background: var(--mpc-coral-soft); }

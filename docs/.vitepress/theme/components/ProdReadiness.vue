@@ -31,25 +31,25 @@ const v = computed(() => frontmatter.value.verified as { core: string; sha: stri
 </template>
 <style scoped>
 .pr { margin: 20px 0; display: grid; gap: 14px; }
-.verified { margin: 0 !important; font-size: 13.5px; color: var(--vp-c-text-2); }
+.verified { margin: 0 !important; font-size: var(--fs-sm); color: var(--vp-c-text-2); }
 .verified :deep(svg) { vertical-align: -2px; margin-right: 4px; }
 .verdict { padding: 12px 16px; background: var(--mpc-paper); }
-.verdict p { margin: 4px 0 0 !important; font-size: 15.5px; }
+.verdict p { margin: 4px 0 0 !important; font-size: var(--fs-md); }
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .col, .fm { padding: 12px 16px; }
-h3 { margin: 0 0 6px !important; display: flex; gap: 6px; align-items: center; font-size: 15.5px; }
+h3 { margin: 0 0 6px !important; display: flex; gap: 6px; align-items: center; font-size: var(--fs-md); }
 ul { margin: 0 !important; padding-left: 18px !important; }
-li { font-size: 14.5px; line-height: 1.5; margin: 4px 0 !important; overflow-wrap: break-word; }
+li { font-size: var(--fs-sm); line-height: 1.5; margin: 4px 0 !important; overflow-wrap: break-word; }
 .checks { list-style: '☐  '; }
 .c-lime { background: var(--mpc-lime-soft); }
 .c-amber { background: var(--mpc-amber-soft); }
 .c-sky { background: var(--mpc-sky-soft); }
 .c-violet { background: var(--mpc-violet-soft); }
 .fm { background: var(--mpc-coral-soft); }
-.row { display: grid; grid-template-columns: 1fr 22px 1fr; gap: 8px; padding: 7px 0; border-top: 1.5px dashed var(--vp-c-divider); font-size: 14.5px; line-height: 1.5; }
+.row { display: grid; grid-template-columns: 1fr 22px 1fr; gap: 8px; padding: 7px 0; border-top: 1.5px dashed var(--vp-c-divider); font-size: var(--fs-sm); line-height: 1.5; }
 .row:first-of-type { border-top: 0; }
 .mode { font-weight: 600; overflow-wrap: break-word; }
 .guard { overflow-wrap: break-word; }
-.arrow { text-align: center; font-weight: 800; }
-@media (max-width: 720px) { .grid { grid-template-columns: 1fr; } .row { grid-template-columns: 1fr; gap: 2px; } .arrow { display: none; } .guard::before { content: '→ '; font-weight: 800; } }
+.arrow { text-align: center; font-weight: var(--fw-semibold); }
+@media (max-width: 720px) { .grid { grid-template-columns: 1fr; } .row { grid-template-columns: 1fr; gap: 2px; } .arrow { display: none; } .guard::before { content: '→ '; font-weight: var(--fw-semibold); } }
 </style>

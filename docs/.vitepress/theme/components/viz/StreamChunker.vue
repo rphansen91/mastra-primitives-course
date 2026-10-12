@@ -27,7 +27,7 @@ const finished = computed(() => i.value === CHUNKS.length - 1);
 </script>
 
 <template>
-  <section class="sc mpc-card" aria-label="Stream redaction demo">
+  <section class="sc mpc-card mpc-toy" aria-label="Stream redaction demo">
     <div class="mpc-kicker"><Icon name="eye" :size="14" /> Interactive: redact a secret from a stream</div>
     <p class="intro">The model is about to stream a secret, <code>sk-abc123</code>. The processor's regex is <code>/sk-[a-z0-9]+/g</code>. The provider splits it across chunks wherever it likes. Your <code>processOutputStream</code> sees one chunk at a time.</p>
     <div class="mpc-toggle-group" role="radiogroup" aria-label="Processor">
@@ -61,21 +61,21 @@ const finished = computed(() => i.value === CHUNKS.length - 1);
 .sc { background: var(--vp-c-bg-soft); }
 .intro { margin: 6px 0 10px !important; }
 .rows { list-style: none; padding: 0 !important; margin: 14px 0 !important; display: grid; gap: 8px; }
-.rows li { margin: 0 !important; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 10px; border: 2px solid var(--mpc-ink); border-radius: 12px; background: var(--mpc-paper); opacity: 0.55; }
+.rows li { margin: 0 !important; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 10px; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); background: var(--mpc-paper); opacity: 0.55; }
 .rows li.shown { opacity: 1; }
-.rows li.cur { box-shadow: 3px 3px 0 var(--mpc-shadow); border-color: var(--mpc-violet); }
-.lbl { font-size: 12px; font-weight: 800; text-transform: uppercase; min-width: 62px; }
+.rows li.cur { box-shadow: none; border-color: var(--mpc-violet); }
+.lbl { font-size: var(--fs-xs); font-weight: var(--fw-semibold); text-transform: uppercase; min-width: 62px; }
 .in { background: var(--mpc-violet-soft) !important; }
 .out { background: var(--mpc-teal-soft) !important; }
 .out.pending { background: transparent !important; }
-.held { font-size: 12.5px; color: var(--mpc-amber); font-weight: 700; }
-.client { border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px 12px; background: var(--mpc-paper); }
+.held { font-size: var(--fs-xs); color: var(--mpc-amber); font-weight: var(--fw-semibold); }
+.client { border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 10px 12px; background: var(--mpc-paper); }
 .client.bad { background: var(--mpc-coral-soft); }
 .client.good { background: var(--mpc-teal-soft); }
-.screen { font-family: var(--mpc-mono); font-size: 15px; margin-top: 4px; min-height: 24px; }
+.screen { font-family: var(--mpc-mono); font-size: var(--fs-md); margin-top: 4px; min-height: 24px; }
 .caret { display: inline-block; width: 8px; height: 16px; background: var(--mpc-ink); vertical-align: -2px; margin-left: 2px; }
 @media (prefers-reduced-motion: no-preference) { .caret { animation: blink 1s steps(1) infinite; } }
 @keyframes blink { 50% { opacity: 0; } }
-.verdict { margin-top: 6px; font-weight: 800; }
+.verdict { margin-top: 6px; font-weight: var(--fw-semibold); }
 .ctrl { display: flex; gap: 8px; margin-top: 12px; }
 </style>

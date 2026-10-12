@@ -58,6 +58,7 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   head: [
+    ['link', { rel: 'preload', href: `${BASE}fonts/Geist.woff2`, as: 'font', type: 'font/woff2', crossorigin: '' }],
     ['link', { rel: 'icon', type: 'image/svg+xml', href: `${BASE}favicon.svg` }],
     ['link', { rel: 'apple-touch-icon', href: `${BASE}apple-touch-icon.png` }],
     ['link', { rel: 'mask-icon', href: `${BASE}mask-icon.svg`, color: '#16141f' }],

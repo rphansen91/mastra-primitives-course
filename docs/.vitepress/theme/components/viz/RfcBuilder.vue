@@ -63,7 +63,7 @@ const showMd = ref(false);
 </script>
 
 <template>
-  <section class="rb mpc-card" aria-label="RFC builder">
+  <section class="rb mpc-card mpc-toy" aria-label="RFC builder">
     <div class="mpc-kicker"><Icon name="wrench" :size="14" /> Interactive: the RFC builder</div>
     <div class="meter" role="progressbar" :aria-valuenow="score" aria-valuemin="0" aria-valuemax="100" aria-label="RFC readiness"><span :style="{ width: score + '%' }" /><b>{{ score }}% ready</b></div>
 
@@ -137,28 +137,28 @@ const showMd = ref(false);
 
 <style scoped>
 .rb { display: grid; gap: 12px; }
-.meter { position: relative; height: 26px; border: 2px solid var(--mpc-ink); border-radius: 999px; background: var(--vp-c-bg-soft); overflow: hidden; }
-.meter span { position: absolute; inset: 0 auto 0 0; background: var(--mpc-lime-soft); border-right: 2px solid var(--mpc-ink); transition: width 0.3s; }
-.meter b { position: relative; display: block; text-align: center; font-size: 13px; line-height: 22px; }
+.meter { position: relative; height: 26px; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-pill); background: var(--vp-c-bg-soft); overflow: hidden; }
+.meter span { position: absolute; inset: 0 auto 0 0; background: var(--mpc-lime-soft); border-right: 1.5px solid var(--mpc-line-strong); transition: width 0.3s; }
+.meter b { position: relative; display: block; text-align: center; font-size: var(--fs-sm); line-height: 22px; }
 .step { display: flex; gap: 10px; min-width: 0; }
-.sn { flex: none; width: 30px; height: 30px; border: 2px solid var(--mpc-ink); border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--mpc-violet-soft); }
+.sn { flex: none; width: 30px; height: 30px; border: 1.5px solid var(--mpc-line-strong); border-radius: 50%; display: grid; place-items: center; font-weight: var(--fw-semibold); background: var(--mpc-violet-soft); }
 .sb { flex: 1; min-width: 0; display: grid; gap: 8px; }
-.gap { margin: 0; font-size: 13.5px; color: var(--mpc-ink-2); }
+.gap { margin: 0; font-size: var(--fs-sm); color: var(--mpc-ink-2); }
 .places { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; }
-.place { display: grid; gap: 2px; text-align: left; border: 2px solid var(--mpc-ink); border-radius: 10px; padding: 6px 9px; background: var(--mpc-paper); color: var(--mpc-ink); font: inherit; cursor: pointer; }
-.place span { font-size: 12px; color: var(--mpc-ink-2); }
+.place { display: grid; gap: 2px; text-align: left; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 6px 9px; background: var(--mpc-paper); color: var(--mpc-ink); font: inherit; cursor: pointer; }
+.place span { font-size: var(--fs-xs); color: var(--mpc-ink-2); }
 .place.on { background: var(--mpc-ink); color: var(--mpc-paper); }
 .place.on span { color: var(--mpc-paper); opacity: 0.8; }
-.fit { margin: 0; border: 2px solid var(--mpc-ink); border-radius: 10px; padding: 8px 10px; font-size: 13.5px; }
+.fit { margin: 0; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 8px 10px; font-size: var(--fs-sm); }
 .fit.good { background: var(--mpc-teal-soft); } .fit.ok { background: var(--mpc-amber-soft); } .fit.bad { background: var(--mpc-coral-soft); }
 .checks { display: grid; gap: 4px; }
-.chk { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; padding: 3px 6px; border-radius: 8px; }
+.chk { display: flex; gap: 8px; align-items: flex-start; font-size: var(--fs-sm); padding: 3px 6px; border-radius: var(--r-md); }
 .chk input { margin-top: 4px; accent-color: var(--mpc-violet); }
 .chk em { color: var(--mpc-ink-2); font-style: normal; }
 .chk.warn { background: var(--mpc-amber-soft); }
-.w { color: var(--mpc-coral); font-weight: 700; }
-.note { display: grid; gap: 4px; font-size: 13px; }
-.note textarea { width: 100%; box-sizing: border-box; border: 2px solid var(--mpc-ink); border-radius: 8px; padding: 6px 8px; font: inherit; font-size: 13.5px; background: var(--mpc-paper); color: var(--mpc-ink); }
-.md { max-height: 360px; overflow: auto; margin: 0 !important; padding: 10px !important; border: 2px solid var(--mpc-ink); border-radius: 10px; background: var(--vp-c-bg-soft) !important; white-space: pre-wrap; }
-.md code { font-size: 12px !important; background: none !important; padding: 0 !important; white-space: pre-wrap !important; overflow-wrap: break-word; }
+.w { color: var(--mpc-coral); font-weight: var(--fw-semibold); }
+.note { display: grid; gap: 4px; font-size: var(--fs-sm); }
+.note textarea { width: 100%; box-sizing: border-box; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 6px 8px; font: inherit; font-size: var(--fs-sm); background: var(--mpc-paper); color: var(--mpc-ink); }
+.md { max-height: 360px; overflow: auto; margin: 0 !important; padding: 10px !important; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); background: var(--vp-c-bg-soft) !important; white-space: pre-wrap; }
+.md code { font-size: var(--fs-xs); background: none !important; padding: 0 !important; white-space: pre-wrap !important; overflow-wrap: break-word; }
 </style>

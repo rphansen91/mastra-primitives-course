@@ -38,9 +38,9 @@ const quotes = computed(() => Object.entries(QUOTES));
 <style scoped>
 .books { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 16px 0; }
 .book { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; text-decoration: none !important; color: var(--vp-c-text-1) !important; background: var(--mpc-paper); }
-.book strong { font-size: 16px; line-height: 1.3; }
-.by { font-size: 13.5px; color: var(--vp-c-text-2); }
-.note { font-size: 13.5px; line-height: 1.5; margin-top: 4px; }
+.book strong { font-size: var(--fs-md); line-height: 1.3; }
+.by { font-size: var(--fs-sm); color: var(--vp-c-text-2); }
+.note { font-size: var(--fs-sm); line-height: 1.5; margin-top: 4px; }
 .go { margin-top: auto; padding-top: 6px; font-weight: 600; color: var(--vp-c-brand-1); }
 .chap { width: 100%; display: table; }
 .mod { display: inline-block; margin: 0 6px 2px 0; font-weight: 600; }
@@ -48,5 +48,5 @@ const quotes = computed(() => Object.entries(QUOTES));
 .mpc-quote { font-style: italic; }
 .mpc-quote::before { content: '“'; }
 .mpc-quote::after { content: '”'; }
-.att { font-size: 13.5px; color: var(--vp-c-text-2); }
+.att { font-size: var(--fs-sm); color: var(--vp-c-text-2); }
 </style>

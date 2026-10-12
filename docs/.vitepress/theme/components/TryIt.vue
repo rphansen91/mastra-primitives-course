@@ -42,16 +42,16 @@ async function copy() {
 <style scoped>
 /* One code surface for the whole site: hairline box, terminal label, copy button (no faux window chrome). */
 .tryit { margin: 24px 0; border: 1px solid var(--mpc-line); border-radius: var(--mpc-r-md, 10px); overflow: hidden; background: var(--vp-code-block-bg); color: var(--vp-c-text-1); }
-.bar { display: flex; align-items: center; gap: 10px; padding: 7px 10px 7px 14px; border-bottom: 1px solid var(--mpc-line); font-size: 13px; color: var(--vp-c-text-2); }
+.bar { display: flex; align-items: center; gap: 10px; padding: 7px 10px 7px 14px; border-bottom: 1px solid var(--mpc-line); font-size: var(--fs-sm); color: var(--vp-c-text-2); }
 .ttl { flex: 1; font-weight: 500; display: flex; align-items: center; gap: 6px; min-width: 0; color: var(--vp-c-text-1); }
-.cwd { font-weight: 400; color: var(--vp-c-text-2); font-family: var(--mpc-mono); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cp, .toggle { display: inline-flex; align-items: center; gap: 5px; background: transparent; color: var(--vp-c-text-2); border: 1px solid var(--mpc-line); border-radius: 6px; padding: 2px 9px; font-size: 12.5px; cursor: pointer; transition: background .15s, color .15s; }
+.cwd { font-weight: 400; color: var(--vp-c-text-2); font-family: var(--mpc-mono); font-size: var(--fs-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cp, .toggle { display: inline-flex; align-items: center; gap: 5px; background: transparent; color: var(--vp-c-text-2); border: 1px solid var(--mpc-line); border-radius: var(--r-sm); padding: 2px 9px; font-size: var(--fs-xs); cursor: pointer; transition: background .15s, color .15s; }
 .cp:hover, .toggle:hover { background: var(--vp-c-default-soft); color: var(--vp-c-text-1); }
 .cp:focus-visible, .toggle:focus-visible { outline: 2px solid var(--vp-c-brand-1); outline-offset: 1px; }
-pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-family: var(--mpc-mono); font-size: 14px; line-height: 1.6; background: transparent !important; }
+pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-family: var(--mpc-mono); font-size: var(--fs-sm); line-height: 1.6; background: transparent !important; }
 .ps { color: var(--vp-c-text-3); user-select: none; }
-.note { padding: 0 16px 12px; font-size: 14px; color: var(--vp-c-text-2); }
-.note :deep(p) { margin: 0; font-size: 14px !important; }
+.note { padding: 0 16px 12px; font-size: var(--fs-sm); color: var(--vp-c-text-2); }
+.note :deep(p) { margin: 0; font-size: var(--fs-sm); }
 .toggle { margin: 0 16px 12px; }
-.out { border-top: 1px solid var(--mpc-line); color: var(--vp-c-text-2); font-size: 13px; }
+.out { border-top: 1px solid var(--mpc-line); color: var(--vp-c-text-2); font-size: var(--fs-sm); }
 </style>

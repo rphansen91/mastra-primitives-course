@@ -23,10 +23,10 @@ const REPO = 'https://github.com/rphansen91/mastra-primitives-course/tree/main/l
 <style scoped>
 .lab-hero { background: var(--mpc-teal-soft); margin: 18px 0 28px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.chip { display: inline-flex; gap: 5px; align-items: center; font-size: 13px; font-weight: 700; padding: 3px 10px; border: 2px solid var(--mpc-ink); border-radius: 99px; background: var(--mpc-paper); }
+.chip { display: inline-flex; gap: 5px; align-items: center; font-size: var(--fs-sm); font-weight: var(--fw-semibold); padding: 3px 10px; border: 1px solid var(--mpc-line); border-radius: var(--r-pill); background: var(--mpc-paper); }
 .row { display: flex; gap: 14px; align-items: flex-start; }
 .txt { min-width: 0; flex: 1; }
 .txt :deep(p) { margin: 4px 0 8px !important; }
-.code { font-size: 14px !important; }
+.code { font-size: var(--fs-sm); }
 @media (max-width: 560px) { .row { flex-direction: column; } }
 </style>

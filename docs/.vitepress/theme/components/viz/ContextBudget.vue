@@ -66,7 +66,7 @@ const fmt = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt
 </script>
 
 <template>
-  <section class="cb mpc-card" aria-label="Context window budget">
+  <section class="cb mpc-card mpc-toy" aria-label="Context window budget">
     <div class="mpc-kicker"><Icon name="book" :size="14" /> Interactive: what reaches the model?</div>
     <p class="intro">A dinner-planning thread. In message 1 you said you're vegetarian. Grow the conversation, then decide what memory gets to bring along. The context window holds <strong>{{ WINDOW.toLocaleString() }}</strong> tokens.</p>
 
@@ -131,37 +131,37 @@ const fmt = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt
 .intro { margin: 6px 0 12px !important; }
 .controls { display: grid; gap: 10px; }
 .slider { display: grid; gap: 4px; }
-.slider .label { font-size: 14px; }
+.slider .label { font-size: var(--fs-sm); }
 .slider input { width: 100%; accent-color: var(--mpc-violet); }
-.sw { font-size: 13.5px; font-weight: 700; display: inline-flex; gap: 5px; align-items: center; margin-left: 6px; }
+.sw { font-size: var(--fs-sm); font-weight: var(--fw-semibold); display: inline-flex; gap: 5px; align-items: center; margin-left: 6px; }
 .off { opacity: 0.5; }
 .strip { display: flex; flex-wrap: wrap; gap: 4px; margin: 16px 0 6px; }
-.cell { position: relative; display: inline-block; width: 18px; height: 22px; border: 2px solid var(--mpc-ink); border-radius: 5px; background: var(--mpc-paper); opacity: 0.4; }
-.cell.assistant { border-radius: 11px; }
+.cell { position: relative; display: inline-block; width: 18px; height: 22px; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-sm); background: var(--mpc-paper); opacity: 0.4; }
+.cell.assistant { border-radius: var(--r-md); }
 .cell.in { opacity: 1; background: var(--mpc-amber-soft); }
 .cell.rec { opacity: 1; background: var(--mpc-sky-soft); border-color: var(--mpc-sky); }
 .cell.tool { border-style: double; border-width: 4px; }
-.star { position: absolute; top: -4px; left: 1px; font-size: 14px; color: var(--mpc-coral); }
-.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--mpc-ink-2); }
+.star { position: absolute; top: -4px; left: 1px; font-size: var(--fs-sm); color: var(--mpc-coral); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: var(--fs-xs); color: var(--mpc-ink-2); }
 .legend .cell { width: 12px; height: 14px; vertical-align: -2px; margin-right: 3px; }
-.bar { position: relative; display: flex; height: 40px; margin-top: 18px; border: 2px solid var(--mpc-ink); border-radius: 10px; background: repeating-linear-gradient(45deg, var(--mpc-paper), var(--mpc-paper) 6px, var(--vp-c-bg-soft) 6px, var(--vp-c-bg-soft) 12px); overflow: visible; }
-.seg { height: 100%; border-right: 2px solid var(--mpc-ink); overflow: hidden; display: flex; align-items: center; transition: width 0.25s; }
-.seg span { font-size: 11px; font-weight: 800; padding: 0 4px; white-space: nowrap; }
+.bar { position: relative; display: flex; height: 40px; margin-top: 18px; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); background: repeating-linear-gradient(45deg, var(--mpc-paper), var(--mpc-paper) 6px, var(--vp-c-bg-soft) 6px, var(--vp-c-bg-soft) 12px); overflow: visible; }
+.seg { height: 100%; border-right: 1.5px solid var(--mpc-line-strong); overflow: hidden; display: flex; align-items: center; transition: width 0.25s; }
+.seg span { font-size: var(--fs-xs); font-weight: var(--fw-semibold); padding: 0 4px; white-space: nowrap; }
 .b-violet { background: var(--mpc-violet-soft); } .b-lime { background: var(--mpc-lime-soft); } .b-sky { background: var(--mpc-sky-soft); }
 .b-amber { background: var(--mpc-amber-soft); } .b-coral { background: var(--mpc-coral-soft); }
 .limit { position: absolute; top: -8px; bottom: -8px; width: 3px; margin-left: -1.5px; background: var(--mpc-coral); }
-.limit span { position: absolute; top: -18px; right: 4px; font-size: 11px; font-weight: 800; color: var(--mpc-coral); }
-.nums { font-size: 13.5px; margin-top: 6px; }
+.limit span { position: absolute; top: -18px; right: 4px; font-size: var(--fs-xs); font-weight: var(--fw-semibold); color: var(--mpc-coral); }
+.nums { font-size: var(--fs-sm); margin-top: 6px; }
 .bad { color: var(--mpc-coral); }
 .out { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 12px; margin-top: 14px; align-items: start; }
 @media (max-width: 700px) { .out { grid-template-columns: minmax(0, 1fr); } }
-.verdict { display: flex; gap: 10px; align-items: flex-start; border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px; background: var(--mpc-paper); }
+.verdict { display: flex; gap: 10px; align-items: flex-start; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 10px; background: var(--mpc-paper); }
 .verdict.v-good { background: var(--mpc-teal-soft); } .verdict.v-bad { background: var(--mpc-coral-soft); }
-.verdict p { margin: 4px 0 0 !important; font-size: 14.5px !important; }
-.prompt { border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px; background: var(--mpc-paper); min-width: 0; }
+.verdict p { margin: 4px 0 0 !important; font-size: var(--fs-sm); }
+.prompt { border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 10px; background: var(--mpc-paper); min-width: 0; }
 .prompt ol { list-style: none; padding: 0 !important; margin: 6px 0 0 !important; display: grid; gap: 4px; }
-.prompt li { margin: 0 !important; font-size: 13px !important; line-height: 1.4; padding: 3px 7px; border-radius: 7px; overflow-wrap: break-word; }
-.prompt li b { font-family: var(--mpc-mono); font-size: 11.5px; margin-right: 4px; }
+.prompt li { margin: 0 !important; font-size: var(--fs-sm); line-height: 1.4; padding: 3px 7px; border-radius: var(--r-sm); overflow-wrap: break-word; }
+.prompt li b { font-family: var(--mpc-mono); font-size: var(--fs-xs); margin-right: 4px; }
 .prompt li em { color: var(--mpc-ink-2); }
 .p-violet { background: var(--mpc-violet-soft); } .p-lime { background: var(--mpc-lime-soft); } .p-sky { background: var(--mpc-sky-soft); }
 .p-amber { background: var(--mpc-amber-soft); } .p-coral { background: var(--mpc-coral-soft); }

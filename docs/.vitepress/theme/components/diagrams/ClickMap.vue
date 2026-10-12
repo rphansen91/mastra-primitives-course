@@ -50,10 +50,10 @@ function focus() { requestAnimationFrame(() => root.value?.querySelectorAll<HTML
 .hint { font-weight: 600; text-transform: none; letter-spacing: 0; }
 .track { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0; margin-top: 14px; row-gap: 12px; position: relative; }
 .conn { width: 14px; align-self: center; height: 3px; background: var(--mpc-ink); border-radius: 2px; }
-.end { align-self: center; font-size: 12.5px; font-weight: 800; padding: 6px 10px; border-radius: 99px; border: 2px dashed var(--mpc-ink); background: var(--mpc-paper); }
-.st { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; width: 128px; min-width: 0; padding: 8px 10px; border: 2px solid var(--mpc-ink); border-radius: 12px; cursor: pointer; color: var(--vp-c-text-1); transition: transform 0.12s, box-shadow 0.12s; }
+.end { align-self: center; font-size: var(--fs-xs); font-weight: var(--fw-semibold); padding: 6px 10px; border-radius: var(--r-pill); border: 1px dashed var(--mpc-line-strong); background: var(--mpc-paper); }
+.st { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; width: 128px; min-width: 0; padding: 8px 10px; border: 1px solid var(--mpc-line); border-radius: var(--r-md); cursor: pointer; color: var(--vp-c-text-1); transition: transform 0.12s, box-shadow 0.12s; }
 .st:hover { transform: translateY(-2px); }
-.st.on { box-shadow: 4px 4px 0 var(--mpc-shadow); transform: translateY(-3px); outline: 3px solid var(--mpc-violet); outline-offset: 1px; }
+.st.on { box-shadow: none; transform: translateY(-3px); outline: 3px solid var(--mpc-violet); outline-offset: 1px; }
 .st:focus-visible { outline: 3px solid var(--mpc-sky); outline-offset: 2px; }
 .c-violet { background: var(--mpc-violet-soft); }
 .c-amber { background: var(--mpc-amber-soft); }
@@ -61,15 +61,15 @@ function focus() { requestAnimationFrame(() => root.value?.querySelectorAll<HTML
 .c-coral { background: var(--mpc-coral-soft); }
 .c-sky { background: var(--mpc-sky-soft); }
 .c-lime { background: var(--mpc-lime-soft); }
-.num { width: 22px; height: 22px; border-radius: 50%; background: var(--mpc-ink); color: var(--mpc-paper); font-size: 12px; font-weight: 800; display: grid; place-items: center; }
-.num.big { width: 30px; height: 30px; font-size: 15px; }
-.nm { font-family: var(--mpc-mono); font-size: 12px; font-weight: 800; overflow-wrap: break-word; line-height: 1.25; }
-.sh { font-size: 12px; color: var(--vp-c-text-2); line-height: 1.3; overflow-wrap: break-word; max-width: 100%; }
-.loopback { align-self: center; margin-left: 10px; font-size: 13px; font-weight: 800; color: var(--mpc-violet); }
-.detail { margin-top: 14px; border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 12px 14px; }
+.num { width: 22px; height: 22px; border-radius: 50%; background: var(--mpc-ink); color: var(--mpc-paper); font-size: var(--fs-xs); font-weight: var(--fw-semibold); display: grid; place-items: center; }
+.num.big { width: 30px; height: 30px; font-size: var(--fs-md); }
+.nm { font-family: var(--mpc-mono); font-size: var(--fs-xs); font-weight: var(--fw-semibold); overflow-wrap: break-word; line-height: 1.25; }
+.sh { font-size: var(--fs-xs); color: var(--vp-c-text-2); line-height: 1.3; overflow-wrap: break-word; max-width: 100%; }
+.loopback { align-self: center; margin-left: 10px; font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--mpc-violet); }
+.detail { margin-top: 14px; border: 1px solid var(--mpc-line); border-radius: var(--r-md); padding: 12px 14px; }
 .dh { display: flex; gap: 10px; align-items: center; }
-.detail p { margin: 8px 0 !important; font-size: 15.5px !important; line-height: 1.6 !important; }
-.src { font-size: 13.5px; font-weight: 700; display: inline-flex; gap: 6px; align-items: center; }
+.detail p { margin: 8px 0 !important; font-size: var(--fs-md); line-height: 1.6 !important; }
+.src { font-size: var(--fs-sm); font-weight: var(--fw-semibold); display: inline-flex; gap: 6px; align-items: center; }
 @media (max-width: 640px) { .st { width: calc(50% - 14px); } .conn { width: 10px; } }
 @media (prefers-reduced-motion: reduce) { .st { transition: none; } }
 </style>

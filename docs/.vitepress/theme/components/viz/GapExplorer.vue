@@ -21,7 +21,7 @@ const sizeText = { S: 'small: a weekend', M: 'medium: a week', L: 'large: a few 
 </script>
 
 <template>
-  <section class="ge mpc-card" aria-label="Gap explorer">
+  <section class="ge mpc-card mpc-toy" aria-label="Gap explorer">
     <div class="mpc-kicker"><Icon name="map" :size="14" /> Interactive: the gap explorer</div>
     <div class="mpc-toggle-group" role="radiogroup" aria-label="Filter by module">
       <button type="button" role="radio" class="mpc-toggle" :aria-checked="mod === null" @click="filter(null)">All gaps</button>
@@ -66,26 +66,26 @@ const sizeText = { S: 'small: a weekend', M: 'medium: a week', L: 'large: a few 
 .cols { display: grid; grid-template-columns: minmax(180px, 230px) minmax(0, 1fr); gap: 12px; align-items: start; }
 .gaps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .gaps li { margin: 0; }
-.gap { width: 100%; display: grid; gap: 2px; text-align: left; border: 2px solid var(--mpc-ink); border-radius: 10px; padding: 6px 10px; color: var(--mpc-ink); font: inherit; cursor: pointer; box-shadow: 2px 2px 0 var(--mpc-shadow); }
+.gap { width: 100%; display: grid; gap: 2px; text-align: left; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 6px 10px; color: var(--mpc-ink); font: inherit; cursor: pointer; box-shadow: none; }
 .gap.on { outline: 3px solid var(--mpc-ink); outline-offset: 1px; transform: translate(-1px, -1px); }
-.gm { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; color: var(--mpc-ink-2); }
-.gt { font-weight: 800; font-size: 14px; line-height: 1.3; }
+.gm { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.06em; color: var(--mpc-ink-2); }
+.gt { font-weight: var(--fw-semibold); font-size: var(--fs-sm); line-height: 1.3; }
 .g-coral { background: var(--mpc-coral-soft); } .g-amber { background: var(--mpc-amber-soft); } .g-sky { background: var(--mpc-sky-soft); }
 .g-violet { background: var(--mpc-violet-soft); } .g-teal { background: var(--mpc-teal-soft); } .g-lime { background: var(--mpc-lime-soft); }
-.card { border: 2px solid var(--mpc-ink); border-radius: 14px; padding: 12px 14px; min-width: 0; display: grid; gap: 8px; box-shadow: 3px 3px 0 var(--mpc-shadow); }
-.card h3 { margin: 0 !important; font-size: 18px; }
+.card { border: var(--mpc-toy-border); border-radius: var(--r-lg); padding: 12px 14px; min-width: 0; display: grid; gap: 8px; box-shadow: 3px 3px 0 var(--mpc-shadow); }
+.card h3 { margin: 0 !important; font-size: var(--fs-body); }
 .flow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; align-items: stretch; }
-.fbox { background: var(--mpc-paper); border: 2px solid var(--mpc-ink); border-radius: 10px; padding: 8px 10px; font-size: 13.5px; }
-.arr { align-self: center; font-weight: 800; font-size: 20px; }
-.fk { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mpc-ink-2); margin-bottom: 2px; }
-.card pre { margin: 0 !important; padding: 8px 10px !important; border-radius: 10px; background: var(--mpc-paper) !important; border: 2px solid var(--mpc-ink); white-space: pre-wrap; overflow-wrap: break-word; }
-.card pre code { font-size: 12px !important; background: none !important; padding: 0 !important; white-space: pre-wrap !important; }
-.prior { display: table; width: 100%; margin: 0 !important; font-size: 12.5px; border-collapse: collapse; background: var(--mpc-paper); }
-.prior th, .prior td { padding: 4px 6px !important; border: 1.5px solid var(--mpc-ink) !important; }
-.prior code { font-size: 11.5px; overflow-wrap: break-word; }
+.fbox { background: var(--mpc-paper); border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 8px 10px; font-size: var(--fs-sm); }
+.arr { align-self: center; font-weight: var(--fw-semibold); font-size: var(--fs-h3); }
+.fk { font-size: var(--fs-xs); font-weight: var(--fw-semibold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--mpc-ink-2); margin-bottom: 2px; }
+.card pre { margin: 0 !important; padding: 8px 10px !important; border-radius: var(--r-md); background: var(--mpc-paper) !important; border: var(--mpc-toy-border); white-space: pre-wrap; overflow-wrap: break-word; }
+.card pre code { font-size: var(--fs-xs); background: none !important; padding: 0 !important; white-space: pre-wrap !important; }
+.prior { display: table; width: 100%; margin: 0 !important; font-size: var(--fs-xs); border-collapse: collapse; background: var(--mpc-paper); }
+.prior th, .prior td { padding: 4px 6px !important; border: 1.5px solid var(--mpc-line-strong) !important; }
+.prior code { font-size: var(--fs-xs); overflow-wrap: break-word; }
 .meta { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { font-size: 12.5px; border: 2px solid var(--mpc-ink); border-radius: 999px; padding: 1px 10px; background: var(--mpc-paper); }
-.hard { margin: 0; padding-left: 18px; font-size: 13.5px; }
+.chip { font-size: var(--fs-xs); border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-pill); padding: 1px 10px; background: var(--mpc-paper); }
+.hard { margin: 0; padding-left: 18px; font-size: var(--fs-sm); }
 @media (max-width: 640px) {
   .cols { grid-template-columns: 1fr; }
   .gaps { grid-template-columns: repeat(2, minmax(0, 1fr)); }

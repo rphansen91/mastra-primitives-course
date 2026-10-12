@@ -49,7 +49,7 @@ const boxOf = (i: number) => store.value[keyOf(i)]?.box ?? 0;
 </script>
 
 <template>
-  <section class="recall mpc-card" aria-label="Spaced recall">
+  <section class="recall mpc-card mpc-toy" aria-label="Spaced recall">
     <div class="head">
       <div>
         <div class="mpc-kicker"><Icon name="cards" :size="15" /> Spaced recall</div>
@@ -88,17 +88,17 @@ const boxOf = (i: number) => store.value[keyOf(i)]?.box ?? 0;
 <style scoped>
 .recall { background: var(--mpc-lime-soft); }
 .head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
-.sub { font-size: 14px !important; color: var(--vp-c-text-2); margin: 4px 0 10px !important; }
+.sub { font-size: var(--fs-sm); color: var(--vp-c-text-2); margin: 4px 0 10px !important; }
 .boxes { display: flex; gap: 4px; flex-wrap: wrap; max-width: 120px; justify-content: flex-end; }
-.pip { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid var(--mpc-ink); background: var(--mpc-paper); }
+.pip { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid var(--mpc-line-strong); background: var(--mpc-paper); }
 .pip.b1 { background: var(--mpc-amber-soft); }
 .pip.b2 { background: var(--mpc-amber); }
 .pip.b3 { background: var(--mpc-teal); }
 .pip.b4 { background: var(--mpc-violet); }
-.meta { font-size: 13px; font-weight: 700; color: var(--vp-c-text-2); margin-bottom: 6px; }
-.card { border: 2px solid var(--mpc-ink); border-radius: 14px; background: var(--mpc-paper); padding: 18px 20px; box-shadow: 3px 3px 0 var(--mpc-shadow); min-height: 90px; }
-.front { font-size: 17.5px !important; font-weight: 700; margin: 0 !important; }
-.back { margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--vp-c-divider); font-size: 16px; line-height: 1.6; }
+.meta { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--vp-c-text-2); margin-bottom: 6px; }
+.card { border: var(--mpc-toy-border); border-radius: var(--r-lg); background: var(--mpc-paper); padding: 18px 20px; box-shadow: 3px 3px 0 var(--mpc-shadow); min-height: 90px; }
+.front { font-size: var(--fs-body); font-weight: var(--fw-semibold); margin: 0 !important; }
+.back { margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--vp-c-divider); font-size: var(--fs-md); line-height: 1.6; }
 .actions { display: flex; gap: 10px; margin-top: 12px; }
 .done { display: flex; gap: 12px; align-items: center; }
 .done .mpc-btn { margin-top: 8px; }

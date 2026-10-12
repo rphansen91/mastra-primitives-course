@@ -49,7 +49,7 @@ const last = computed(() => hops.value[hops.value.length - 1]);
 </script>
 
 <template>
-  <section class="rv mpc-card" aria-label="Coordinator relay and ping-pong simulator">
+  <section class="rv mpc-card mpc-toy" aria-label="Coordinator relay and ping-pong simulator">
     <div class="mpc-kicker"><Icon name="mail" :size="14" /> Interactive: the coordinator relay</div>
     <div class="mpc-toggle-group" role="radiogroup" aria-label="Mode">
       <button type="button" role="radio" class="mpc-toggle" :aria-checked="mode === 'relay'" @click="mode = 'relay'">Relay, step by step</button>
@@ -130,24 +130,24 @@ const last = computed(() => hops.value[hops.value.length - 1]);
 .edge.hot { opacity: 1; stroke: var(--mpc-coral); stroke-width: 4; }
 .dot { animation: pulse 1s ease-in-out infinite alternate; }
 @keyframes pulse { from { opacity: 0.4; } to { opacity: 1; } }
-.stage { display: flex; gap: 12px; border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px 12px; background: var(--mpc-paper); min-width: 0; }
+.stage { display: flex; gap: 12px; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 10px 12px; background: var(--mpc-paper); min-width: 0; }
 .stage > div:last-child { min-width: 0; }
-.stage p { margin: 4px 0 6px; font-size: 14px; }
-.num { flex: none; width: 40px; height: 40px; border: 2px solid var(--mpc-ink); border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 13px; background: var(--mpc-violet-soft); }
-.stage pre { margin: 0 !important; padding: 8px !important; border-radius: 8px; background: var(--vp-c-bg-soft) !important; white-space: pre-wrap; word-break: break-word; }
-.stage pre code { font-size: 12px !important; background: none !important; padding: 0 !important; white-space: pre-wrap !important; }
-.log { border: 2px dashed var(--mpc-ink-2); border-radius: 12px; padding: 8px 12px; font-family: var(--mpc-mono); font-size: 12px; min-width: 0; }
+.stage p { margin: 4px 0 6px; font-size: var(--fs-sm); }
+.num { flex: none; width: 40px; height: 40px; border: 1.5px solid var(--mpc-line-strong); border-radius: 50%; display: grid; place-items: center; font-weight: var(--fw-semibold); font-size: var(--fs-sm); background: var(--mpc-violet-soft); }
+.stage pre { margin: 0 !important; padding: 8px !important; border-radius: var(--r-md); background: var(--vp-c-bg-soft) !important; white-space: pre-wrap; word-break: break-word; }
+.stage pre code { font-size: var(--fs-xs); background: none !important; padding: 0 !important; white-space: pre-wrap !important; }
+.log { border: 2px dashed var(--mpc-ink-2); border-radius: var(--r-md); padding: 8px 12px; font-family: var(--mpc-mono); font-size: var(--fs-xs); min-width: 0; }
 .ll { margin: 3px 0; overflow-wrap: break-word; }
-.ll.end { font-weight: 800; font-family: var(--vp-font-family-base); font-size: 13.5px; }
+.ll.end { font-weight: var(--fw-semibold); font-family: var(--vp-font-family-base); font-size: var(--fs-sm); }
 .ll.ok { color: var(--mpc-teal); } .ll.bad { color: var(--mpc-coral); }
-.intro { margin: 0; font-size: 14.5px; }
-.sw { font-size: 14px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.intro { margin: 0; font-size: var(--fs-sm); }
+.sw { font-size: var(--fs-sm); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .pong { display: grid; grid-template-columns: 90px 1fr 90px; align-items: center; gap: 8px; }
-.agent { border: 2px solid var(--mpc-ink); border-radius: 14px; padding: 16px 0; text-align: center; font-weight: 800; box-shadow: 3px 3px 0 var(--mpc-shadow); }
+.agent { border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-lg); padding: 16px 0; text-align: center; font-weight: var(--fw-semibold); box-shadow: none; }
 .agent.a { background: var(--mpc-sky-soft); } .agent.b { background: var(--mpc-lime-soft); }
 .agent.act { outline: 3px solid var(--mpc-coral); }
 .wire { position: relative; height: 40px; border-bottom: 3px dashed var(--mpc-ink-2); overflow: hidden; }
-.env { position: absolute; top: 4px; font-size: 12.5px; font-weight: 700; background: var(--mpc-amber-soft); border: 2px solid var(--mpc-ink); border-radius: 8px; padding: 1px 6px; white-space: nowrap; }
+.env { position: absolute; top: 4px; font-size: var(--fs-xs); font-weight: var(--fw-semibold); background: var(--mpc-amber-soft); border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 1px 6px; white-space: nowrap; }
 .env.right { animation: toRight 0.25s ease-out forwards; }
 .env.left { animation: toLeft 0.25s ease-out forwards; }
 @keyframes toRight { from { left: 0; } to { left: calc(100% - 90px); } }

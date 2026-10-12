@@ -16,11 +16,11 @@ const q = computed(() => { const x = QUOTES[props.id]; return x && x.kind === 'f
 <style scoped>
 .fq { margin: 18px 0; padding: 12px 18px 12px 22px; background: var(--mpc-paper); border-left-width: 6px !important; }
 blockquote { margin: 0 !important; padding: 0 !important; border: 0 !important; }
-.mpc-quote { margin: 0 !important; font-size: 17px; line-height: 1.5; font-style: italic; color: var(--vp-c-text-1); }
+.mpc-quote { margin: 0 !important; font-size: var(--fs-body); line-height: 1.5; font-style: italic; color: var(--vp-c-text-1); }
 .mpc-quote::before { content: '“'; }
 .mpc-quote::after { content: '”'; }
-figcaption { margin-top: 6px; font-size: 13.5px; color: var(--vp-c-text-2); }
-.ctx { margin-top: 8px; font-size: 14.5px; }
+figcaption { margin-top: 6px; font-size: var(--fs-sm); color: var(--vp-c-text-2); }
+.ctx { margin-top: 8px; font-size: var(--fs-sm); }
 .ctx :deep(p) { margin: 4px 0 !important; }
-.cite-missing { color: red; font-weight: 700; }
+.cite-missing { color: red; font-weight: var(--fw-semibold); }
 </style>

@@ -19,14 +19,14 @@ const title = computed(() => [meta.value.label + ': ' + meta.value.meaning, entr
   </span>
 </template>
 <style scoped>
-.sb { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; border: 2px solid var(--mpc-ink); border-radius: 999px; padding: 1px 8px 1px 2px; font-size: 12.5px; line-height: 1.6; background: var(--mpc-paper); vertical-align: middle; max-width: 100%; }
-.st { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: 11px; border-radius: 999px; padding: 1px 8px; border: 1.5px solid var(--mpc-ink); }
+.sb { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; border: 1px solid var(--mpc-line); border-radius: var(--r-pill); padding: 1px 8px 1px 2px; font-size: var(--fs-xs); line-height: 1.6; background: var(--mpc-paper); vertical-align: middle; max-width: 100%; }
+.st { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; font-weight: var(--fw-semibold); text-transform: uppercase; letter-spacing: .04em; font-size: var(--fs-xs); border-radius: var(--r-pill); padding: 1px 8px; border: 1px solid var(--mpc-line); }
 .s-stable .st { background: var(--mpc-lime-soft); }
 .s-beta .st { background: var(--mpc-amber-soft); }
 .s-experimental .st { background: var(--mpc-coral-soft); }
 .s-deprecated .st { background: var(--mpc-ink); color: var(--mpc-paper); }
 .s-changed .st { background: var(--mpc-sky-soft); }
-.nm { font-weight: 700; }
-.since { color: var(--vp-c-text-2); font-family: var(--mpc-mono); font-size: 11.5px; }
-.src { font-size: 11.5px; font-weight: 700; }
+.nm { font-weight: var(--fw-semibold); }
+.since { color: var(--vp-c-text-2); font-family: var(--mpc-mono); font-size: var(--fs-xs); }
+.src { font-size: var(--fs-xs); font-weight: var(--fw-semibold); }
 </style>

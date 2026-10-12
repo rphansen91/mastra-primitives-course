@@ -26,9 +26,9 @@ const r = computed(() => READING[props.module]);
 </template>
 <style scoped>
 .fr { padding: 12px 18px; margin: 16px 0; display: grid; gap: 8px; background: var(--mpc-paper); }
-h3 { margin: 0 0 4px !important; display: flex; align-items: center; gap: 6px; font-size: 15.5px; flex-wrap: wrap; }
-h3 small { font-weight: 400; font-size: 12.5px; color: var(--vp-c-text-2); }
+h3 { margin: 0 0 4px !important; display: flex; align-items: center; gap: 6px; font-size: var(--fs-md); flex-wrap: wrap; }
+h3 small { font-weight: 400; font-size: var(--fs-xs); color: var(--vp-c-text-2); }
 ul { margin: 0 !important; padding-left: 18px !important; }
-li { font-size: 14.5px; line-height: 1.6; margin: 4px 0 !important; overflow-wrap: break-word; }
-.fine { margin: 4px 0 0 !important; font-size: 12.5px; color: var(--vp-c-text-2); }
+li { font-size: var(--fs-sm); line-height: 1.6; margin: 4px 0 !important; overflow-wrap: break-word; }
+.fine { margin: 4px 0 0 !important; font-size: var(--fs-xs); color: var(--vp-c-text-2); }
 </style>

@@ -81,7 +81,7 @@ const FLAB = ['1 · compose', '2 · route', '3 · land'];
 </script>
 
 <template>
-  <section class="sv mpc-card mpc-anim" aria-label="Signal delivery visualizer">
+  <section class="sv mpc-card mpc-toy mpc-anim" aria-label="Signal delivery visualizer">
     <div class="mpc-kicker"><Icon name="mail" :size="14" /> Interactive: where does this signal go?</div>
     <p class="intro">CI just failed on PR 42. You call <code>agent.sendSignal(signal, { threadId })</code>. Set the scene, then follow the envelope.</p>
 
@@ -183,9 +183,9 @@ const FLAB = ['1 · compose', '2 · route', '3 · land'];
 .sv { background: var(--vp-c-bg-soft); }
 .intro { margin: 6px 0 10px !important; }
 .controls-grid { display: flex; flex-direction: column; gap: 8px; }
-.sw { display: inline-flex; gap: 6px; align-items: center; font-size: 13.5px; font-weight: 600; margin-left: 8px; cursor: pointer; }
+.sw { display: inline-flex; gap: 6px; align-items: center; font-size: var(--fs-sm); font-weight: 600; margin-left: 8px; cursor: pointer; }
 .sw input { accent-color: var(--mpc-violet); }
-.tree { width: 100%; height: auto; margin-top: 12px; background: var(--mpc-paper); border: 2px solid var(--mpc-ink); border-radius: 14px; }
+.tree { width: 100%; height: auto; margin-top: 12px; background: var(--mpc-paper); border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-lg); }
 .br { transition: opacity 0.3s; }
 .br.dim { opacity: 0.28; }
 .hotpath { stroke: var(--mpc-violet) !important; stroke-width: 4 !important; }
@@ -194,10 +194,10 @@ const FLAB = ['1 · compose', '2 · route', '3 · land'];
 .fr .mpc-chip { color: var(--vp-c-text-3); }
 .fr .mpc-chip.on { color: var(--mpc-violet); background: var(--mpc-violet-soft); }
 .out { margin-top: 12px; }
-.proj, .result { background: var(--mpc-paper); border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 12px 14px; }
+.proj, .result { background: var(--mpc-paper); border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 12px 14px; }
 .pg { display: grid; gap: 6px; margin-top: 8px; }
-.pg div { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-size: 13px; }
-.pl { font-family: var(--mpc-mono); font-weight: 800; font-size: 12px; min-width: 120px; }
+.pg div { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-size: var(--fs-sm); }
+.pl { font-family: var(--mpc-mono); font-weight: var(--fw-semibold); font-size: var(--fs-xs); min-width: 120px; }
 .result { border-left-width: 8px; }
 .r-teal { border-left-color: var(--mpc-teal); }
 .r-violet { border-left-color: var(--mpc-violet); }
@@ -205,10 +205,10 @@ const FLAB = ['1 · compose', '2 · route', '3 · land'];
 .r-amber { border-left-color: var(--mpc-amber); }
 .r-coral { border-left-color: var(--mpc-coral); background: var(--mpc-coral-soft); }
 .rh { display: flex; gap: 12px; align-items: flex-start; }
-.acc { font-size: 13.5px; font-weight: 700; }
-.rh p { margin: 6px 0 0 !important; font-size: 15.5px !important; line-height: 1.6 !important; }
+.acc { font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+.rh p { margin: 6px 0 0 !important; font-size: var(--fs-md); line-height: 1.6 !important; }
 .tl { width: 100%; height: auto; margin-top: 10px; }
-.sees { margin-top: 10px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-size: 13.5px; }
+.sees { margin-top: 10px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-size: var(--fs-sm); }
 .dimtxt { color: var(--vp-c-text-3); }
 @media (prefers-reduced-motion: reduce) { .env, .br { transition: none; } }
 </style>

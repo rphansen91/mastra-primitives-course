@@ -74,7 +74,7 @@ function reveal() {
 </script>
 
 <template>
-  <section class="ord mpc-card" aria-label="Put the steps in order" :data-order="id">
+  <section class="ord mpc-card mpc-toy" aria-label="Put the steps in order" :data-order="id">
     <div class="mpc-kicker"><Icon name="grip" :size="15" /> Put it in order</div>
     <p class="q" v-html="fmt(prompt)" />
     <p class="how">Drag the cards, or use the arrows. Keyboard: focus a card, <kbd>Space</kbd> to pick up, <kbd>↑</kbd>/<kbd>↓</kbd> to move.</p>
@@ -116,23 +116,23 @@ function reveal() {
 
 <style scoped>
 .ord { background: var(--mpc-amber-soft); }
-.q { font-size: 17.5px !important; font-weight: 700; margin: 8px 0 4px !important; }
-.how { font-size: 13.5px !important; color: var(--vp-c-text-2); margin: 0 0 12px !important; }
-kbd { font-family: var(--mpc-mono); font-size: 12px; border: 1px solid var(--vp-c-divider); border-radius: 4px; padding: 0 4px; background: var(--mpc-paper); }
+.q { font-size: var(--fs-body); font-weight: var(--fw-semibold); margin: 8px 0 4px !important; }
+.how { font-size: var(--fs-sm); color: var(--vp-c-text-2); margin: 0 0 12px !important; }
+kbd { font-family: var(--mpc-mono); font-size: var(--fs-xs); border: 1px solid var(--vp-c-divider); border-radius: 4px; padding: 0 4px; background: var(--mpc-paper); }
 .list { list-style: none; padding: 0 !important; margin: 0 !important; display: grid; gap: 8px; }
-.item { margin: 0 !important; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 2px solid var(--mpc-ink); border-radius: 12px; background: var(--mpc-paper); cursor: grab; font-size: 15px; line-height: 1.4; user-select: none; transition: transform 0.12s, box-shadow 0.12s; }
+.item { margin: 0 !important; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: var(--mpc-toy-border); border-radius: var(--r-md); background: var(--mpc-paper); cursor: grab; font-size: var(--fs-md); line-height: 1.4; user-select: none; transition: transform 0.12s, box-shadow 0.12s; }
 .item.grabbed { transform: scale(1.02); box-shadow: 4px 4px 0 var(--mpc-shadow); border-color: var(--mpc-violet); }
 .item.right { background: var(--mpc-teal-soft); border-color: var(--mpc-teal); }
 .item.wrong { background: var(--mpc-coral-soft); border-color: var(--mpc-coral); }
-.num { width: 26px; height: 26px; border-radius: 50%; background: var(--mpc-ink); color: var(--mpc-paper); font-weight: 800; font-size: 13px; display: grid; place-items: center; flex: none; }
+.num { width: 26px; height: 26px; border-radius: 50%; background: var(--mpc-ink); color: var(--mpc-paper); font-weight: var(--fw-semibold); font-size: var(--fs-sm); display: grid; place-items: center; flex: none; }
 .grip { color: var(--vp-c-text-3); }
 .txt { flex: 1; }
 .arrows { display: flex; gap: 4px; }
-.arr { width: 30px; height: 30px; border: 2px solid var(--mpc-ink); border-radius: 8px; background: var(--mpc-paper); color: var(--mpc-ink); display: grid; place-items: center; cursor: pointer; }
+.arr { width: 30px; height: 30px; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); background: var(--mpc-paper); color: var(--mpc-ink); display: grid; place-items: center; cursor: pointer; }
 .arr:disabled { opacity: 0.3; cursor: default; }
 .actions { display: flex; gap: 10px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
-.fbcard { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--mpc-ink); background: var(--mpc-paper); font-size: 15.5px; line-height: 1.55; }
+.fbcard { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; border-radius: var(--r-md); border: 1.5px solid var(--mpc-line-strong); background: var(--mpc-paper); font-size: var(--fs-md); line-height: 1.55; }
 .fbcard.ok { border-color: var(--mpc-teal); }
-.explain { margin: 6px 0 0 !important; font-size: 15px !important; color: var(--vp-c-text-2); }
+.explain { margin: 6px 0 0 !important; font-size: var(--fs-md); color: var(--vp-c-text-2); }
 @media (prefers-reduced-motion: reduce) { .item { transition: none; } }
 </style>

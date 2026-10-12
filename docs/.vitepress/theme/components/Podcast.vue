@@ -60,10 +60,10 @@ function stop() { window.speechSynthesis.cancel(); speaking.value = false; pause
 <style scoped>
 .pod { background: linear-gradient(135deg, var(--mpc-violet-soft), var(--mpc-sky-soft)); }
 .head { display: flex; gap: 14px; align-items: center; }
-.meta strong { font-size: 18px; }
-.sub { font-size: 14px !important; color: var(--vp-c-text-2); margin: 2px 0 0 !important; }
+.meta strong { font-size: var(--fs-body); }
+.sub { font-size: var(--fs-sm); color: var(--vp-c-text-2); margin: 2px 0 0 !important; }
 .actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-.transcript { margin-top: 14px; padding: 14px 18px; border-radius: 12px; border: 2px solid var(--mpc-ink); background: var(--mpc-paper); }
-.transcript :deep(p) { margin: 10px 0; font-size: 16px !important; }
+.transcript { margin-top: 14px; padding: 14px 18px; border-radius: var(--r-md); border: 1px solid var(--mpc-line); background: var(--mpc-paper); }
+.transcript :deep(p) { margin: 10px 0; font-size: var(--fs-md); }
 .transcript :deep(strong) { color: var(--mpc-violet); }
 </style>

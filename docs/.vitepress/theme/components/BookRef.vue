@@ -12,7 +12,7 @@ const b = computed(() => BOOKS[props.book]);
 </template>
 <style scoped>
 /* Inline citation, not a pill: wraps cleanly inside sentences and table cells. */
-.bookref { display: inline; padding: 1px 6px; border: 1px solid var(--mpc-line-strong); border-radius: 6px; -webkit-box-decoration-break: clone; box-decoration-break: clone; font-size: 0.86em; line-height: 1.9; text-decoration: none !important; color: var(--vp-c-text-1) !important; background: var(--mpc-surface-2); white-space: normal; }
+.bookref { display: inline; padding: 1px 6px; border: 1px solid var(--mpc-line-strong); border-radius: var(--r-sm); -webkit-box-decoration-break: clone; box-decoration-break: clone; font-size: 0.86em; line-height: 1.9; text-decoration: none !important; color: var(--vp-c-text-1) !important; background: var(--mpc-surface-2); white-space: normal; }
 .bookref:hover { border-color: var(--vp-c-brand-1); }
 .bookref :deep(svg) { display: inline-block; vertical-align: -2px; margin-right: 4px; }
 .c::before, .p::before { content: ' · '; color: var(--vp-c-text-3); }

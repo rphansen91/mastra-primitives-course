@@ -20,5 +20,5 @@ const short = computed(() => {
 .mpc-quote::before { content: '“'; }
 .mpc-quote::after { content: '”'; }
 .src { font-size: 0.86em; white-space: normal; }
-.cite-missing { color: red; font-weight: 700; }
+.cite-missing { color: red; font-weight: var(--fw-semibold); }
 </style>

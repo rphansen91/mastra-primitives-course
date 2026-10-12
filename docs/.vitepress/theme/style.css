@@ -1,198 +1,270 @@
-/* ---------- Design tokens: one palette for components, illustrations and the site ---------- */
+/* =====================================================================================
+   Mastra Primitives design system (Direction B: playful but polished)
+   - Geist Sans + Geist Mono, self-hosted (latin subset, wght 400-600)
+   - 7-step type scale, 17px body; weights 400 / 500 / 600 only
+   - neutral surfaces + 4 semantic tints (info / tip / warn / danger) + one accent per module
+   - hairlines + soft shadow for content; the chunky outline + offset shadow is reserved for
+     things you can touch (.mpc-toy, .mpc-btn, .mpc-toggle): chunky = touchable
+   ===================================================================================== */
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist.woff2') format('woff2'); font-weight: 400 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-Italic.woff2') format('woff2'); font-weight: 400 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Geist Mono'; src: url('/fonts/GeistMono.woff2') format('woff2'); font-weight: 400 600; font-style: normal; font-display: swap; }
+/* metric-matched fallbacks so the swap doesn't shift layout */
+@font-face { font-family: 'Geist Fallback'; src: local('Arial'), local('Helvetica Neue'), local('Liberation Sans'); size-adjust: 104%; ascent-override: 92%; descent-override: 22%; line-gap-override: 0%; }
+@font-face { font-family: 'Geist Mono Fallback'; src: local('Menlo'), local('Consolas'), local('Liberation Mono'); size-adjust: 100%; }
+
 :root {
-  --mpc-ink: #221d45;
-  --mpc-ink-2: #5b5680;
-  --mpc-paper: #ffffff;
-  --mpc-violet: #6d4aff;
-  --mpc-violet-soft: #ece7ff;
-  --mpc-teal: #0e9f92;
-  --mpc-teal-soft: #d6f5f0;
-  --mpc-amber: #e58f00;
-  --mpc-amber-soft: #fff0d1;
-  --mpc-coral: #e5405e;
-  --mpc-coral-soft: #ffe0e6;
-  --mpc-sky: #2b8be6;
-  --mpc-sky-soft: #ddeeff;
-  --mpc-lime: #3f9b2c;
-  --mpc-lime-soft: #e3f6da;
-  --mpc-shadow: #221d45;
-  --mpc-radius: 14px;
-  --mpc-card-shadow: 4px 4px 0 var(--mpc-shadow);
+  --vp-font-family-base: 'Geist', 'Geist Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --vp-font-family-mono: 'Geist Mono', 'Geist Mono Fallback', ui-monospace, SFMono-Regular, Menlo, monospace;
   --mpc-mono: var(--vp-font-family-mono);
 
+  /* type scale (7 steps) */
+  --fs-xs: 12px; --fs-sm: 14px; --fs-md: 15px; --fs-body: 17px; --fs-h3: 21px; --fs-h2: 27px; --fs-h1: 40px;
+  --fs-display: clamp(40px, 6vw, 64px);
+  --lh-body: 1.7; --lh-tight: 1.25;
+  --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600;
+
+  /* radius + spacing */
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+  --mpc-radius: var(--r-lg);
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+
+  /* neutral surfaces + hairlines */
+  --mpc-paper: #ffffff;
+  --mpc-surface-2: #f7f7f9;
+  --mpc-surface-3: #efeff3;
+  --mpc-line: color-mix(in oklab, var(--vp-c-text-1) 13%, transparent);
+  --mpc-line-strong: color-mix(in oklab, var(--vp-c-text-1) 24%, transparent);
+  --mpc-border: 1px solid var(--mpc-line);
+  --mpc-shadow-1: 0 1px 2px rgb(16 16 32 / 0.06), 0 1px 1px rgb(16 16 32 / 0.04);
+  --mpc-shadow-2: 0 6px 16px rgb(16 16 32 / 0.08), 0 1px 3px rgb(16 16 32 / 0.06);
+
+  /* touchable things: chunky ink outline + offset shadow */
+  --mpc-ink: #1f1b3a;
+  --mpc-ink-2: #55546a;
+  --mpc-toy-line: #1f1b3a;
+  --mpc-toy-border: 2px solid var(--mpc-toy-line);
+  --mpc-shadow: #1f1b3a;
+  --mpc-card-shadow: 4px 4px 0 var(--mpc-shadow);
+
+  /* brand + module identity */
   --vp-c-brand-1: #5b3df5;
   --vp-c-brand-2: #4c2fe0;
   --vp-c-brand-3: #5b3df5;
   --vp-c-brand-soft: rgba(91, 61, 245, 0.12);
-  /* semantic tints: info / tip / warning / danger (fill, rule, ink) */
+  --mod-accent: var(--vp-c-brand-1);
+  --mod-tint: color-mix(in oklab, var(--mod-accent) 8%, var(--vp-c-bg));
+
+  /* semantic tints */
   --mpc-info: #1f6fd1; --mpc-tip: #0b7f74; --mpc-warn: #b26200; --mpc-danger: #c0283f;
+  --mpc-info-ink: #17589f; --mpc-tip-ink: #08655c; --mpc-warn-ink: #8a4b00; --mpc-danger-ink: #a01d33;
   --mpc-info-bg: color-mix(in oklab, var(--mpc-info) 7%, var(--vp-c-bg));
   --mpc-tip-bg: color-mix(in oklab, var(--mpc-tip) 7%, var(--vp-c-bg));
   --mpc-warn-bg: color-mix(in oklab, var(--mpc-warn) 8%, var(--vp-c-bg));
   --mpc-danger-bg: color-mix(in oklab, var(--mpc-danger) 7%, var(--vp-c-bg));
-  --mpc-info-line: color-mix(in oklab, var(--mpc-info) 35%, transparent);
-  --mpc-tip-line: color-mix(in oklab, var(--mpc-tip) 35%, transparent);
-  --mpc-warn-line: color-mix(in oklab, var(--mpc-warn) 40%, transparent);
-  --mpc-danger-line: color-mix(in oklab, var(--mpc-danger) 35%, transparent);
-  --mpc-info-ink: #17589f; --mpc-tip-ink: #08655c; --mpc-warn-ink: #8a4b00; --mpc-danger-ink: #a01d33;
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(120deg, #6d4aff 10%, #0e9f92 90%);
+  --mpc-info-line: color-mix(in oklab, var(--mpc-info) 40%, transparent);
+  --mpc-tip-line: color-mix(in oklab, var(--mpc-tip) 40%, transparent);
+  --mpc-warn-line: color-mix(in oklab, var(--mpc-warn) 45%, transparent);
+  --mpc-danger-line: color-mix(in oklab, var(--mpc-danger) 40%, transparent);
+
+  /* legacy palette names, collapsed onto semantics so every component speaks the same 4+1 colors */
+  --mpc-violet: var(--mod-accent);      --mpc-violet-soft: var(--mod-tint);
+  --mpc-teal: var(--mpc-tip);           --mpc-teal-soft: var(--mpc-tip-bg);
+  --mpc-lime: var(--mpc-tip);           --mpc-lime-soft: var(--mpc-tip-bg);
+  --mpc-amber: var(--mpc-warn);         --mpc-amber-soft: var(--mpc-warn-bg);
+  --mpc-coral: var(--mpc-danger);       --mpc-coral-soft: var(--mpc-danger-bg);
+  --mpc-sky: var(--mpc-info);           --mpc-sky-soft: var(--mpc-info-bg);
+
+  --mpc-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --mpc-dur: 180ms;
+  --vp-code-block-bg: #ffffff;
+  --vp-code-copy-code-bg: var(--vp-code-block-bg);
+  --dg-accent: var(--mod-accent);
+  --dg-tip: var(--mpc-tip); --dg-warn: var(--mpc-warn); --dg-danger: var(--mpc-danger);
 }
 .dark {
-  --mpc-ink: #ebe8ff;
-  --mpc-ink-2: #b4afd6;
-  --mpc-paper: #1b1a26;
-  --mpc-violet: #a48dff;
-  --mpc-violet-soft: #2c2552;
-  --mpc-teal: #3fd6c6;
-  --mpc-teal-soft: #173d3a;
-  --mpc-amber: #ffbd4a;
-  --mpc-amber-soft: #42321a;
-  --mpc-coral: #ff7d93;
-  --mpc-coral-soft: #4a2230;
-  --mpc-sky: #6cb6ff;
-  --mpc-sky-soft: #1d3550;
-  --mpc-lime: #84d96f;
-  --mpc-lime-soft: #23401d;
+  --mpc-paper: #1a1a1f;
+  --mpc-surface-2: #1c1c21;
+  --mpc-surface-3: #24242b;
+  --mpc-shadow-1: 0 0 0 1px rgb(255 255 255 / 0.04);
+  --mpc-shadow-2: 0 0 0 1px rgb(255 255 255 / 0.06), 0 8px 24px rgb(0 0 0 / 0.5);
+  --mpc-ink: #ecebf5;
+  --mpc-ink-2: #b2b1c4;
+  --mpc-toy-line: #5f5c7d;
   --mpc-shadow: #000000;
   --vp-c-brand-1: #ab97ff;
   --vp-c-brand-2: #bfb0ff;
   --vp-c-brand-3: #8a6dff;
   --vp-c-brand-soft: rgba(171, 151, 255, 0.16);
+  --mod-tint: color-mix(in oklab, var(--mod-accent) 11%, var(--vp-c-bg));
   --mpc-info: #6cb6ff; --mpc-tip: #3fd6c6; --mpc-warn: #ffbd4a; --mpc-danger: #ff7d93;
+  --mpc-info-ink: #9dcdff; --mpc-tip-ink: #7fe6da; --mpc-warn-ink: #ffd27f; --mpc-danger-ink: #ffaab8;
   --mpc-info-bg: color-mix(in oklab, var(--mpc-info) 10%, var(--vp-c-bg));
   --mpc-tip-bg: color-mix(in oklab, var(--mpc-tip) 9%, var(--vp-c-bg));
   --mpc-warn-bg: color-mix(in oklab, var(--mpc-warn) 9%, var(--vp-c-bg));
   --mpc-danger-bg: color-mix(in oklab, var(--mpc-danger) 10%, var(--vp-c-bg));
-  --mpc-info-ink: #9dcdff; --mpc-tip-ink: #7fe6da; --mpc-warn-ink: #ffd27f; --mpc-danger-ink: #ffaab8;
+  --vp-code-block-bg: #16161a;
 }
+/* one signature color per module (sidebar, header, visualizers, cheat card, OG image) */
+.mod-00 { --mod-accent: #4b5568; }
+.dark .mod-00 { --mod-accent: #a9b4c8; }
+.mod-01 { --mod-accent: #4338ca; }
+.dark .mod-01 { --mod-accent: #a5a8ff; }
+.mod-02 { --mod-accent: #6d28d9; }
+.dark .mod-02 { --mod-accent: #bda4ff; }
+.mod-03 { --mod-accent: #a21caf; }
+.dark .mod-03 { --mod-accent: #f19aff; }
+.mod-04 { --mod-accent: #be123c; }
+.dark .mod-04 { --mod-accent: #ff9bb1; }
+.mod-05 { --mod-accent: #c2410c; }
+.dark .mod-05 { --mod-accent: #ffaa75; }
+.mod-06 { --mod-accent: #a15c07; }
+.dark .mod-06 { --mod-accent: #f5c451; }
+.mod-07 { --mod-accent: #15803d; }
+.dark .mod-07 { --mod-accent: #74df91; }
+.mod-08 { --mod-accent: #0f766e; }
+.dark .mod-08 { --mod-accent: #56dccb; }
+.mod-09 { --mod-accent: #0369a1; }
+.dark .mod-09 { --mod-accent: #72c7ff; }
+.mod-10 { --mod-accent: #1d4ed8; }
+.dark .mod-10 { --mod-accent: #95b4ff; }
 
-/* ---------- Lesson pages read like a course, not a reference ---------- */
-.lesson .vp-doc p,
-.lesson .vp-doc li {
-  font-size: 16.5px;
-  line-height: 1.75;
+/* dependent tokens must be re-declared where --mod-accent changes (custom properties resolve where declared) */
+:is(.mod-00,.mod-01,.mod-02,.mod-03,.mod-04,.mod-05,.mod-06,.mod-07,.mod-08,.mod-09,.mod-10) {
+  --mod-tint: color-mix(in oklab, var(--mod-accent) 8%, var(--vp-c-bg));
+  --mpc-violet: var(--mod-accent); --mpc-violet-soft: var(--mod-tint); --dg-accent: var(--mod-accent);
 }
-.lesson .vp-doc > div > p { max-width: 70ch; }
-.lesson .vp-doc > div > h2 {
-  border-top: none;
-  margin-top: 56px;
-  padding-top: 0;
-  font-size: 28px;
-  letter-spacing: -0.02em;
-}
-.lesson .vp-doc > div > h3 { font-size: 21px; margin-top: 40px; }
-.lesson .vp-doc h1 { font-size: 40px; letter-spacing: -0.03em; line-height: 1.15; }
-.lesson .vp-doc .lead { font-size: 19px; line-height: 1.7; color: var(--vp-c-text-2); }
+.dark :is(.mod-00,.mod-01,.mod-02,.mod-03,.mod-04,.mod-05,.mod-06,.mod-07,.mod-08,.mod-09,.mod-10) { --mod-tint: color-mix(in oklab, var(--mod-accent) 11%, var(--vp-c-bg)); }
+
+/* ---------- Base typography ---------- */
+:root { --vp-font-size-base: var(--fs-body); }
+body { font-feature-settings: 'kern', 'calt'; -webkit-font-smoothing: antialiased; }
+.vp-doc { font-size: var(--fs-body); line-height: var(--lh-body); }
+.vp-doc p, .vp-doc li { font-size: var(--fs-body); line-height: var(--lh-body); }
+.vp-doc h1 { font-size: var(--fs-h1); font-weight: var(--fw-semibold); letter-spacing: -0.025em; line-height: 1.1; }
+.vp-doc h2 { font-size: var(--fs-h2); font-weight: var(--fw-semibold); letter-spacing: -0.02em; line-height: var(--lh-tight); }
+.vp-doc h3 { font-size: var(--fs-h3); font-weight: var(--fw-semibold); letter-spacing: -0.01em; line-height: 1.35; }
+.vp-doc h4 { font-size: var(--fs-body); font-weight: var(--fw-semibold); }
+.vp-doc strong, .vp-doc b { font-weight: var(--fw-semibold); }
+.vp-doc table { font-size: var(--fs-md); }
+.vp-doc th { font-weight: var(--fw-semibold); }
+.vp-doc .lead { font-size: var(--fs-h3); line-height: 1.55; color: var(--vp-c-text-2); letter-spacing: -0.005em; }
+
+/* Lesson pages read like a course, not a reference */
+.lesson .vp-doc > div > :where(p, ul, ol, h2, h3, blockquote) { max-width: 70ch; }
+.lesson .vp-doc > div > h2 { border-top: none; margin-top: var(--sp-8); padding-top: 0; }
+.lesson .vp-doc > div > h3 { margin-top: 40px; }
+.lesson .VPDoc .content-container { max-width: 900px; }
 
 /* ---------- Shared component chrome ---------- */
 .mpc-card {
-  border: 2px solid var(--mpc-ink);
-  border-radius: var(--mpc-radius);
-  background: var(--mpc-paper);
-  box-shadow: var(--mpc-card-shadow);
+  border: var(--mpc-border);
+  border-radius: var(--r-lg);
+  background: var(--vp-c-bg);
+  box-shadow: none;
   padding: 18px 20px;
   margin: 28px 0;
   color: var(--vp-c-text-1);
 }
-.mpc-card :where(p, li) { font-size: 16px !important; }
+.mpc-card :where(p, li) { font-size: var(--fs-md); line-height: 1.6; }
 .mpc-card > :first-child { margin-top: 0; }
 .mpc-card > :last-child { margin-bottom: 0; }
+/* chunky = touchable: interactive widgets keep the ink outline + offset shadow */
+.mpc-card.mpc-toy, .mpc-toy {
+  border: var(--mpc-toy-border);
+  background: var(--mpc-paper);
+  box-shadow: var(--mpc-card-shadow);
+}
 .mpc-kicker {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--mpc-ink-2);
+  color: var(--vp-c-text-2);
 }
 .mpc-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: 2px solid var(--mpc-ink);
-  border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 6px;
+  border: var(--mpc-toy-border);
+  border-radius: var(--r-pill);
   padding: 6px 14px;
-  font-weight: 700;
-  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
   line-height: 1.3;
   background: var(--mpc-paper);
-  color: var(--mpc-ink);
+  color: var(--vp-c-text-1);
   box-shadow: 2px 2px 0 var(--mpc-shadow);
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  transition: background var(--mpc-dur) var(--mpc-ease), transform var(--mpc-dur) var(--mpc-ease), box-shadow var(--mpc-dur) var(--mpc-ease);
 }
-.mpc-btn:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--mpc-shadow); }
-.mpc-btn:active:not(:disabled) { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--mpc-shadow); }
+.mpc-btn:hover:not(:disabled) { background: var(--mpc-surface-2); }
+.mpc-btn:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--mpc-shadow); }
 .mpc-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.mpc-btn.primary { background: var(--mpc-violet); color: #fff; border-color: var(--mpc-ink); }
-.dark .mpc-btn.primary { color: #14112b; }
-.mpc-btn.danger { background: var(--mpc-coral); color: #fff; }
-.dark .mpc-btn.danger { color: #14112b; }
-.mpc-btn.small { padding: 3px 10px; font-size: 13px; }
-.mpc-btn:focus-visible,
-.mpc-focus:focus-visible {
-  outline: 3px solid var(--mpc-sky);
-  outline-offset: 2px;
-}
+.mpc-btn.primary { background: var(--vp-c-brand-1); color: #fff; }
+.mpc-btn.primary:hover:not(:disabled) { background: var(--vp-c-brand-2); }
+.dark .mpc-btn.primary { color: #15122b; }
+.mpc-btn.danger { background: var(--mpc-danger); color: #fff; }
+.dark .mpc-btn.danger { color: #15122b; }
+.mpc-btn.small { padding: 3px 10px; font-size: var(--fs-xs); }
+.mpc-btn:focus-visible, .mpc-focus:focus-visible, .mpc-toggle:focus-visible { outline: 2px solid var(--vp-c-brand-1); outline-offset: 2px; }
 .mpc-chip {
-  display: inline-block;
-  border-radius: 999px;
-  padding: 1px 10px;
-  font-size: 12.5px;
-  font-weight: 700;
-  border: 1.5px solid currentColor;
+  display: inline-block; border-radius: var(--r-sm); padding: 1px 8px;
+  font-size: var(--fs-xs); font-weight: var(--fw-semibold);
+  border: 1px solid currentColor;
 }
 .mpc-toggle-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.mpc-toggle-group .label { font-size: 13px; font-weight: 700; color: var(--mpc-ink-2); margin-right: 4px; }
+.mpc-toggle-group .label { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--vp-c-text-2); margin-right: 4px; }
 .mpc-toggle {
-  border: 2px solid var(--mpc-ink);
-  border-radius: 10px;
+  border: var(--mpc-toy-border);
+  border-radius: var(--r-md);
   padding: 3px 10px;
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
   background: var(--mpc-paper);
-  color: var(--mpc-ink);
+  color: var(--vp-c-text-1);
   cursor: pointer;
+  transition: background var(--mpc-dur) var(--mpc-ease), color var(--mpc-dur) var(--mpc-ease);
 }
-.mpc-toggle[aria-pressed='true'],
-.mpc-toggle[aria-checked='true'] { background: var(--mpc-ink); color: var(--mpc-paper); }
-.mpc-toggle:focus-visible { outline: 3px solid var(--mpc-sky); outline-offset: 2px; }
+.mpc-toggle:hover { background: var(--mpc-surface-2); }
+.mpc-toggle[aria-pressed='true'], .mpc-toggle[aria-checked='true'] { background: var(--vp-c-text-1); color: var(--vp-c-bg); }
 .mpc-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.mpc-toggle code, .mpc-btn code { background: transparent !important; color: inherit !important; padding: 0 !important; border: 0 !important; font-size: 0.92em; }
+.mpc-btn-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
-/* SVG illustration palette (used by every diagram so they look like one set) */
-.ill text { font-family: var(--vp-font-family-base); fill: var(--mpc-ink); }
-.ill .t-strong { font-weight: 800; }
+/* ---------- SVG illustration palette: monoline, hairline boxes, no sticker shadows ---------- */
+.ill text { font-family: var(--vp-font-family-base); fill: var(--vp-c-text-1); }
+.ill .t-strong { font-weight: var(--fw-semibold); }
 .ill .t-mono { font-family: var(--mpc-mono); }
-.ill .t-dim { fill: var(--mpc-ink-2); }
-.ill .stroke { stroke: var(--mpc-ink); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.ill .outline { stroke: var(--mpc-ink); stroke-width: 2.5; }
-.ill .shadow { fill: var(--mpc-shadow); }
-.ill .f-paper { fill: var(--mpc-paper); }
-.ill .f-ink { fill: var(--mpc-ink); }
-.ill .f-violet { fill: var(--mpc-violet-soft); }
-.ill .f-teal { fill: var(--mpc-teal-soft); }
-.ill .f-amber { fill: var(--mpc-amber-soft); }
-.ill .f-coral { fill: var(--mpc-coral-soft); }
-.ill .f-sky { fill: var(--mpc-sky-soft); }
-.ill .f-lime { fill: var(--mpc-lime-soft); }
-.ill .s-violet { stroke: var(--mpc-violet); }
-.ill .s-teal { stroke: var(--mpc-teal); }
-.ill .s-coral { stroke: var(--mpc-coral); }
-.ill .s-amber { stroke: var(--mpc-amber); }
-.ill .c-violet { fill: var(--mpc-violet); }
-.ill .c-teal { fill: var(--mpc-teal); }
-.ill .c-coral { fill: var(--mpc-coral); }
-.ill .c-amber { fill: var(--mpc-amber); }
-.ill .c-sky { fill: var(--mpc-sky); }
-.ill .c-lime { fill: var(--mpc-lime); }
+.ill .t-dim { fill: var(--vp-c-text-2); }
+.ill .stroke { stroke: var(--vp-c-text-2); stroke-width: 1.75; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.ill .outline { stroke: var(--mpc-line-strong); stroke-width: 1.25; }
+.ill .shadow { fill: transparent; }
+.ill .f-paper { fill: var(--vp-c-bg); }
+.ill .f-ink { fill: var(--vp-c-text-1); }
+.ill .f-violet { fill: var(--mod-tint); }
+.ill .f-teal, .ill .f-lime { fill: var(--mpc-tip-bg); }
+.ill .f-amber { fill: var(--mpc-warn-bg); }
+.ill .f-coral { fill: var(--mpc-danger-bg); }
+.ill .f-sky { fill: var(--mpc-info-bg); }
+.ill .s-violet { stroke: var(--mod-accent); }
+.ill .s-teal { stroke: var(--mpc-tip); }
+.ill .s-coral { stroke: var(--mpc-danger); }
+.ill .s-amber { stroke: var(--mpc-warn); }
+.ill .c-violet { fill: var(--mod-accent); }
+.ill .c-teal, .ill .c-lime { fill: var(--mpc-tip); }
+.ill .c-coral { fill: var(--mpc-danger); }
+.ill .c-amber { fill: var(--mpc-warn); }
+.ill .c-sky { fill: var(--mpc-info); }
+/* the mascot keeps its own, slightly bolder line so it reads at small sizes */
+.ill.mascot .outline { stroke: var(--vp-c-text-1); stroke-width: 2; }
+.ill.mascot .stroke { stroke: var(--vp-c-text-1); stroke-width: 2.2; }
 
-.mpc-figure { margin: 32px 0; }
+.mpc-figure { margin: var(--sp-6) 0; }
 .mpc-figure svg:not(.mpc-icon) { width: 100%; height: auto; display: block; }
 .mpc-btn svg.mpc-icon, .mpc-kicker svg.mpc-icon { flex-shrink: 0; }
-.mpc-figure figcaption { font-size: 14px; color: var(--vp-c-text-2); text-align: center; margin-top: 8px; }
+.mpc-figure figcaption { font-size: var(--fs-sm); color: var(--vp-c-text-2); text-align: center; margin-top: var(--sp-2); }
 
 @media (prefers-reduced-motion: reduce) {
-  .mpc-btn, .mpc-anim, .mpc-anim * { transition: none !important; animation: none !important; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
 }
 
 /* Print: only the cheat card being printed is visible */
@@ -205,28 +277,10 @@
 }
 .vp-doc .journey + h2 { margin-top: 18px !important; }
 
-/* Lesson pages drop the right-hand outline (the journey tracker replaces it) and get a wider stage */
-.lesson .VPDoc .content-container { max-width: 900px; }
-.lesson .vp-doc > div > :where(p, ul, ol, h2, h3, blockquote) { max-width: 72ch; }
-
-/* code inside toggles/buttons inherits the toggle's colors */
-.mpc-toggle code, .mpc-btn code { background: transparent !important; color: inherit !important; padding: 0 !important; font-size: 0.92em; }
-.mpc-btn-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-
 /* Independence note under every doc page (the site footer is hidden when a sidebar is shown). */
-.mpc-doc-note { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--vp-c-divider); font-size: 13px; line-height: 1.5; color: var(--vp-c-text-2); }
+.mpc-doc-note { margin-top: var(--sp-6); padding-top: var(--sp-4); border-top: 1px solid var(--vp-c-divider); font-size: var(--fs-xs); line-height: 1.5; color: var(--vp-c-text-2); }
 
 /* ---------- Static diagrams (replace Mermaid): hairline boxes, real text, stacked on phones ---------- */
-:root {
-  --mpc-line: color-mix(in oklab, var(--vp-c-text-1) 14%, transparent);
-  --mpc-line-strong: color-mix(in oklab, var(--vp-c-text-1) 26%, transparent);
-  --mpc-surface-2: #f7f7f9;
-  --dg-accent: var(--mod-accent, var(--vp-c-brand-1));
-  --dg-tip: #0b7f74;
-  --dg-warn: #a65f00;
-  --dg-danger: #c0283f;
-}
-.dark { --mpc-surface-2: #1c1c21; --dg-tip: #3fd6c6; --dg-warn: #ffbd4a; --dg-danger: #ff7d93; }
 .mpc-diagram { margin: 32px 0; }
 .mpc-diagram figcaption { font-size: 14px; color: var(--vp-c-text-2); text-align: center; margin-top: 10px; }
 .dg-stack { display: none; }
@@ -305,24 +359,39 @@
   .seq-row.loophead .lbl { padding: 6px 12px; }
 }
 
+
 /* ---------- Contrast: inline code in text color on a neutral chip; brand color is for links ---------- */
 .vp-doc :not(pre) > code, .mpc-card :not(pre) > code {
   color: var(--vp-c-text-1);
-  background: color-mix(in oklab, var(--vp-c-text-1) 7%, transparent);
+  background: color-mix(in oklab, var(--vp-c-text-1) 6%, transparent);
   border: 1px solid color-mix(in oklab, var(--vp-c-text-1) 8%, transparent);
   border-radius: 5px;
   padding: 1px 5px;
+  font-size: 0.86em;
   overflow-wrap: break-word;
 }
 .vp-doc a > code, .vp-doc a:hover > code { color: var(--vp-c-brand-1); }
-.vp-doc div[class*='language-'] > span.lang { color: var(--vp-c-text-2); }
-.vp-doc div[class*='language-'] > button.copy { opacity: 1; }
+.vp-doc div[class*='language-'] > span.lang { color: var(--vp-c-text-2); font-size: var(--fs-xs); }
+.vp-doc div[class*='language-'] { border: 1px solid var(--mpc-line); border-radius: var(--r-md); }
+.vp-doc div[class*='language-'] code { font-size: var(--fs-sm); }
 
 /* ---------- Wide reference pages (cheat sheet, production guide, reading list) ---------- */
 .wide .VPDoc:not(.has-aside) .content-container { max-width: 1080px; }
 .wide .VPDoc .content { max-width: none; }
 .wide .vp-doc table { display: table; width: 100%; }
 @media (max-width: 959px) { .wide .vp-doc table { display: block; } }
+
+/* Component headings are h3 for a valid outline order, but sized as widget titles, not section heads. */
+.vp-doc :is(.mpc-card, .mpc-diagram) h3 { font-size: var(--fs-md); line-height: 1.4; letter-spacing: 0; margin-top: 0; padding-top: 0; border-top: 0; }
+
+/* ---------- Module identity in the chrome ---------- */
+.in-module .VPSidebarItem.is-active > .item .text,
+.in-module .VPSidebarItem.is-active > .item .link > .text { color: var(--mod-accent); }
+.in-module .VPSidebarItem.level-1.is-active > .item .indicator { background-color: var(--mod-accent); }
+.in-module .vp-doc a:not(.header-anchor):not(.bookref):not(.mpc-btn) { text-decoration-color: color-mix(in oklab, var(--mod-accent) 45%, transparent); }
+.in-module .vp-doc h1::before {
+  content: ''; display: block; width: 36px; height: 4px; border-radius: 2px; margin-bottom: 18px; background: var(--mod-accent);
+}
 
 /* ---------- Performance: skip layout/paint for blocks far below the fold until they approach ---------- */
 @supports (content-visibility: auto) {
@@ -331,11 +400,3 @@
     contain-intrinsic-size: auto 320px;
   }
 }
-
-/* Component headings are h3 for a valid outline order, but sized as widget titles, not section heads. */
-.vp-doc :is(.mpc-card, .mpc-diagram) h3 { font-size: 15.5px; line-height: 1.4; letter-spacing: 0; margin-top: 0; padding-top: 0; border-top: 0; }
-
-/* Code blocks: one quiet surface (AA-safe github-default palettes on a near-white / near-black block) */
-:root { --vp-code-block-bg: #ffffff; --vp-code-copy-code-bg: var(--vp-code-block-bg); }
-.dark { --vp-code-block-bg: #16161a; }
-.vp-doc div[class*='language-'] { border: 1px solid var(--mpc-line); border-radius: 10px; }

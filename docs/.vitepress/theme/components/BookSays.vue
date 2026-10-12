@@ -13,7 +13,7 @@ defineProps<{ quote: string; version?: string }>();
 .col { padding: 12px 16px; }
 .book { background: var(--mpc-amber-soft); border-right: 2px solid var(--mpc-ink); }
 .fw { background: var(--mpc-lime-soft); }
-.col p, .body :deep(p) { margin: 6px 0 0 !important; font-size: 15px; line-height: 1.55; }
+.col p, .body :deep(p) { margin: 6px 0 0 !important; font-size: var(--fs-md); line-height: 1.55; }
 .mpc-kicker { display: inline-flex; gap: 5px; align-items: center; }
-@media (max-width: 640px) { .bs { grid-template-columns: 1fr; } .book { border-right: 0; border-bottom: 2px solid var(--mpc-ink); } }
+@media (max-width: 640px) { .bs { grid-template-columns: 1fr; } .book { border-right: 0; border-bottom: 1px solid var(--mpc-line); } }
 </style>

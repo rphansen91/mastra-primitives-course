@@ -35,7 +35,7 @@ const whyHtml = computed(() => (lastOpt.value?.why ? ' ' + fmt(lastOpt.value.why
 </script>
 
 <template>
-  <section class="quiz mpc-card" :class="kind" :aria-label="kind === 'predict' ? 'Predict the output' : 'Knowledge check'">
+  <section class="quiz mpc-card mpc-toy" :class="kind" :aria-label="kind === 'predict' ? 'Predict the output' : 'Knowledge check'">
     <div class="head">
       <span class="mpc-kicker"><Icon :name="kind === 'predict' ? 'eye' : 'bulb'" :size="15" /> {{ kind === 'predict' ? 'Predict the output' : 'Quick check' }}</span>
       <span v-if="passedBefore && !solved" class="mpc-chip prev">passed before</span>
@@ -73,26 +73,26 @@ const whyHtml = computed(() => (lastOpt.value?.why ? ' ' + fmt(lastOpt.value.why
 .quiz.predict { background: var(--mpc-sky-soft); }
 .head { display: flex; justify-content: space-between; align-items: center; }
 .prev { color: var(--mpc-teal); }
-.q { font-size: 17.5px !important; font-weight: 700; margin: 8px 0 12px !important; line-height: 1.5 !important; }
+.q { font-size: var(--fs-body); font-weight: var(--fw-semibold); margin: 8px 0 12px !important; line-height: 1.5 !important; }
 .code :deep(div[class*='language-']) { margin: 8px 0 14px !important; }
 .opts { list-style: none; padding: 0 !important; margin: 0 !important; display: grid; gap: 8px; }
 .opts li { margin: 0 !important; }
-.opt { width: 100%; text-align: left; display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--mpc-ink); background: var(--mpc-paper); color: var(--vp-c-text-1); font-size: 15.5px; line-height: 1.45; cursor: pointer; transition: transform 0.1s; }
+.opt { width: 100%; text-align: left; display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: var(--r-md); border: var(--mpc-toy-border); background: var(--mpc-paper); color: var(--vp-c-text-1); font-size: var(--fs-md); line-height: 1.45; cursor: pointer; transition: transform 0.1s; }
 .opt:hover:not(:disabled) { transform: translateX(3px); }
 .opt:disabled { opacity: 0.55; cursor: default; }
 .opt.right { background: var(--mpc-teal-soft); border-color: var(--mpc-teal); box-shadow: 0 0 0 2px var(--mpc-teal); }
 .opt.wrong { background: var(--mpc-coral-soft); border-color: var(--mpc-coral); }
-.letter { width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--mpc-ink); display: grid; place-items: center; font-weight: 800; font-size: 13px; flex: none; }
+.letter { width: 28px; height: 28px; border-radius: var(--r-md); border: 1.5px solid var(--mpc-line-strong); display: grid; place-items: center; font-weight: var(--fw-semibold); font-size: var(--fs-sm); flex: none; }
 .right .letter { background: var(--mpc-teal); color: #fff; }
 .wrong .letter { background: var(--mpc-coral); color: #fff; }
 .txt { flex: 1; }
 .mark { flex: none; }
 .right .mark { color: var(--mpc-teal); }
 .wrong .mark { color: var(--mpc-coral); }
-.fbcard { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--mpc-ink); background: var(--mpc-paper); font-size: 15.5px; line-height: 1.55; }
+.fbcard { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; border-radius: var(--r-md); border: 1.5px solid var(--mpc-line-strong); background: var(--mpc-paper); font-size: var(--fs-md); line-height: 1.55; }
 .fbcard.right { border-color: var(--mpc-teal); }
 .fbcard.wrong { border-color: var(--mpc-coral); }
-.explain { margin: 6px 0 0 !important; font-size: 15px !important; color: var(--vp-c-text-2); }
+.explain { margin: 6px 0 0 !important; font-size: var(--fs-md); color: var(--vp-c-text-2); }
 .again { margin-top: 12px; }
 @media (prefers-reduced-motion: reduce) { .opt { transition: none; } }
 </style>

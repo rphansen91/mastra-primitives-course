@@ -102,7 +102,7 @@ const emailsToManager = computed(() => outbox.value.filter((o) => o.to === 'mana
 </script>
 
 <template>
-  <section class="wt mpc-card mpc-anim" aria-label="Workflow suspend and resume simulator">
+  <section class="wt mpc-card mpc-toy mpc-anim" aria-label="Workflow suspend and resume simulator">
     <div class="mpc-kicker"><Icon name="clock" :size="14" /> Interactive: suspend, resume, snapshot</div>
     <p class="intro">The refund workflow from Lab 5. A manager must approve it. Watch what's written to disk after every step, and which process does what.</p>
     <div class="opts">
@@ -169,40 +169,40 @@ const emailsToManager = computed(() => outbox.value.filter((o) => o.to === 'mana
 .wt { background: var(--vp-c-bg-soft); }
 .intro { margin: 6px 0 10px !important; }
 .opts { display: grid; gap: 4px; }
-.sw { font-size: 14px; display: inline-flex; gap: 6px; align-items: baseline; }
+.sw { font-size: var(--fs-sm); display: inline-flex; gap: 6px; align-items: baseline; }
 .graph { list-style: none; padding: 0 !important; margin: 16px 0 8px !important; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
 @media (max-width: 640px) { .graph { grid-template-columns: repeat(2, minmax(0, 1fr)); } .link { display: none; } }
-.node { position: relative; margin: 0 !important; border: 2.5px solid var(--mpc-ink); border-radius: 14px; padding: 10px; background: var(--mpc-paper); box-shadow: 3px 3px 0 var(--mpc-shadow); display: grid; gap: 2px; min-width: 0; }
+.node { position: relative; margin: 0 !important; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-lg); padding: 10px; background: var(--mpc-paper); box-shadow: none; display: grid; gap: 2px; min-width: 0; }
 .node.running { background: var(--mpc-amber-soft); }
 .node.success { background: var(--mpc-teal-soft); }
 .node.suspended { background: var(--mpc-violet-soft); border-style: dashed; }
-.nm { font-family: var(--mpc-mono); font-weight: 800; font-size: 15px; }
-.sb { font-size: 12.5px; color: var(--mpc-ink-2); }
-.badge { justify-self: start; font-size: 11.5px; font-weight: 800; border: 1.5px solid var(--mpc-ink); border-radius: 99px; padding: 0 7px; background: var(--mpc-paper); margin-top: 4px; }
-.link { position: absolute; right: -19px; top: 38%; font-weight: 800; font-size: 18px; }
+.nm { font-family: var(--mpc-mono); font-weight: var(--fw-semibold); font-size: var(--fs-md); }
+.sb { font-size: var(--fs-xs); color: var(--mpc-ink-2); }
+.badge { justify-self: start; font-size: var(--fs-xs); font-weight: var(--fw-semibold); border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-pill); padding: 0 7px; background: var(--mpc-paper); margin-top: 4px; }
+.link { position: absolute; right: -19px; top: 38%; font-weight: var(--fw-semibold); font-size: var(--fs-body); }
 .disks { margin: 6px 0 10px; }
 .dl { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-.disk { font-size: 12.5px; padding: 2px 9px; border: 2px solid var(--mpc-ink); border-radius: 8px 8px 12px 12px; background: var(--mpc-sky-soft); }
+.disk { font-size: var(--fs-xs); padding: 2px 9px; border: 1.5px solid var(--mpc-line-strong); border-radius: 8px 8px 12px 12px; background: var(--mpc-sky-soft); }
 .disk.suspended { background: var(--mpc-violet-soft); } .disk.success { background: var(--mpc-teal-soft); }
-.none { font-size: 13px; color: var(--mpc-ink-2); font-style: italic; }
+.none { font-size: var(--fs-sm); color: var(--mpc-ink-2); font-style: italic; }
 .ctrl { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-.narr { display: flex; gap: 10px; align-items: flex-start; border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 8px 12px; background: var(--mpc-paper); }
-.narr p { margin: 4px 0 0 !important; font-size: 15px !important; }
+.narr { display: flex; gap: 10px; align-items: flex-start; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 8px 12px; background: var(--mpc-paper); }
+.narr p { margin: 4px 0 0 !important; font-size: var(--fs-md); }
 .panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
 @media (max-width: 760px) { .panels { grid-template-columns: minmax(0, 1fr); } }
-.pn { border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 8px 10px; background: var(--mpc-paper); min-width: 0; }
-.json { margin: 6px 0 0 !important; font-size: 12px; line-height: 1.5; background: var(--vp-c-bg-soft) !important; border-radius: 8px; padding: 6px 8px !important; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
-.json code { background: none !important; padding: 0 !important; font-size: 11.5px !important; white-space: pre-wrap !important; }
+.pn { border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 8px 10px; background: var(--mpc-paper); min-width: 0; }
+.json { margin: 6px 0 0 !important; font-size: var(--fs-xs); line-height: 1.5; background: var(--vp-c-bg-soft) !important; border-radius: var(--r-md); padding: 6px 8px !important; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+.json code { background: none !important; padding: 0 !important; font-size: var(--fs-xs); white-space: pre-wrap !important; }
 .log { list-style: none; padding: 0 !important; margin: 6px 0 0 !important; display: grid; gap: 4px; }
-.log li { margin: 0 !important; font-size: 12.5px !important; line-height: 1.4; padding: 2px 6px; border-radius: 6px; overflow-wrap: break-word; }
-.pid { font-weight: 800; font-size: 11px; text-transform: uppercase; margin-right: 4px; }
+.log li { margin: 0 !important; font-size: var(--fs-xs); line-height: 1.4; padding: 2px 6px; border-radius: var(--r-sm); overflow-wrap: break-word; }
+.pid { font-weight: var(--fw-semibold); font-size: var(--fs-xs); text-transform: uppercase; margin-right: 4px; }
 .pA .pid { color: var(--mpc-violet); } .pB .pid { color: var(--mpc-sky); } .pC .pid { color: var(--mpc-teal); }
 .log .effect { background: var(--mpc-amber-soft); }
 .log .bad { background: var(--mpc-coral-soft); }
 .log .race { background: var(--mpc-violet-soft); }
-.ow { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; margin-top: 6px; font-size: 13px; }
-.ow b { width: 100%; font-size: 12.5px; }
-.tag { font-family: var(--mpc-mono); font-size: 12px; padding: 1px 8px; border: 1.5px solid var(--mpc-ink); border-radius: 99px; background: var(--mpc-teal-soft); }
-.tag.dup { background: var(--mpc-coral); color: #fff; font-weight: 800; }
+.ow { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; margin-top: 6px; font-size: var(--fs-sm); }
+.ow b { width: 100%; font-size: var(--fs-xs); }
+.tag { font-family: var(--mpc-mono); font-size: var(--fs-xs); padding: 1px 8px; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-pill); background: var(--mpc-teal-soft); }
+.tag.dup { background: var(--mpc-coral); color: #fff; font-weight: var(--fw-semibold); }
 @media (prefers-reduced-motion: no-preference) { .node { transition: background 0.25s; } }
 </style>

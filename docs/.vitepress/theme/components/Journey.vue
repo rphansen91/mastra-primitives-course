@@ -19,17 +19,17 @@ const done = (n: number) => !!progress.done[`${props.module}:station:${n}`];
   </div>
 </template>
 <style scoped>
-.journey { display: flex; align-items: center; gap: 14px; margin: 64px 0 0; padding: 10px 14px; border-radius: 16px; border: 2px dashed var(--mpc-ink); }
+.journey { display: flex; align-items: center; gap: 14px; margin: 64px 0 0; padding: 10px 14px; border-radius: var(--r-lg); border: 1px dashed var(--mpc-line-strong); }
 .c-coral { background: var(--mpc-coral-soft); }
 .c-violet { background: var(--mpc-violet-soft); }
 .c-amber { background: var(--mpc-amber-soft); }
 .c-teal { background: var(--mpc-teal-soft); }
-.badge { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--mpc-paper); border: 2px solid var(--mpc-ink); box-shadow: 3px 3px 0 var(--mpc-shadow); }
-.title { font-weight: 800; font-size: 18px; }
+.badge { width: 48px; height: 48px; border-radius: var(--r-lg); display: grid; place-items: center; background: var(--mpc-paper); border: 1px solid var(--mpc-line); box-shadow: none; }
+.title { font-weight: var(--fw-semibold); font-size: var(--fs-body); }
 .meta { flex: 1; }
 .track { display: flex; gap: 6px; list-style: none; padding: 0 !important; margin: 0 !important; }
 .track li { margin: 0 !important; }
-.track span { display: block; width: 26px; height: 8px; border-radius: 99px; border: 2px solid var(--mpc-ink); background: var(--mpc-paper); }
+.track span { display: block; width: 26px; height: 8px; border-radius: var(--r-pill); border: 1px solid var(--mpc-line); background: var(--mpc-paper); }
 .track .done span { background: var(--mpc-teal); }
 .track .cur span { background: var(--mpc-ink); width: 40px; }
 @media (max-width: 480px) { .track { display: none; } }

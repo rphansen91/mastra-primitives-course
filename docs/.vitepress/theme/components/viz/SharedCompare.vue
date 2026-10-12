@@ -49,7 +49,7 @@ const label = { shared: 'shared', separate: 'separate', mixed: 'partly' } as con
 </script>
 
 <template>
-  <section class="sc mpc-card" aria-label="What each multi-agent mechanism shares">
+  <section class="sc mpc-card mpc-toy" aria-label="What each multi-agent mechanism shares">
     <div class="mpc-kicker"><Icon name="cards" :size="14" /> Interactive: what's shared?</div>
     <div class="mpc-toggle-group" role="radiogroup" aria-label="Mechanism">
       <button v-for="x in mechs" :key="x.key" type="button" role="radio" class="mpc-toggle" :aria-checked="sel === x.key" @click="sel = x.key">{{ x.name }}</button>
@@ -95,19 +95,19 @@ const label = { shared: 'shared', separate: 'separate', mixed: 'partly' } as con
 <style scoped>
 .sc { display: grid; gap: 12px; }
 .scene { width: 100%; height: auto; max-width: 640px; margin: 4px auto 0; display: block; }
-.code { margin: -6px 0 0; text-align: center; font-size: 13px; }
+.code { margin: -6px 0 0; text-align: center; font-size: var(--fs-sm); }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; }
-.dim { text-align: left; display: grid; gap: 6px; align-content: start; border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px; background: var(--mpc-paper); color: var(--mpc-ink); font: inherit; font-size: 13.5px; line-height: 1.45; cursor: pointer; min-width: 0; overflow-wrap: break-word; box-shadow: 2px 2px 0 var(--mpc-shadow); }
+.dim { text-align: left; display: grid; gap: 6px; align-content: start; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 10px; background: var(--mpc-paper); color: var(--mpc-ink); font: inherit; font-size: var(--fs-sm); line-height: 1.45; cursor: pointer; min-width: 0; overflow-wrap: break-word; box-shadow: none; }
 .dim.on { outline: 3px solid var(--mpc-violet); outline-offset: 1px; }
 .dim:focus-visible { outline: 3px solid var(--mpc-sky); }
-.dl { font-weight: 800; font-size: 14px; }
-.badge { justify-self: start; display: inline-block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; border: 2px solid var(--mpc-ink); border-radius: 999px; padding: 0 8px; }
+.dl { font-weight: var(--fw-semibold); font-size: var(--fs-sm); }
+.badge { justify-self: start; display: inline-block; font-size: var(--fs-xs); font-weight: var(--fw-semibold); text-transform: uppercase; letter-spacing: 0.05em; border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-pill); padding: 0 8px; }
 .shared .badge, .badge.shared { background: var(--mpc-violet-soft); }
 .separate .badge, .badge.separate { background: var(--mpc-teal-soft); }
 .mixed .badge, .badge.mixed { background: var(--mpc-amber-soft); }
-.row { border: 2px solid var(--mpc-ink); border-radius: 12px; padding: 10px 12px; background: var(--vp-c-bg-soft); }
-.row ul { margin: 6px 0 0; padding-left: 18px; font-size: 13.5px; }
+.row { border: 1.5px solid var(--mpc-line-strong); border-radius: var(--r-md); padding: 10px 12px; background: var(--vp-c-bg-soft); }
+.row ul { margin: 6px 0 0; padding-left: 18px; font-size: var(--fs-sm); }
 .row li { margin: 4px 0; }
 .row li.me { font-weight: 600; }
-.hint { margin: 0; font-size: 13px; color: var(--mpc-ink-2); }
+.hint { margin: 0; font-size: var(--fs-sm); color: var(--mpc-ink-2); }
 </style>
