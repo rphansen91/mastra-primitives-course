@@ -395,8 +395,9 @@ body { font-feature-settings: 'kern', 'calt'; -webkit-font-smoothing: antialiase
 }
 
 /* ---------- Performance: skip layout/paint for blocks far below the fold until they approach ---------- */
+/* never on <details>: content-visibility on a details element breaks tap-to-open in WebKit/iOS and hit-testing of <summary> (FAQ bug) */
 @supports (content-visibility: auto) {
-  .vp-doc > div > :is(section, figure, details, table, .mpc-card, .mpc-diagram, div[class*='language-'], .journey) {
+  .vp-doc > div > :is(section, figure, table, .mpc-card, .mpc-diagram, div[class*='language-'], .journey):not(details) {
     content-visibility: auto;
     contain-intrinsic-size: auto 320px;
   }
