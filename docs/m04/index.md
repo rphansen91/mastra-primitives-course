@@ -1,8 +1,8 @@
 ---
 verified:
   core: 1.76.0
-  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
-  date: '2026-10-11'
+  sha: 7aec8b0d95b7b8865741f0e15228490e089b3608
+  date: '2026-10-13'
 pageClass: lesson
 aside: false
 ---
@@ -201,6 +201,8 @@ The *Principles* book warns that token limiting and tool-call filtering <Cite id
 Mastra's defaults are the other way round. The Observer runs when **raw messages** reach `observation.messageTokens` (default **30,000**).
 
 The Reflector runs when **observations** reach `reflection.observationTokens` (default **40,000**) ([`observational-memory.mdx` L750–760](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/memory/observational-memory.mdx#L750)). Size your context window from the config, not the book.
+
+On `main` after 1.76.0, `observation.previousObserverTokens` also flipped: the default is now `false` (send the full previous observation log) instead of `2000`. Pin and re-check that knob on upgrade ([#26193](https://github.com/mastra-ai/mastra/pull/26193)).
 
 </Callout>
 

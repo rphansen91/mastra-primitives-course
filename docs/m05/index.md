@@ -1,8 +1,8 @@
 ---
 verified:
   core: 1.76.0
-  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
-  date: '2026-10-11'
+  sha: 7aec8b0d95b7b8865741f0e15228490e089b3608
+  date: '2026-10-13'
 pageClass: lesson
 aside: false
 ---
@@ -189,7 +189,7 @@ A trap found while building the lab: a workflow has a `.then()` method (it's the
 - **Evented engine** ([`workflows/evented/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/evented)): steps as PubSub events processed by workers; needs a store with atomic concurrent updates.
 - **Inngest / Temporal** ([`workflows/inngest`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/workflows/inngest), [`workflows/temporal`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/workflows/temporal)): the same definition on another platform, through `wrapDurableOperation` and `executeSleepDuration`.
 - **`waitForEvent`** ([L2360](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L2360)) is removed: it throws `WORKFLOW_WAIT_FOR_EVENT_REMOVED`. Use suspend/resume.
-- **Restart** ([L4860](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L4860)) and **time travel** ([L5648](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L5648)) operate on the same run state. So do scheduled workflows; the notification dispatcher in Module 6 is one.
+- **Restart** ([L4860](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L4860)) and **time travel** ([L5648](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L5648)) operate on the same run state. So do scheduled workflows; the notification dispatcher in Module 6 is one. `timeTravel()` rejects a *running* snapshot, but it does **not** atomically claim the run: two concurrent callers can both pass the status check, so guard duplicates in your app ([docs note](https://github.com/mastra-ai/mastra/blob/7aec8b0d95b7b8865741f0e15228490e089b3608/docs/src/content/en/docs/workflows/time-travel.mdx), [#26560](https://github.com/mastra-ai/mastra/pull/26560)).
 - The workflow is Mastra's universal "unit of observable, resumable work": the agent loop, prepare-stream and processors are all workflow steps, which is why they all get spans (Module 9).
 
 </DeepDive>

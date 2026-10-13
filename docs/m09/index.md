@@ -1,8 +1,8 @@
 ---
 verified:
   core: 1.76.0
-  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
-  date: '2026-10-11'
+  sha: 7aec8b0d95b7b8865741f0e15228490e089b3608
+  date: '2026-10-13'
 pageClass: lesson
 aside: false
 ---
@@ -150,9 +150,9 @@ All five experiments in one run: trace tree, rule scorer over a dataset, LLM jud
 
 <DeepDive title="Time travel, exporters and the single-rooted trace">
 
-- **Time travel:** workflow [`timeTravel`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L5648) re-executes a run from a chosen step with new context ([docs](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/workflows/time-travel.mdx)). With snapshots (Module 5) it's a "what if this step had returned X" debugger.
+- **Time travel:** workflow [`timeTravel`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L5648) re-executes a run from a chosen step with new context ([docs](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/workflows/time-travel.mdx)). With snapshots (Module 5) it's a "what if this step had returned X" debugger. It is not an atomic claim: concurrent callers can both pass the running-snapshot check, so serialize or fence duplicates yourself ([#26560](https://github.com/mastra-ai/mastra/pull/26560)).
 - **Durable recovery** keeps a single-rooted trace across a crash; see the crash-recovery tests in [`agent/durable/__tests__/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/__tests__).
-- **Tracing docs:** [`observability/tracing/overview.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/observability/tracing/overview.mdx). **Evals docs:** [`docs/evals/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/evals).
+- **Tracing docs:** [`observability/tracing/overview.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/observability/tracing/overview.mdx). On `main` after 1.76.0, MCP client and server traces link both ways without setup ([#26059](https://github.com/mastra-ai/mastra/pull/26059)). **Evals docs:** [`docs/evals/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/evals).
 - **Custom metrics:** <BookRef book="principles" chapter="ch. 12, &quot;Metrics&quot;" page="74" /> says steps and tools receive a metrics context. On a regular agent at 1.76 they do: `ctx.metrics.emit(name, value, labels)`, and `mastra.metrics.emit()` outside a request. In this course's durable-agent probe (Module 7), the tool context had no `metrics` key, so check before you rely on it there.
 - **Classifier scorers** wrap Mastra's `Classifier` primitive, the same one you might use to triage notifications (Module 6).
 

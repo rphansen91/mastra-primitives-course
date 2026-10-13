@@ -1,8 +1,8 @@
 ---
 verified:
   core: 1.76.0
-  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
-  date: '2026-10-11'
+  sha: 7aec8b0d95b7b8865741f0e15228490e089b3608
+  date: '2026-10-13'
 ---
 
 # Module 0: Setup and how to read the Mastra codebase
