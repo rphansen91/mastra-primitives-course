@@ -1,14 +1,14 @@
 ---
 verified:
-  core: 1.76.0
-  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
-  date: '2026-10-11'
+  core: 1.77.0
+  sha: f88217d19b63d362ff97723c1a339fbf89a1bbb0
+  date: '2026-10-14'
 pageClass: lesson
 aside: false
 ---
 
 <script setup>
-const R = 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts'
+const R = 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/thread-stream-runtime.ts'
 const outcomes = [
   'Explain the three faces of one signal: what the model, the database and the client each see',
   'Predict where a signal lands for every thread state: deliver, wake, persist, discard or <code>blocked</code>',
@@ -29,10 +29,10 @@ const faces = [
   { title: '`toDataPart()`', body: 'A `data-signal` chunk for clients subscribed to the thread.', icon: 'mail', color: 'sky' },
 ]
 const drains = [
-  { name: 'request build', short: 'joins the next prompt', detail: 'While building each LLM request, pre-run signals join the first request and pending signals join later ones.', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/workflows/agentic-execution/llm-execution-step.ts#L1488', color: 'amber' },
-  { name: 'signalDrainStep', short: 'after tools, every lap', detail: 'Seals the current response message, rotates to a fresh id, adds the signal, emits `data-signal`, and marks the iteration continued so the model gets another turn.', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L206', color: 'teal' },
-  { name: 'predicate drain', short: 'the late arrivals', detail: 'The `dowhile` predicate drains once more, for signals that arrived after `signalDrainStep`.', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L419', color: 'violet' },
-  { name: 'interruption', short: 'reasoning-only requests', detail: 'If a request has streamed **only reasoning**, a queued signal aborts it and it is reissued with the signal. No step is spent.', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/workflows/agentic-execution/llm-execution-step.ts#L1299', color: 'coral' },
+  { name: 'request build', short: 'joins the next prompt', detail: 'While building each LLM request, pre-run signals join the first request and pending signals join later ones.', href: 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/workflows/agentic-execution/llm-execution-step.ts#L1488', color: 'amber' },
+  { name: 'signalDrainStep', short: 'after tools, every lap', detail: 'Seals the current response message, rotates to a fresh id, adds the signal, emits `data-signal`, and marks the iteration continued so the model gets another turn.', href: 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/loop-builder.ts#L206', color: 'teal' },
+  { name: 'predicate drain', short: 'the late arrivals', detail: 'The `dowhile` predicate drains once more, for signals that arrived after `signalDrainStep`.', href: 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/loop-builder.ts#L420', color: 'violet' },
+  { name: 'interruption', short: 'reasoning-only requests', detail: 'If a request has streamed **only reasoning**, a queued signal aborts it and it is reissued with the signal. No step is spent.', href: 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/workflows/agentic-execution/llm-execution-step.ts#L1299', color: 'coral' },
 ]
 const q_digest = [
   { text: 'Interrupt the run right away, it might matter', why: 'That is how an always-on agent gets distracted by every leaderboard. Low priority should not interrupt.' },
@@ -115,7 +115,7 @@ Signals are the letters. The interesting part is the postal service.
 
 ### One signal, three faces
 
-[`createSignal`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/signals.ts#L561) gives a signal an `id`, `type`, `contents`, `tagName`, `attributes`, optional `transient`, and `metadata`. Its category is one of `user | state | reactive | notification`. Then it shows a different face to each audience:
+[`createSignal`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/signals.ts#L593) gives a signal an `id`, `type`, `contents`, `tagName`, `attributes`, optional `transient`, and `metadata`. Its category is one of `user | state | reactive | notification`. Then it shows a different face to each audience:
 
 <IdeaCards :cards="faces" />
 
@@ -168,24 +168,24 @@ A fake firehose emits four events through a real `SignalProvider`. Watch the urg
 
 <DeepDive title="Routing table, SignalProvider and PubSub backends">
 
-**Full routing** ([`sendSignal` L5515](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts#L5515)):
+**Full routing** ([`sendSignal` L5542](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/thread-stream-runtime.ts#L5542)):
 
 | Thread state | Option | Result |
 |---|---|---|
-| Active, same process | `ifActive: 'deliver'` (default) | queued in `pendingSignalsByThread` ([L418](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts#L418)) → `deliver` |
+| Active, same process | `ifActive: 'deliver'` (default) | queued in `pendingSignalsByThread` ([L418](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/thread-stream-runtime.ts#L418)) → `deliver` |
 | | `ifActive: 'persist'` / `'discard'` | stored without interrupting / dropped |
 | Reserved, first request not sent yet | | joins the first request |
-| Active in **another process**, or **suspended** | | `blocked` ([L5594](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts#L5594), [L5756](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts#L5756)) |
+| Active in **another process**, or **suspended** | | `blocked` ([L5621](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/thread-stream-runtime.ts#L5621), [L5783](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/thread-stream-runtime.ts#L5783)) |
 | Idle | `ifIdle: 'wake'` (default) | reserve → lease (fails open) → `agent.stream(signal, { untilIdle: true })` → `wake` |
-| Idle, another process is starting a run | | queued in `pendingIdleSignalsByThread` ([L434](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts#L434)) |
+| Idle, another process is starting a run | | queued in `pendingIdleSignalsByThread` ([L434](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/thread-stream-runtime.ts#L434)) |
 | Idle | `ifIdle: { behavior: 'persist' }` | memory + broadcast → `persist` |
 | | `{ wake, requireClaimedOwner: true }` | wakes only if a live claimed owner exists (Module 8) |
 
-**Notifications:** [`sendNotificationSignal`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9321), [`defaultNotificationDeliveryDecision`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/notifications/delivery-policy.ts#L66), [`dispatchDueNotifications`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/notifications/dispatcher.ts#L263), [`createNotificationInboxTool`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/notifications/tool.ts#L148).
+**Notifications:** [`sendNotificationSignal`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/agent.ts#L9536), [`defaultNotificationDeliveryDecision`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/notifications/delivery-policy.ts#L66), [`dispatchDueNotifications`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/notifications/dispatcher.ts#L263), [`createNotificationInboxTool`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/notifications/tool.ts#L148).
 
-**SignalProvider** ([`signal-provider.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/signals/signal-provider.ts#L97)): an abstract class with a subscription registry, optional polling ([`startPolling` L374](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/signals/signal-provider.ts#L374)), optional `handleWebhook`, and [`notify()`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/signals/signal-provider.ts#L446). Providers can contribute tools and processors. Built-ins: `WebhookSignalProvider`, `TaskSignalProvider`, `GoalSignalProvider`, `@mastra/github-signals`.
+**SignalProvider** ([`signal-provider.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/signals/signal-provider.ts#L97)): an abstract class with a subscription registry, optional polling ([`startPolling` L374](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/signals/signal-provider.ts#L374)), optional `handleWebhook`, and [`notify()`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/signals/signal-provider.ts#L446). Providers can contribute tools and processors. Built-ins: `WebhookSignalProvider`, `TaskSignalProvider`, `GoalSignalProvider`, `@mastra/github-signals`.
 
-**PubSub backends** ([`events/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/events)):
+**PubSub backends** ([`events/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/events)):
 
 | Backend | Scope | Leases |
 |---|---|---|
@@ -194,7 +194,7 @@ A fake firehose emits four events through a real `SignalProvider`. Watch the urg
 | `@mastra/redis-streams`, `@mastra/valkey-streams` | cluster | yes |
 | `@mastra/google-cloud-pubsub` | cluster | **no** |
 
-**Tests and docs:** [`stream-signals.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/workflows/stream-signals.test.ts), [`signal-drain-core.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/shared/steps/signal-drain-core.test.ts), [`agent/signals.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/signals.test.ts), [`harness/signals.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/signals.mdx), [`harness/signal-providers.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/signal-providers.mdx).
+**Tests and docs:** [`stream-signals.test.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/workflows/stream-signals.test.ts), [`signal-drain-core.test.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/shared/steps/signal-drain-core.test.ts), [`agent/signals.test.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/signals.test.ts), [`harness/signals.mdx`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/harness/signals.mdx), [`harness/signal-providers.mdx`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/harness/signal-providers.mdx).
 
 </DeepDive>
 
@@ -203,9 +203,9 @@ A fake firehose emits four events through a real `SignalProvider`. Watch the urg
 | You see | It means | It doesn't mean |
 |---|---|---|
 | `accepted` → `deliver` | Queued **in memory** for the next drain in this process | Durable. A crash before the drain loses it |
-| `accepted` → `persist` | Mastra *will try* to write it to the thread | Written. `accepted` resolves **before** the write; await `result.persisted` ([source](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts#L5611), [docs](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/signals.mdx#L164)) |
+| `accepted` → `persist` | Mastra *will try* to write it to the thread | Written. `accepted` resolves **before** the write; await `result.persisted` ([source](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/thread-stream-runtime.ts#L5638), [docs](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/harness/signals.mdx#L164)) |
 | `accepted` → `wake` | A new run was started from the signal | That the woken run has your tools or model settings (pass `streamOptions`) |
-| A `SignalProvider` subscription | Registered in this process | Survives a restart. *"The base registry is in-memory and per-process"*: persist and rehydrate subscriptions in `start()` ([`signal-providers.mdx` L206](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/signal-providers.mdx#L206)) |
+| A `SignalProvider` subscription | Registered in this process | Survives a restart. *"The base registry is in-memory and per-process"*: persist and rehydrate subscriptions in `start()` ([`signal-providers.mdx` L206](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/harness/signal-providers.mdx#L206)) |
 
 <Callout type="tip" title="Ack upstream only after the write">
 
@@ -231,7 +231,7 @@ If your tool takes ten minutes, so does your agent's reaction time.
 
 <BookSays quote="p-control">
 
-As of 1.76, "steer" and "interrupt" are two different mechanisms. Steering is a signal, drained at the next safe point: after the current tool call, never during it.
+As of 1.77, "steer" and "interrupt" are two different mechanisms. Steering is a signal, drained at the next safe point: after the current tool call, never during it.
 
 Interrupting a tool mid-flight is cancellation through `abortSignal`, and your tool has to honor it. A long tool should check `abortSignal` and split its work into steps.
 

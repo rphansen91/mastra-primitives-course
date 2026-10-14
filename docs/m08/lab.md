@@ -79,7 +79,7 @@ With the solution's guard:
 
 ## 8.3 What a subagent sees {#subagent-context}
 
-The *Principles* book describes an isolated subagent. Mastra's default (as of 1.76) passes the parent's conversation along. This test shows the difference with a mock model and no API keys.
+The *Principles* book describes an isolated subagent. Mastra's default (as of 1.77) passes the parent's conversation along. This test shows the difference with a mock model and no API keys.
 
 ```bash
 node --import tsx --test m08-multi-agent/subagent-context.test.ts

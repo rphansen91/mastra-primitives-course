@@ -42,13 +42,13 @@ The table of contents on mastra.ai uses a different layout than the PDF, so the 
 - Shane Thomas, [From Whiteboard to Excalidraw](https://mastra.ai/blog/whiteboard-to-excalidraw-converter) (Feb 2025): a one-shot prompt decomposed into validated steps. Module 5.
 
 **Multi-agent history**
-- Abhi Aiyer, [The evolution of AgentNetwork](https://mastra.ai/blog/agent-network) (Oct 2025): how `AgentNetwork` became `.network()`. As of 1.76, `.network()` is deprecated in favor of supervisor agents. Modules 8 and 10.
+- Abhi Aiyer, [The evolution of AgentNetwork](https://mastra.ai/blog/agent-network) (Oct 2025): how `AgentNetwork` became `.network()`. As of 1.77, `.network()` is deprecated in favor of supervisor agents. Modules 8 and 10.
 
 ## Where the course and the books differ
 
-The books describe concepts and recommendations. The course checks behavior at `@mastra/core@1.76.0`. These are the differences a reader is most likely to trip on:
+The books describe concepts and recommendations. The course checks behavior at `@mastra/core@1.77.0`. These are the differences a reader is most likely to trip on:
 
-| Topic | The book | Mastra 1.76.0 | Where |
+| Topic | The book | Mastra 1.77.0 | Where |
 |---|---|---|---|
 | Subagent context | *Principles* ch. 8 introduces the *isolated* subagent, with none of the parent's history | The default passes the **parent's conversation** unless `delegation.messageFilter` is set: the book's *forked* subagent | [M08](./m08/), Lab 8.3 |
 | Observational memory budgets | *Principles* ch. 5: 30k tokens for observations, 40k for raw messages | Observer at **30k raw-message** tokens, Reflector at **40k observation** tokens: the other way round | [M04](./m04/) |

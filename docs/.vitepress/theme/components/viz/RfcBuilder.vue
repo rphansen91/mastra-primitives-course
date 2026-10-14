@@ -35,7 +35,7 @@ const md = computed(() => {
   const p = P.value;
   const pl = place.value ? PLACEMENTS.find((x) => x.key === place.value)!.label : 'TODO: choose';
   const L: string[] = [];
-  L.push(`# RFC NNNN: ${p.name}`, '', '- Author:', '- Status: draft', '- Pinned Mastra commit: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae (@mastra/core 1.76.0)', `- Implementation: labs/m10-${p.id}/`, '');
+  L.push(`# RFC NNNN: ${p.name}`, '', '- Author:', '- Status: draft', '- Pinned Mastra commit: f88217d19b63d362ff97723c1a339fbf89a1bbb0 (@mastra/core 1.77.0)', `- Implementation: labs/m10-${p.id}/`, '');
   L.push('## 1. Summary', '', `TODO: one paragraph. What is ${p.name.toLowerCase()}, and what does a user write?`, '', '```ts', p.api, '```', '');
   L.push('## 2. Problem', '', `- Gap (Module ${p.module}): ${p.gap}`, `- Proof: ${p.proof}`, '- Break-it test: TODO (link it, paste its failing output)', '- Cost: TODO (duplicate charges? lost messages? stuck runs?)', '');
   L.push('## 3. Prior art', '', '| System | API | Guarantee | Borrow / reject |', '|---|---|---|---|');
@@ -46,7 +46,7 @@ const md = computed(() => {
   L.push('', '## 6. Failure modes', '');
   for (const f of FAILURES) L.push(`- [${fails[f.id] ? 'x' : ' '}] **${f.label}:** ${notes[f.id] || f.ask}`);
   for (const h of p.hard) L.push(`- [ ] ${h}`);
-  L.push('', '## 7. Tests', '', '- Break-it test fails on stock Mastra, passes with the primitive', '- Deterministic, mock model, no API keys', '- Runs under the pinned @mastra/core (1.76.0) and @latest', '');
+  L.push('', '## 7. Tests', '', '- Break-it test fails on stock Mastra, passes with the primitive', '- Deterministic, mock model, no API keys', '- Runs under the pinned @mastra/core (1.77.0) and @latest', '');
   L.push('## 8. Alternatives considered', '', 'TODO', '');
   return L.join('\n');
 });

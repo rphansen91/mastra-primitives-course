@@ -21,7 +21,7 @@ const OUTCOMES = [
   ['03', 'Put redaction, guardrails, budgets and retries in the right processor hook.'],
   ['04', 'Predict what memory sends to the model on each request, and what quietly falls out.'],
   ['05', 'Suspend a workflow on one machine and resume it on another.'],
-  ['07', 'Say exactly what survives a <code>kill -9</code> and what does not, as of 1.76.'],
+  ['07', 'Say exactly what survives a <code>kill -9</code> and what does not, as of 1.77.'],
   ['10', 'Design a new primitive: a failing test, prior art, and an RFC.'],
 ] as const;
 </script>

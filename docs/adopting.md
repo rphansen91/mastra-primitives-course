@@ -62,7 +62,7 @@ Skepticism is also the honest position from inside. One of Mastra's founders, wr
 
 <FounderQuote id="f-ai-ops" />
 
-That was written in January 2025. The questions it raises (rollbacks, drift, on-call) are still open as of 1.76, which is why this page leans on infrastructure you already trust.
+That was written in January 2025. The questions it raises (rollbacks, drift, on-call) are still open as of 1.77, which is why this page leans on infrastructure you already trust.
 
 ## Three strategies
 
@@ -91,7 +91,7 @@ Score your system one requirement at a time. Most real systems end up in **augme
 
 Every primitive the course teaches, with its status at the pinned release and a link to the source of that status. Hover a badge for what the status means.
 
-<StabilityPanel :ids="ALL" title="Stability at @mastra/core@1.76.0" />
+<StabilityPanel :ids="ALL" title="Stability at @mastra/core@1.77.0" />
 
 <Callout type="warn" title="The docs disagree with themselves once">
 

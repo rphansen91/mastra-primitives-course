@@ -1,16 +1,16 @@
 ---
 verified:
-  core: 1.76.0
-  sha: 7aec8b0d95b7b8865741f0e15228490e089b3608
-  date: '2026-10-13'
+  core: 1.77.0
+  sha: f88217d19b63d362ff97723c1a339fbf89a1bbb0
+  date: '2026-10-14'
 pageClass: lesson
 aside: false
 ---
 
 <script setup>
-const W = 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts'
-const B = 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae'
-const T = 'https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae'
+const W = 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/workflow.ts'
+const B = 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0'
+const T = 'https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0'
 const outcomes = [
   'Read a workflow as a step graph with typed inputs and outputs',
   'Say exactly what a snapshot holds, when it is written, and what it does not buy you',
@@ -32,10 +32,10 @@ const q_shape = [
 ]
 const parts = [
   { name: 'createStep', short: 'typed unit of work', detail: '`inputSchema`, `outputSchema`, optional `suspendSchema` / `resumeSchema`, `retries`, and `execute({ inputData, resumeData, suspend, state, requestContext, … })`. Agents and tools can be steps directly (`createStepFromAgent`, `createStepFromTool`).', href: W, color: 'sky' },
-  { name: 'createWorkflow', short: 'the builder', detail: '`.then` [L2063](' + W + '#L2063), `.parallel` [L2546](' + W + '#L2546), `.branch`, `.foreach`, `.dowhile` [L2670](' + W + '#L2670), `.map` [L2375](' + W + '#L2375), `.sleep` [L2264](' + W + '#L2264), `.commit()` [L2852](' + W + '#L2852) freezes the graph.', href: W + '#L2063', color: 'violet' },
-  { name: 'createRun / start', short: 'one execution', detail: '`workflow.createRun()` [L2883](' + W + '#L2883) then `run.start()` [L4212](' + W + '#L4212). A run has an id; the snapshot is stored under `(workflowName, runId)`.', href: W + '#L4212', color: 'teal' },
+  { name: 'createWorkflow', short: 'the builder', detail: '`.then` [L2064](' + W + '#L2064), `.parallel` [L2547](' + W + '#L2547), `.branch`, `.foreach`, `.dowhile` [L2671](' + W + '#L2671), `.map` [L2376](' + W + '#L2376), `.sleep` [L2265](' + W + '#L2265), `.commit()` [L2853](' + W + '#L2853) freezes the graph.', href: W + '#L2064', color: 'violet' },
+  { name: 'createRun / start', short: 'one execution', detail: '`workflow.createRun()` [L2884](' + W + '#L2884) then `run.start()` [L4216](' + W + '#L4216). A run has an id; the snapshot is stored under `(workflowName, runId)`.', href: W + '#L4216', color: 'teal' },
   { name: 'snapshot', short: 'after every step', detail: 'The default engine\'s `persistStepUpdate` writes step results, execution path, suspended paths, the serialized graph, retry counts and requestContext to `workflow_snapshots`. `shouldPersistSnapshot` can thin writes ([entry.ts L195](' + B + '/packages/core/src/workflows/handlers/entry.ts#L195)).', href: B + '/packages/core/src/workflows/default.ts', color: 'amber' },
-  { name: 'suspend / resume', short: 'pause for a human', detail: '`suspend(payload)` marks the path suspended. `run.resume({ step, resumeData })` [L4781](' + W + '#L4781) continues, even in another process. The resume is **CAS-claimed** (`#claimResume` [L4882](' + W + '#L4882)). Tool approval in agents uses the same mechanism.', href: W + '#L4781', color: 'coral' },
+  { name: 'suspend / resume', short: 'pause for a human', detail: '`suspend(payload)` marks the path suspended. `run.resume({ step, resumeData })` [L4796](' + W + '#L4796) continues, even in another process. The resume is **CAS-claimed** (`#claimResume` [L4897](' + W + '#L4897)). Tool approval in agents uses the same mechanism.', href: W + '#L4796', color: 'coral' },
   { name: 'engines', short: 'default · evented · Inngest · Temporal', detail: 'Same definition, different runtime. Seams: `wrapDurableOperation` ([default.ts L173](' + B + '/packages/core/src/workflows/default.ts#L173), a no-op by default) and `executeSleepDuration` ([L140](' + B + '/packages/core/src/workflows/default.ts#L140), `setTimeout` by default).', href: T + '/packages/core/src/workflows/evented', color: 'lime' },
 ]
 const q_resume = [
@@ -139,9 +139,9 @@ Each builder method appends a node to a serializable graph:
 
 <ClickMap title="The parts of a workflow" :stations="parts" start-label="define" end-label="run anywhere" />
 
-Two rules from the *Principles* book hold for Mastra at 1.76.
+Two rules from the *Principles* book hold for Mastra at 1.77.
 
-**`.branch()` is not if/else.** Every condition that's true runs its step: <Cite id="p-no-else" /> If nothing matches, nothing runs, so write the fallback yourself. (Verified: the default engine evaluates every condition and runs all the truthy ones, [`control-flow.ts` L396](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/handlers/control-flow.ts#L396).)
+**`.branch()` is not if/else.** Every condition that's true runs its step: <Cite id="p-no-else" /> If nothing matches, nothing runs, so write the fallback yourself. (Verified: the default engine evaluates every condition and runs all the truthy ones, [`control-flow.ts` L397](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/handlers/control-flow.ts#L397).)
 
 **One model call per step.** Snapshots, spans and retries work at step granularity, so <Cite id="p-one-call" />
 
@@ -173,7 +173,7 @@ Module 2 showed that Mastra's loop is `dowhile(iteration, predicate)`. In the la
 
 <TryIt cmd="tsx m05-workflows/loop-as-workflow.ts" :output="out2">
 
-Each iteration's **input** (the transcript so far) is in the snapshot. Compare with [`loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L263).
+Each iteration's **input** (the transcript so far) is in the snapshot. Compare with [`loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/loop-builder.ts#L263).
 
 </TryIt>
 
@@ -185,26 +185,26 @@ A trap found while building the lab: a workflow has a `.then()` method (it's the
 
 <DeepDive title="Engines, scheduled workflows and time travel">
 
-- **Default engine** ([`default.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/default.ts)): in process. `persistStepUpdate` writes the snapshot after every step.
-- **Evented engine** ([`workflows/evented/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/evented)): steps as PubSub events processed by workers; needs a store with atomic concurrent updates.
-- **Inngest / Temporal** ([`workflows/inngest`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/workflows/inngest), [`workflows/temporal`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/workflows/temporal)): the same definition on another platform, through `wrapDurableOperation` and `executeSleepDuration`.
-- **`waitForEvent`** ([L2360](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L2360)) is removed: it throws `WORKFLOW_WAIT_FOR_EVENT_REMOVED`. Use suspend/resume.
-- **Restart** ([L4860](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L4860)) and **time travel** ([L5648](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L5648)) operate on the same run state. So do scheduled workflows; the notification dispatcher in Module 6 is one. `timeTravel()` rejects a *running* snapshot, but it does **not** atomically claim the run: two concurrent callers can both pass the status check, so guard duplicates in your app ([docs note](https://github.com/mastra-ai/mastra/blob/7aec8b0d95b7b8865741f0e15228490e089b3608/docs/src/content/en/docs/workflows/time-travel.mdx), [#26560](https://github.com/mastra-ai/mastra/pull/26560)).
+- **Default engine** ([`default.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/default.ts)): in process. `persistStepUpdate` writes the snapshot after every step.
+- **Evented engine** ([`workflows/evented/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/evented)): steps as PubSub events processed by workers; needs a store with atomic concurrent updates.
+- **Inngest / Temporal** ([`workflows/inngest`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/workflows/inngest), [`workflows/temporal`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/workflows/temporal)): the same definition on another platform, through `wrapDurableOperation` and `executeSleepDuration`.
+- **`waitForEvent`** ([L2361](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/workflow.ts#L2361)) is removed: it throws `WORKFLOW_WAIT_FOR_EVENT_REMOVED`. Use suspend/resume.
+- **Restart** ([L4875](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/workflow.ts#L4875)) and **time travel** ([L5669](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/workflow.ts#L5669)) operate on the same run state. So do scheduled workflows; the notification dispatcher in Module 6 is one. `timeTravel()` rejects a *running* snapshot, but it does **not** atomically claim the run: two concurrent callers can both pass the status check, so guard duplicates in your app ([docs note](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/workflows/time-travel.mdx), [#26560](https://github.com/mastra-ai/mastra/pull/26560)).
 - The workflow is Mastra's universal "unit of observable, resumable work": the agent loop, prepare-stream and processors are all workflow steps, which is why they all get spans (Module 9).
 
 </DeepDive>
 
 ### Shutdown, leases and the Temporal runner
 
-- `mastra.shutdown({ drainTimeout })` gives in-flight evented runs (including durable agents) up to `drainTimeout` ms, **default 5000**, to settle before workers and PubSub are torn down. Runs past the deadline are abandoned with a warning ([`mastra/index.ts` L7679](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/mastra/index.ts#L7679)). Before [#23168](https://github.com/mastra-ai/mastra/pull/23168), shutdown could tear down PubSub under a run mid-step. Wire `shutdown()` to SIGTERM.
+- `mastra.shutdown({ drainTimeout })` gives in-flight evented runs (including durable agents) up to `drainTimeout` ms, **default 5000**, to settle before workers and PubSub are torn down. Runs past the deadline are abandoned with a warning ([`mastra/index.ts` L7679](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/mastra/index.ts#L7679)). Before [#23168](https://github.com/mastra-ai/mastra/pull/23168), shutdown could tear down PubSub under a run mid-step. Wire `shutdown()` to SIGTERM.
 - Background tasks use the same idea as Module 7's run claims: a persisted, expiring **execution lease** that fences stale owners ([#24841](https://github.com/mastra-ai/mastra/pull/24841)). Once you've seen claims + fencing, you'll find the pattern in several places.
-- The Temporal runner is still marked *"experimental and not ready for production use"* in the docs ([`workflow-runners.mdx` L22](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/deployment/workflow-runners.mdx#L22)), and `@mastra/temporal` is pre-1.0 (0.4.14 on npm). Go by what the package and docs say, not by marketing copy.
+- The Temporal runner is still marked *"experimental and not ready for production use"* in the docs ([`workflow-runners.mdx` L22](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/deployment/workflow-runners.mdx#L22)), and `@mastra/temporal` is pre-1.0 (0.4.14 on npm). Go by what the package and docs say, not by marketing copy.
 
-<Callout type="note" title="The book vs Mastra 1.76: timers and retries">
+<Callout type="note" title="The book vs Mastra 1.77: timers and retries">
 
 <BookRef book="principles" chapter="ch. 9, &quot;Workflows&quot;" page="49–50" /> lists `.sleep()` and `.sleepUntil()` next to the other operators, and describes loops, retries and timeouts as special cases of those operators.
 
-At 1.76, two details differ. On the default engine, `sleep` is an in-process timer, so a restart during a long sleep doesn't resume at the original deadline.
+At 1.77, two details differ. On the default engine, `sleep` is an in-process timer, so a restart during a long sleep doesn't resume at the original deadline.
 
 The evented engine persists waiting steps. Retries are also a separate setting, not an operator: per-step `retries` and workflow-level `retryConfig: { attempts, delay }`, with no backoff.
 

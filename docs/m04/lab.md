@@ -56,7 +56,7 @@ Notice the window **starts with an assistant reply**. It counts messages, not ex
   prompt  assistant reply 3
 ```
 
-One stored message became three provider messages. If you ever trim **provider** messages yourself (in a `processLLMRequest`, say), keep pairs together: [`groupLinkedToolMessages`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/memory/load-message-history.ts#L49) is how the loader does it.
+One stored message became three provider messages. If you ever trim **provider** messages yourself (in a `processLLMRequest`, say), keep pairs together: [`groupLinkedToolMessages`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/memory/load-message-history.ts#L49) is how the loader does it.
 
 ## 4.3 Waking with and without memory
 
@@ -116,13 +116,13 @@ return serialize(resourceId, async () => {
 
 - **Trade-off:** the lock lives in one process. With two server instances you need the store to do it atomically (a transaction, a compare-and-set on a version column) or a lease. That's Module 1's lost-update rule again.
 - **Why not `scope: 'thread'`?** No race, but no sharing either: the Friday thread forgets the diet.
-- Mastra's full memory package handles merges differently; see [`merge-working-memory.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/memory/src/merge-working-memory.test.ts).
+- Mastra's full memory package handles merges differently; see [`merge-working-memory.test.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/memory/src/merge-working-memory.test.ts).
 
 </Reveal>
 
 ## More tasks
 
 1. **Token budget.** Replace `lastMessages: 5` with `messageHistory: { maxTokens: … }`. Find the value that keeps exactly three exchanges. What happens to a single very long message?
-2. **Signal history.** Persist a signal with `ifIdle: { behavior: 'persist' }`, then start a normal run. Is the signal in the history? Compare with [`recall-signal-exclusions.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/memory/recall-signal-exclusions.test.ts).
+2. **Signal history.** Persist a signal with `ifIdle: { behavior: 'persist' }`, then start a normal run. Is the signal in the history? Compare with [`recall-signal-exclusions.test.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/memory/recall-signal-exclusions.test.ts).
 3. **Mid-run messages.** Start a slow run on a thread, and while it's running save a message to the same thread from outside. Does the running agent's next request include it? (Predict first.)
 4. **Recall.** Add semantic recall with an in-memory vector store and a fake embedder. Make message 1 come back for "what should I avoid eating?".

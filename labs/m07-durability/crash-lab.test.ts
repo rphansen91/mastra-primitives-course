@@ -7,7 +7,7 @@ import { scenarioA, scenarioB } from './crash-lab.ts';
 import { TARGET } from '../shared/target.ts';
 
 const coreVersion: string = JSON.parse(readFileSync(createRequire(import.meta.url).resolve('@mastra/core/package.json'), 'utf8')).version;
-// 1.76.0 (the course's pin) added durable-run claims + fencing; 1.75.x has neither.
+// 1.76.0 added durable-run claims + fencing; 1.75.x has neither.
 const hasRunClaims = !/^1\.(7[0-5]|[0-6]\d)\./.test(coreVersion);
 
 test(`crash A [core ${coreVersion}, ${TARGET}]: kill -9 then recover`, { timeout: 150_000 }, async () => {

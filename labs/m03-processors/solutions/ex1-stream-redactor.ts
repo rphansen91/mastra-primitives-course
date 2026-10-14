@@ -4,7 +4,7 @@
 // ends, flush the held tail (redacted) as one more delta. The processor contract is
 // "one chunk in, at most one chunk out", so the flush rides on the text-end chunk: we return the
 // tail as a text-delta IN PLACE OF text-end. The final text is right, but that text block has no
-// text-end chunk on the stream. (Verified on @mastra/core 1.75.0 and 1.76.0; see the lesson's
+// text-end chunk on the stream. (Verified on @mastra/core 1.75.0 through 1.77.0; see the lesson's
 // "where it falls down": processors cannot emit extra non-data chunks. A capstone candidate.)
 // Trade-off: you add latency equal to the held-back suffix. That is the price of correctness.
 export const SECRET = /sk-[a-z0-9]+/g;

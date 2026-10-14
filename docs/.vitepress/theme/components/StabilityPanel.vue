@@ -9,7 +9,7 @@ const used = computed(() => [...new Set(rows.value.map(r => r.status))] as Statu
 </script>
 <template>
   <section class="stab mpc-card" :aria-label="title">
-    <div class="hd"><span class="mpc-kicker">{{ title }}</span><span class="pin">checked at <code>@mastra/core@1.76.0</code> · <a :href="`https://github.com/mastra-ai/mastra/tree/${SHA}`" target="_blank" rel="noopener">{{ SHA.slice(0, 7) }}</a></span></div>
+    <div class="hd"><span class="mpc-kicker">{{ title }}</span><span class="pin">checked at <code>@mastra/core@1.77.0</code> · <a :href="`https://github.com/mastra-ai/mastra/tree/${SHA}`" target="_blank" rel="noopener">{{ SHA.slice(0, 7) }}</a></span></div>
     <ul>
       <li v-for="r in rows" :key="r.id">
         <StabilityBadge :id="r.id" compact />

@@ -16,7 +16,7 @@ footer: false
 
 ## What this course is
 
-Most agent-framework tutorials teach you an API. This course teaches the **primitives underneath**: the 15 things that happen inside `agent.stream()`, where processors hook in, how a signal reaches a model mid-run, what "durable" does and doesn't mean (as of 1.76), and how agents coordinate.
+Most agent-framework tutorials teach you an API. This course teaches the **primitives underneath**: the 15 things that happen inside `agent.stream()`, where processors hook in, how a signal reaches a model mid-run, what "durable" does and doesn't mean (as of 1.77), and how agents coordinate.
 
 You read the real [mastra-ai/mastra](https://github.com/mastra-ai/mastra) source at a pinned commit, run small labs against the published package, and break things on purpose. Each primitive is compared with the alternatives: Temporal, LangGraph, Inngest, the Vercel AI SDK, Restate, DBOS and others.
 
@@ -65,8 +65,8 @@ See [Running the labs](/guide/labs) for the exercise workflow.
 
 ## Versions this course was verified against
 
-- Source links: `mastra-ai/mastra` at commit [`81299c94`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae) (the `@mastra/core@1.76.0` release tag, published 2026-10-11).
-- Labs: published **`@mastra/core@1.76.0`** + `@mastra/libsql@1.26.0` (pinned, so the source links and the package match). CI also runs every lab on the previous stable, `1.75.0`, and on a floating `@latest`, so you can see behavior change between versions. Modules 6, 7 and 9 show real differences.
+- Source links: `mastra-ai/mastra` at commit [`f88217d1`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0) (the `@mastra/core@1.77.0` release commit, published 2026-10-14).
+- Labs: published **`@mastra/core@1.77.0`** + `@mastra/libsql@1.26.1` (pinned, so the source links and the package match). CI also runs every lab on `1.75.0` (the last release before run claims) and on a floating `@latest`, so you can see behavior change between versions. Modules 6, 7 and 9 show real differences.
 
 ## About the author
 
@@ -105,7 +105,7 @@ The module estimates add up to about eight and a half hours of reading, plus the
 
 <details><summary>Which Mastra version does it cover?</summary>
 
-`@mastra/core@1.76.0`, with source links pinned to the matching release commit. CI also runs the labs on `1.75.0` and on `@latest`, and each module's Production readiness panel shows the date it was last verified.
+`@mastra/core@1.77.0`, with source links pinned to the matching release commit. CI also runs the labs on `1.75.0` and on `@latest`, and each module's Production readiness panel shows the date it was last verified.
 
 </details>
 

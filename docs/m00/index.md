@@ -1,8 +1,8 @@
 ---
 verified:
-  core: 1.76.0
-  sha: 7aec8b0d95b7b8865741f0e15228490e089b3608
-  date: '2026-10-13'
+  core: 1.77.0
+  sha: f88217d19b63d362ff97723c1a339fbf89a1bbb0
+  date: '2026-10-14'
 ---
 
 # Module 0: Setup and how to read the Mastra codebase
@@ -18,19 +18,19 @@ node -v            # must be >= 22.13 (@mastra/core engines)
 git clone https://github.com/rphansen91/mastra-primitives-course
 cd mastra-primitives-course/labs
 npm install
-npm test           # 48 tests, ~1.5 min (as of 1.76.0)
+npm test           # 48 tests, ~1.5 min (as of 1.77.0)
 ```
 
 If `npm test` is green you have everything you need for Modules 1 to 3 and the built labs in 6 to 8. Details: [Running the labs](/guide/labs).
 
 ## 0.2 Clone Mastra at the course's pinned commit
 
-All source links in this course point to commit [`81299c94`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae). Check out the same commit so line numbers match:
+All source links in this course point to commit [`f88217d1`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0). Check out the same commit so line numbers match:
 
 ```bash
 git clone https://github.com/mastra-ai/mastra
 cd mastra
-git checkout 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
+git checkout f88217d19b63d362ff97723c1a339fbf89a1bbb0
 ```
 
 ### Building and testing Mastra itself (optional, heavy)
@@ -61,33 +61,33 @@ For you, it means one language, one package manager and one test runner across t
 
 | Area | Where | Size at pinned SHA |
 |---|---|---|
-| Core framework (`@mastra/core`) | [`packages/core/src`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src) | |
-| Agent class | [`agent/agent.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts) | ~11,000 lines |
-| Thread run registry, signal routing, leases | [`agent/thread-stream-runtime.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts) | ~5,900 lines |
-| Signal data model | [`agent/signals.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/signals.ts) | 702 lines |
-| The loop | [`loop/loop.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop.ts), [`loop/loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts), [`loop/workflows/agentic-execution/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/workflows/agentic-execution), [`loop/shared/steps/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/shared/steps) | |
-| Prepare-stream workflow | [`agent/workflows/prepare-stream/index.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/workflows/prepare-stream/index.ts#L230) | |
-| Processors | [`processors/index.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/index.ts#L625), [`processors/runner.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/runner.ts#L329), built-ins in [`processors/processors/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/processors/processors) | |
-| Memory | [`memory/memory.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/memory/memory.ts#L121), [`packages/memory`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/memory) | |
-| Workflows | [`workflows/workflow.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts), [`workflows/default.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/default.ts), [`workflows/evented/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/evented) | |
-| Signal providers | [`signals/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/signals) | |
-| Notifications | [`notifications/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/notifications) | |
-| Durable agents | [`agent/durable/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable) (start with [`leases.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/leases.md) and [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/run-recovery.md)) | |
-| Events / PubSub | [`events/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/events) | |
-| Agent controller (harness) | [`agent-controller/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent-controller) | |
-| Evals / scorers | [`evals/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/evals), [`observability/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/observability) | |
-| mastracode (coding agent) | [`mastracode/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/mastracode) | |
-| Harness docs | [`docs/src/content/en/docs/harness/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness) | |
+| Core framework (`@mastra/core`) | [`packages/core/src`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src) | |
+| Agent class | [`agent/agent.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/agent.ts) | ~11,000 lines |
+| Thread run registry, signal routing, leases | [`agent/thread-stream-runtime.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/thread-stream-runtime.ts) | ~5,900 lines |
+| Signal data model | [`agent/signals.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/signals.ts) | 702 lines |
+| The loop | [`loop/loop.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/loop.ts), [`loop/loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/loop-builder.ts), [`loop/workflows/agentic-execution/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/workflows/agentic-execution), [`loop/shared/steps/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/shared/steps) | |
+| Prepare-stream workflow | [`agent/workflows/prepare-stream/index.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/workflows/prepare-stream/index.ts#L231) | |
+| Processors | [`processors/index.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/processors/index.ts#L625), [`processors/runner.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/processors/runner.ts#L329), built-ins in [`processors/processors/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/processors/processors) | |
+| Memory | [`memory/memory.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/memory/memory.ts#L121), [`packages/memory`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/memory) | |
+| Workflows | [`workflows/workflow.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/workflow.ts), [`workflows/default.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/default.ts), [`workflows/evented/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/evented) | |
+| Signal providers | [`signals/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/signals) | |
+| Notifications | [`notifications/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/notifications) | |
+| Durable agents | [`agent/durable/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable) (start with [`leases.md`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/leases.md) and [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/run-recovery.md)) | |
+| Events / PubSub | [`events/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/events) | |
+| Agent controller (harness) | [`agent-controller/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent-controller) | |
+| Evals / scorers | [`evals/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/evals), [`observability/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/observability) | |
+| mastracode (coding agent) | [`mastracode/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/mastracode) | |
+| Harness docs | [`docs/src/content/en/docs/harness/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/harness) | |
 
 ## 0.4 The house rules, in the repo's own words
 
-Read [`packages/core/AGENTS.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/AGENTS.md) before anything else. Two lines shape the whole course:
+Read [`packages/core/AGENTS.md`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/AGENTS.md) before anything else. Two lines shape the whole course:
 
 > Before adding a feature, check whether it can be a processor. Processors are self-contained and need no changes to core internals…
 
 > Non-serializable per-run state (MessageList, processor states, converted tools) belongs in `runScope`, never on step input/output schemas.
 
-Also read [`.mastracode/resources/CRITICAL_PATHS.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/.mastracode/resources/CRITICAL_PATHS.md) and [`.github/CODEOWNERS`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/.github/CODEOWNERS): they tell you which files (the loop, `agent.ts`, message-list code) are fragile and owned, and so where a new primitive should **not** start.
+Also read [`.mastracode/resources/CRITICAL_PATHS.md`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/.mastracode/resources/CRITICAL_PATHS.md) and [`.github/CODEOWNERS`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/.github/CODEOWNERS): they tell you which files (the loop, `agent.ts`, message-list code) are fragile and owned, and so where a new primitive should **not** start.
 
 ## 0.5 A reading strategy for an 11,000-line file
 
@@ -101,7 +101,7 @@ Also read [`.mastracode/resources/CRITICAL_PATHS.md`](https://github.com/mastra-
 ## 0.6 Check your setup
 
 - [ ] `npm test` in `labs/` is green.
-- [ ] You can open [`loop-builder.ts#L206`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/loop/loop-builder.ts#L206) and find `signalDrainStep`.
+- [ ] You can open [`loop-builder.ts#L206`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/loop/loop-builder.ts#L206) and find `signalDrainStep`.
 - [ ] You can explain in one sentence what `runScope` is for.
 - [ ] (Optional) You ran one Mastra test file locally.
 

@@ -1,6 +1,6 @@
 # Labs
 
-Runnable labs for the [Mastra Primitives course](https://rphansen91.github.io/mastra-primitives-course/). They depend on the published `@mastra/core@1.76.0`, `@mastra/libsql@1.26.0` and `@mastra/observability@1.19.0` and use a mock model ([`shared/mock-model.ts`](shared/mock-model.ts)), so no API keys are needed.
+Runnable labs for the [Mastra Primitives course](https://rphansen91.github.io/mastra-primitives-course/). They depend on the published `@mastra/core@1.77.0`, `@mastra/libsql@1.26.1` and `@mastra/observability@1.20.0` and use a mock model ([`shared/mock-model.ts`](shared/mock-model.ts)), so no API keys are needed.
 
 ```bash
 npm install
@@ -22,4 +22,4 @@ npm run expected                  # regenerate expected-output/
 | `m08-multi-agent/` | 8 | coordinator → worker relay, the ping-pong, 1 exercise |
 | `m09-evals/` | 9 | trace tree, rule + LLM-judge scorers, isTaskComplete loop, record/replay, 1 exercise |
 
-Each lab script prints what it observed; `expected-output/` has the reference output on 1.76.0 (ids/pids/timestamps normalized). `expected-output/core-1.75.0/` keeps the four outputs that differ on the previous stable.
+Each lab script prints what it observed; `expected-output/` has the reference output on 1.77.0 (ids/pids/timestamps normalized). `expected-output/core-1.75.0/` keeps the four outputs that differ on 1.75.0.

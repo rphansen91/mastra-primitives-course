@@ -1,6 +1,6 @@
 // "Production readiness" content per module: the review a cautious platform team would write
 // before letting the primitive near a critical path. Claims are verified against the pinned
-// commit (the @mastra/core@1.76.0 tag) and the labs; stability ids come from stability.ts.
+// commit (the @mastra/core@1.77.0 release commit) and the labs; stability ids come from stability.ts.
 export type Prod = {
   ids: string[];
   verdict: string;
@@ -56,7 +56,7 @@ export const PROD: Record<string, Prod> = {
     safe: [
       '`agent.generate()` / `agent.stream()`, `maxSteps`, `stopWhen`, `onIterationComplete`',
       'Tool results folded back in call order',
-      'Hook order is stable and testable (Lab 2 pins it, and it\'s identical on 1.75.0 and 1.76.0)',
+      'Hook order is stable and testable (Lab 2 pins it, and it\'s identical on 1.75.0 through 1.77.0)',
     ],
     caution: [
       'Tool calls in one step run **concurrently, up to 10 by default** (forced to 1 when any available tool can require approval or suspend). Your tools must tolerate that.',
@@ -142,6 +142,7 @@ export const PROD: Record<string, Prod> = {
       'The docs: *"The memory system doesn\'t enforce access control."* Verify that the caller owns `resourceId` before every query',
       'A thread\'s `resourceId` can\'t change after creation',
       'Observational memory is newer (`@mastra/memory` 1.1.0); working memory as state signals is **experimental**',
+      'Before 1.77.0, observational memory could lose buffered observations when a reflection, background buffering and activation overlapped ([#25906](https://github.com/mastra-ai/mastra/pull/25906)). 1.77.0 and the store adapters released with it fix this and add a `supersededBy` column at startup. If you manage the schema yourself (`disableInit: true`), add that column before upgrading, and upgrade every process that shares the database',
     ],
     failures: [
       { mode: 'A fact from message 1 is gone by message 11', guard: 'Working memory or semantic recall; a token budget instead of a count' },
@@ -149,6 +150,7 @@ export const PROD: Record<string, Prod> = {
       { mode: 'Long tool results blow the context window', guard: '`messageHistory.maxTokens` + a tool-result truncation processor' },
       { mode: 'Prompt-cache hit rate collapses on long threads', guard: 'A sliding `lastMessages` window changes the prompt prefix every turn. Token trimming removes history in chunks (`atMaxRemoveTokens`, default 25%), and transient signals or appended reminders keep the prefix stable' },
       { mode: 'Trimming splits a tool call from its result', guard: 'Trim by call/result pairs, and test it (Lab 4)' },
+      { mode: 'Observations vanish when reflection and buffering overlap', guard: 'Run `@mastra/core` 1.77.0+ with a matching store adapter on **every** process; older processes neither set nor check `supersededBy`' },
     ],
     guardrails: [
       'Set history explicitly. Don\'t inherit a deprecated default',
@@ -260,7 +262,7 @@ export const PROD: Record<string, Prod> = {
     safe: [
       'HITL snapshots (`pending`, `paused`, `suspended`) are always persisted',
       'Recovery from the last step boundary: completed LLM calls and tools aren\'t repeated',
-      'On 1.76.0, run claims with fencing on InMemory, Postgres, libSQL and Turso stores',
+      'Run claims with fencing since 1.76.0 (InMemory, Postgres, libSQL, Turso). The adapters released with 1.77.0 add MySQL, MSSQL, Oracle, DSQL, Spanner, MongoDB, DynamoDB, Convex, Cloudflare (Durable Objects and D1), Redis, Upstash and Valkey',
     ],
     caution: [
       '**Beta**: *"Breaking changes may occur without a major version bump"*',
@@ -269,7 +271,7 @@ export const PROD: Record<string, Prod> = {
       'Closures (`stopWhen`, `onIterationComplete`) don\'t survive recovery in another process: only `maxSteps` does. Non-JSON `RequestContext` values are dropped; `eagerToolExecution` throws',
       'Memory writes are fenced only if the **memory** store supports fencing too',
       'Without a fencing store, the claim is a PubSub lease: stale writers are *not* rejected, and Redis/Valkey Streams are pre-1.0 packages',
-      'The tool context has no `runId` (1.75.0 and 1.76.0): pass it through `RequestContext`',
+      'The tool context has no `runId` (1.75.0 through 1.77.0): pass it through `RequestContext`',
     ],
     failures: [
       { mode: 'kill -9 during a tool call', guard: 'An idempotency key = run id + tool call id (Exercise 7.1)' },
@@ -293,7 +295,7 @@ export const PROD: Record<string, Prod> = {
       'A workflow that calls the agent from a step with idempotent tools (Module 5)',
     ],
     check: {
-      question: "On 1.76.0 with Postgres storage, three replicas run `recovery.durableAgents: 'auto'`. One crashes in the middle of `charge_card`. What's still your job?",
+      question: "On 1.77.0 with Postgres storage, three replicas run `recovery.durableAgents: 'auto'`. One crashes in the middle of `charge_card`. What's still your job?",
       options: [
         { text: "Nothing: claims and fencing make it exactly-once", why: "Claims stop two live executions. Recovery still re-runs the in-flight tool." },
         { text: "Make `charge_card` idempotent (run id + tool call id), and alert on runs stuck past the claim TTL", correct: true, why: "Fencing decides *who* recovers. Idempotency decides whether the effect repeats." },
@@ -352,6 +354,7 @@ export const PROD: Record<string, Prod> = {
     ],
     caution: [
       'The trace shape **changed in 1.76.0** (a new built-in processor span)',
+      'Span links are new in 1.77.0: an MCP tool call and the server span that handled it now link across traces. Exporters only send links if they support them',
       'The docs warn observability data *"can quickly overwhelm general-purpose databases"*: route it to ClickHouse or an external exporter',
       'LLM-judge scores aren\'t deterministic',
       'Record/replay tapes are a course pattern (~30 lines), not a Mastra feature',

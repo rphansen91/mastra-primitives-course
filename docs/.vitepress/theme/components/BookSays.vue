@@ -5,7 +5,7 @@ defineProps<{ quote: string; version?: string }>();
 <template>
   <aside class="bs mpc-card" aria-label="The book vs Mastra">
     <div class="col book"><span class="mpc-kicker"><Icon name="book" :size="14" /> The book says</span><p><Cite :id="quote" /></p></div>
-    <div class="col fw"><span class="mpc-kicker"><Icon name="check" :size="14" /> Mastra {{ version ?? '1.76.0' }} does</span><div class="body"><slot /></div></div>
+    <div class="col fw"><span class="mpc-kicker"><Icon name="check" :size="14" /> Mastra {{ version ?? '1.77.0' }} does</span><div class="body"><slot /></div></div>
   </aside>
 </template>
 <style scoped>

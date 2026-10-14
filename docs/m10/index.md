@@ -1,8 +1,8 @@
 ---
 verified:
-  core: 1.76.0
-  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
-  date: '2026-10-11'
+  core: 1.77.0
+  sha: f88217d19b63d362ff97723c1a339fbf89a1bbb0
+  date: '2026-10-14'
 pageClass: lesson
 aside: false
 ---
@@ -124,7 +124,7 @@ Your design has to respect these, or justify every exception. Tap each one:
 
 ### How a primitive actually gets accepted
 
-From [`CONTRIBUTING.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/CONTRIBUTING.md) and the public PR automation:
+From [`CONTRIBUTING.md`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/CONTRIBUTING.md) and the public PR automation:
 
 - **Issue first.** A PR must link the issue it addresses (`Fixes #1234`). PRs without one are closed (L31).
 - **Approval before code.** For a feature, open a feature request and wait for maintainers. A PR opened while the issue is still labeled `status: needs triage` or `status: needs approval` is closed automatically (L39–40).
@@ -292,7 +292,7 @@ The review a cautious platform team would write before putting this module's pri
 
 <CheatCard module="10" title="Design a primitive" subtitle="Test first, smallest surface, RFC last" :cells="cheat" />
 
-One last line from the *Principles* book, because it applies to this course too: <Cite id="p-beginners" /> Every claim here is pinned to 1.76. Re-check it against the version you run.
+One last line from the *Principles* book, because it applies to this course too: <Cite id="p-beginners" /> Every claim here is pinned to 1.77. Re-check it against the version you run.
 
 <Callout type="win" title="You finished the course">
 

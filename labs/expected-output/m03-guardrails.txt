@@ -1,5 +1,7 @@
 
 === Input tripwire ========================================================
+[WORKFLOW] Error executing step workflow.guard-in-input-processor.step.processor:sql-guard: Error: possible SQL injection
+    at … (stack trace trimmed)
 {
   tripwire: {
     reason: 'possible SQL injection',

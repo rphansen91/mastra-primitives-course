@@ -4,7 +4,7 @@ import { build, log } from './common.ts';
 const { durable, wf } = build();
 const run = await wf.createRun({ runId: 'wf-run-1' });
 void run.start({ inputData: {} }).then((r: any) => log(`WF finished status=${r.status}`));
-// Durable-agent tool contexts on 1.75.0 and 1.76.0 carry toolCallId but not runId (regular agents carry both),
+// Durable-agent tool contexts on 1.75.0 through 1.77.0 carry toolCallId but not runId (regular agents carry both),
 // so we also put the run id in the request context, which is serialized into the snapshot.
 const requestContext = new RequestContext();
 requestContext.set('runId', 'agent-run-1');

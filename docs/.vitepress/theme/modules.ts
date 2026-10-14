@@ -23,4 +23,4 @@ export const PAGE_LABEL = { lesson: 'Lesson', lab: 'Lab', 'break-it': 'Break it'
 export const pageLink = (n: string, p: keyof typeof PAGE_LABEL) => (p === 'lesson' ? `/m${n}/` : `/m${n}/${p}`);
 export const moduleOf = (relativePath: string) => relativePath.match(/^m(\d\d)\//)?.[1] ?? null;
 export const TOTAL_MINUTES = MODULES.reduce((s, m) => s + m.minutes, 0);
-export const VERIFIED = { core: '1.76.0', sha: '81299c921d6f499d4c62f14c38e4d4d88b4fbfae', date: '2026-10-11' };
+export const VERIFIED = { core: '1.77.0', sha: 'f88217d19b63d362ff97723c1a339fbf89a1bbb0', date: '2026-10-14' };

@@ -1,6 +1,6 @@
 // Lab 8.3: what does a subagent actually see?
 // The Principles book describes an *isolated* subagent ("none of the parent's history").
-// Mastra's default at 1.76.0 is different: the subagent receives the parent's conversation
+// Mastra's default at 1.77.0 is different: the subagent receives the parent's conversation
 // unless you pass `delegation.messageFilter` (docs: subagents.mdx "Message filtering").
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

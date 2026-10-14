@@ -13,7 +13,7 @@ const q_crash = [{"text": "charge_card 1, slow_deploy 1", "why": "The in-flight 
 
 <LabHeader module="07" folder="m07-durability" runs="~25 s" :tests="2" mood="alarmed">
 
-A real `kill -9`. Storage is a libSQL **file**, so a fresh process sees exactly what a killed one left behind. Runs in ~75 s on 1.76.0 (it waits out the claim TTL), ~25 s on 1.75.0.
+A real `kill -9`. Storage is a libSQL **file**, so a fresh process sees exactly what a killed one left behind. Runs in ~75 s on 1.76.0 and later (it waits out the claim TTL), ~25 s on 1.75.0.
 
 </LabHeader>
 
@@ -36,7 +36,7 @@ A real `kill -9`. Storage is a libSQL **file**, so a fresh process sees exactly 
 
 <Quiz kind="predict" module="07" id="lab-crash" question="Scenario A: `charge_card` finished, then the process is killed while `slow_deploy` is running. After recovery, how many times did each tool start?" :options="q_crash" />
 
-## Expected output (`@mastra/core@1.76.0`, solutions)
+## Expected output (`@mastra/core@1.77.0`, solutions)
 
 ```text
 === A) kill -9 mid-flight, then a fresh process recovers ==================
@@ -50,7 +50,8 @@ recoverAllDurableAgents t+0s {"recovered":0,"skipped":1}   ← the dead owner's 
 recoverAllDurableAgents t+5s {"recovered":0,"skipped":1}
 ...
 recoverAllDurableAgents t+25s {"recovered":0,"skipped":1}
-recoverAllDurableAgents t+34s {"recovered":1,"succeeded":1,"skipped":0}   ← claim lapsed (30 s); recovered
+recoverAllDurableAgents t+30s {"recovered":0,"skipped":1}
+recoverAllDurableAgents t+35s {"recovered":0,"skipped":0}   ← claim lapsed; the boot-time re-check already recovered it
 side-effect counts: {
   'WF step send-email executed': 1,          ← memoized by the snapshot
   'WF step slow-step started': 2,            ← in-flight step re-ran
@@ -76,7 +77,7 @@ distinct pids per effect: {
 }
 ```
 
-Full output: [`expected-output/m07-crash-lab.txt`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/expected-output/m07-crash-lab.txt). Timings vary by a few seconds between runs.
+Full output: [`expected-output/m07-crash-lab.txt`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/expected-output/m07-crash-lab.txt). Timings vary by a few seconds between runs. Once the claim lapses, either your polling call or `recoverAllDurableAgents()`'s own re-check (at `retryAt` plus up to 5 s of jitter) recovers the run, whichever runs first. Either way it's recovered exactly once.
 
 ### On `1.75.0` (previous stable, CI "previous" job)
 
@@ -116,7 +117,7 @@ export function deployKey(_input: unknown, ctx: any) {
 }
 ```
 - `toolCallId` is stable across recovery because the checkpoint sits at the tool-call step boundary: recovery replays the persisted LLM response, it doesn't re-ask the model.
-- `runId` is stable because the recovered run keeps its id. On 1.75.0 and 1.76.0 the durable tool context lacks `runId`, so `phase-run.ts` puts it in the `RequestContext`, which the snapshot persists.
+- `runId` is stable because the recovered run keeps its id. On 1.75.0 through 1.77.0 the durable tool context lacks `runId`, so `phase-run.ts` puts it in the `RequestContext`, which the snapshot persists.
 - Not stable: `Date.now()`, a UUID, a process counter. Too coarse: the input alone.
 
 Note scenario B too: with the key, the replica's duplicate deploy is also deduped. Idempotency keys protect you from *every* source of duplicates, not just crashes.
@@ -127,6 +128,6 @@ Note scenario B too: with the key, the replica's duplicate deploy is also dedupe
 
 1. **Kill earlier.** Kill during `charge_card` instead (make it slow). Which LLM calls repeat now? Where exactly is the checkpoint?
 2. **Recovery off.** Set `recovery: { durableAgents: 'off' }` and rerun A. What does `listActiveRuns()` return, and why? (Hint: "running" checkpoints are skipped when nothing consumes them.)
-3. **Graceful shutdown.** Replace `SIGKILL` with `SIGTERM` + `mastra.shutdown()` in the child. On 1.76.0, does recovery still wait out the TTL? (Read "Shutdown" in `leases.md`.)
+3. **Graceful shutdown.** Replace `SIGKILL` with `SIGTERM` + `mastra.shutdown()` in the child. On 1.77.0, does recovery still wait out the TTL? (Read "Shutdown" in `leases.md`.)
 4. **Workflow fix.** Make the plain workflow safe under scenario B without changing Mastra: give `slow-step` an idempotency key from `runId` + step id and a ledger. Then try `recovery.workflows: 'off'` and compare.
 5. **Sub-agent.** Make `slow_deploy` delegate to a sub-agent with two tool calls, crash in the middle, and count what repeats.

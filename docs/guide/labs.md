@@ -1,6 +1,6 @@
 # Running the labs
 
-All labs live in [`labs/`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs), a single npm package that depends on the **published** `@mastra/core` (pinned to `1.76.0`) and `@mastra/libsql` (`1.26.0`). Nothing calls a real model.
+All labs live in [`labs/`](https://github.com/rphansen91/mastra-primitives-course/tree/main/labs), a single npm package that depends on the **published** `@mastra/core` (pinned to `1.77.0`) and `@mastra/libsql` (`1.26.1`). Nothing calls a real model.
 
 ```bash
 cd labs
@@ -8,7 +8,7 @@ npm install
 npm test
 ```
 
-`npm test` runs every lab test and every break-it test against the **solutions** (48 tests as of 1.76.0, about 90 seconds, most of it the crash lab).
+`npm test` runs every lab test and every break-it test against the **solutions** (48 tests as of 1.77.0, about 90 seconds, most of it the crash lab).
 
 ## The mock model
 
@@ -73,4 +73,4 @@ The crash-lab test adapts its expectations to the installed version (Module 7 ex
 
 ## Reading the Mastra source and tests
 
-Module 0 covers cloning `mastra-ai/mastra` and running its own test suites. The course links always point at commit `81299c94`, so line numbers match what you see.
+Module 0 covers cloning `mastra-ai/mastra` and running its own test suites. The course links always point at commit `f88217d1`, so line numbers match what you see.

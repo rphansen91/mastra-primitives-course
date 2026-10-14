@@ -69,7 +69,7 @@ The script suspends a second run and fires two `resume()` calls in the same tick
          a given suspension; re-read the run state before resuming again.
 ```
 
-That error comes from [`#claimResume`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/workflow.ts#L4882): a compare-and-set on the run status in storage. It works across processes because the store does the check.
+That error comes from [`#claimResume`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/workflow.ts#L4897): a compare-and-set on the run status in storage. It works across processes because the store does the check.
 
 ## 5.3 The agent loop as a workflow
 

@@ -27,7 +27,7 @@ Questions to answer in pass 1:
 
 ## Pass 2: how it's built in real source
 
-Every lesson links to exact files and lines in `mastra-ai/mastra` at a pinned commit, `81299c94`. Read the code before you read the docs. Then read the **tests** next to it: tests are the most honest specification of what the authors think the primitive guarantees.
+Every lesson links to exact files and lines in `mastra-ai/mastra` at a pinned commit, `f88217d1`. Read the code before you read the docs. Then read the **tests** next to it: tests are the most honest specification of what the authors think the primitive guarantees.
 
 Reading checklist:
 - Where is the entry point? Where is the state stored (memory, storage, PubSub)?

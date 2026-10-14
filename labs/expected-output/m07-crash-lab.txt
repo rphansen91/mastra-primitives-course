@@ -12,7 +12,8 @@ recoverAllDurableAgents t+10s {"t":10,"agents":1,"recovered":0,"succeeded":0,"fa
 recoverAllDurableAgents t+15s {"t":15,"agents":1,"recovered":0,"succeeded":0,"failed":0,"skipped":1}
 recoverAllDurableAgents t+20s {"t":20,"agents":1,"recovered":0,"succeeded":0,"failed":0,"skipped":1}
 recoverAllDurableAgents t+25s {"t":25,"agents":1,"recovered":0,"succeeded":0,"failed":0,"skipped":1}
-recoverAllDurableAgents t+34s {"t":34,"agents":1,"recovered":1,"succeeded":1,"failed":0,"skipped":0}
+recoverAllDurableAgents t+30s {"t":30,"agents":1,"recovered":0,"succeeded":0,"failed":0,"skipped":1}
+recoverAllDurableAgents t+35s {"t":35,"agents":1,"recovered":0,"succeeded":0,"failed":0,"skipped":0}
 side-effect counts: {
   'WF step send-email executed': 1,
   'WF step slow-step started': 2,

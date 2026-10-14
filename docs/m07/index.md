@@ -1,14 +1,14 @@
 ---
 verified:
-  core: 1.76.0
-  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
-  date: '2026-10-11'
+  core: 1.77.0
+  sha: f88217d19b63d362ff97723c1a339fbf89a1bbb0
+  date: '2026-10-14'
 pageClass: lesson
 aside: false
 ---
 
 <script setup>
-const B = 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae'
+const B = 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0'
 const outcomes = [
   'Say exactly what survives a <code>kill -9</code> in Mastra, and what runs again',
   'Explain step-boundary checkpoints, recovery modes and run claims with fencing',
@@ -24,17 +24,17 @@ const twists = [
 ]
 const toolbox = [
   { name: 'workflow snapshots', short: 'after every step', detail: 'On the default engine, full run state is persisted **after every step**.', href: B + '/packages/core/src/workflows/handlers/entry.ts#L195', color: 'sky' },
-  { name: 'workflow recovery', short: "recovery.workflows: 'auto'", detail: 'On by default. On boot, `restartAllActiveWorkflowRuns()` re-runs RUNNING / WAITING runs from their last snapshot. **No ownership claim.**', href: B + '/packages/core/src/workflows/workflow.ts#L3386', color: 'sky' },
-  { name: 'durable agents', short: 'createDurableAgent', detail: 'The agent loop as an outer `durable-agentic-loop` workflow around an inner `durable-agentic-execution` (LLM → tools → mapping → bg check → signal drain → goal). Same steps as Module 2. Also `createEventedAgent`, `createInngestAgent`.', href: 'https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable', color: 'violet' },
+  { name: 'workflow recovery', short: "recovery.workflows: 'auto'", detail: 'On by default. On boot, `restartAllActiveWorkflowRuns()` re-runs RUNNING / WAITING runs from their last snapshot. **No ownership claim.**', href: B + '/packages/core/src/workflows/workflow.ts#L3390', color: 'sky' },
+  { name: 'durable agents', short: 'createDurableAgent', detail: 'The agent loop as an outer `durable-agentic-loop` workflow around an inner `durable-agentic-execution` (LLM → tools → mapping → bg check → signal drain → goal). Same steps as Module 2. Also `createEventedAgent`, `createInngestAgent`.', href: 'https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable', color: 'violet' },
   { name: 'agent checkpoints', short: 'every step boundary', detail: "With `recovery.durableAgents: 'auto'` (**off by default**), a `running` checkpoint is written at every step boundary: per LLM step and per tool-call step. Not mid-stream. With recovery off, only step boundaries reached during `mastra.shutdown()`'s drain are checkpointed (1.76.0+, #26642).", href: B + '/docs/src/content/en/docs/harness/durable-agents.mdx', color: 'violet' },
   { name: 'agent recovery', short: 'recoverAllDurableAgents()', detail: 'On boot, or explicitly with `recover(runId)` / `recoverActiveRuns()`. Rebuilds the MessageList, memory and requestContext, then redoes the work after the last snapshot.', href: B + '/packages/core/src/agent/durable/run-recovery.md', color: 'violet' },
-  { name: 'run claims + fencing', short: 'TTL 30 s, renew 10 s', detail: 'Claims have **generations**. With a fencing store (in-memory, pg, libSQL, Turso), every snapshot and memory write is checked atomically, and a stale writer gets `RunFenceConflictError`. Module 1\'s fencing token, for real.', href: B + '/packages/core/src/agent/durable/execution-fence.ts#L36', color: 'teal' },
+  { name: 'run claims + fencing', short: 'TTL 30 s, renew 10 s', detail: 'Claims have **generations**. With a fencing store (in-memory, pg, libSQL and Turso since 1.76.0; since the 1.77.0 release also MySQL, MSSQL, Oracle, DSQL, Spanner, MongoDB, DynamoDB, Convex, Cloudflare, Redis, Upstash and Valkey), every snapshot and memory write is checked atomically, and a stale writer gets `RunFenceConflictError`. Module 1\'s fencing token, for real.', href: B + '/packages/core/src/agent/durable/execution-fence.ts#L36', color: 'teal' },
   { name: 'wrapDurableOperation', short: 'the idempotency seam', detail: 'A no-op on the default engine, `step.run` on Inngest. The place a journal would plug in.', href: B + '/packages/core/src/workflows/default.ts#L173', color: 'amber' },
-  { name: 'engines', short: 'default · evented · Inngest · Temporal', detail: 'Default (in process), evented (PubSub + workers), Inngest, and Temporal (experimental). Same workflow definitions, different runtimes.', href: 'https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/workflows', color: 'amber' },
+  { name: 'engines', short: 'default · evented · Inngest · Temporal', detail: 'Default (in process), evented (PubSub + workers), Inngest, and Temporal (experimental). Same workflow definitions, different runtimes.', href: 'https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/workflows', color: 'amber' },
 ]
 const observed = [
   { title: 'The in-flight tool re-runs', body: 'Granularity is the **step**, not the side effect. `slow_deploy` started twice.', icon: 'reset', color: 'coral' },
-  { title: 'No idempotency key reaches the tool', body: 'On 1.75.0 and 1.76.0 a durable agent\'s tool context has `toolCallId` but **no `runId`**. Route it yourself via `RequestContext`.', icon: 'alert', color: 'amber' },
+  { title: 'No idempotency key reaches the tool', body: 'On 1.75.0 through 1.77.0 a durable agent\'s tool context has `toolCallId` but **no `runId`**. Route it yourself via `RequestContext`.', icon: 'alert', color: 'amber' },
   { title: 'Plain workflows double-run', body: 'Auto workflow recovery has no claim. Two instances sharing a DB run in-flight steps **twice, concurrently**.', icon: 'cards', color: 'violet' },
   { title: 'Recovery is boot-time or explicit', body: 'No continuous sweeper picks up orphaned runs while the process stays up.', icon: 'clock', color: 'sky' },
 ]
@@ -44,7 +44,7 @@ const q_why = [
   { text: 'Providers reject repeated prompts', why: 'They do not.' },
 ]
 const q_replica = [
-  { text: 'Both versions: the replica leaves the live run alone', why: 'Only 1.76.0 has run claims.' },
+  { text: 'Both versions: the replica leaves the live run alone', why: 'Only 1.76.0 and later have run claims.' },
   { text: '1.75.0: the replica re-drives the live run. 1.76: it skips it because a live owner holds the claim', correct: true, why: 'Exactly what the crash lab observes. The 1.75.0 docs said it outright: there was no distributed lease yet. 1.76.0 added claims.' },
   { text: 'Both versions: the replica re-drives it', why: 'Run claims shipped in 1.76.0, so a minor release changed this behavior.' },
 ]
@@ -60,7 +60,7 @@ const choose = [
   { when: 'The same agent code should run in-process today and on Inngest / Temporal later', not: 'You need durable timers, signals or versioning today', alt: 'Temporal, Restate, DBOS, Cloudflare Workflows, Vercel Workflow' },
 ]
 const prod = [
-  { title: 'Durable agent + fencing store', body: '`createDurableAgent`, `recovery.durableAgents: \'auto\'`, Postgres / libSQL / Turso, on a version with run claims. Plus a distributed PubSub with leases (Redis / Valkey Streams).', icon: 'check', color: 'teal' },
+  { title: 'Durable agent + fencing store', body: '`createDurableAgent`, `recovery.durableAgents: \'auto\'`, a fencing store (Postgres, libSQL, Turso, and from the 1.77.0 release most other adapters), on a version with run claims. Plus a distributed PubSub with leases (Redis / Valkey Streams).', icon: 'check', color: 'teal' },
   { title: 'Every outward tool is idempotent', body: 'Key on `runId:toolCallId`. Route `runId` through `RequestContext` if your durable tool context lacks it.', icon: 'bolt', color: 'amber' },
   { title: 'Think about workflow recovery', body: "Set `recovery.workflows: 'off'` on multi-instance deployments unless workflow steps are idempotent, or run one instance.", icon: 'alert', color: 'coral' },
   { title: 'Persist subscriptions yourself', body: 'SignalProvider subscriptions are in memory (Module 6).', icon: 'mail', color: 'sky' },
@@ -151,9 +151,9 @@ Mastra's durability is a set of parts that fit together. Click through them:
 
 ### Two versions, two behaviors
 
-The crash lab runs on both 1.76.0 (pinned) and 1.75.0 (previous stable) in CI, because the behavior genuinely changed in a minor release:
+The crash lab runs on both 1.77.0 (pinned) and 1.75.0 (the last release before run claims) in CI, because the behavior genuinely changed in a minor release:
 
-| What you observe | `@mastra/core@1.75.0` | `@mastra/core@1.76.0` (pinned) |
+| What you observe | `@mastra/core@1.75.0` | `@mastra/core@1.76.0`+ (pinned: 1.77.0) |
 |---|---|---|
 | Recovery right after `kill -9` | immediate (t+4 s) | **waits** for the dead owner's claim (≈30 s) |
 | LLM calls / completed tools repeated | no | no |
@@ -173,22 +173,24 @@ Spawns real child processes, `SIGKILL`s one mid-`slow_deploy`, and recovers from
 
 Read these two in full; they're the authors' own design notes:
 
-- [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/run-recovery.md)
-- [`leases.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/leases.md): the run claim plus the thread lease (one run per thread, 15 s / 5 s), the thread-claim lease, the evented step fence and the background-task lease.
+- [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/run-recovery.md)
+- [`leases.md`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/leases.md): the run claim plus the thread lease (one run per thread, 15 s / 5 s), the thread-claim lease, the evented step fence and the background-task lease.
 
 Where the pieces live:
 
-- [`durable-loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/workflows/durable-loop-builder.ts): the durable loop, same steps as Module 2.
-- [`mastra/index.ts` L671](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/mastra/index.ts#L671): boot-time recovery.
-- [`stores/pg/.../run-fencing.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/stores/pg/src/storage/db/run-fencing.ts): fencing as one atomic conditional write.
+- [`durable-loop-builder.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/workflows/durable-loop-builder.ts): the durable loop, same steps as Module 2.
+- [`mastra/index.ts` L671](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/mastra/index.ts#L671): boot-time recovery.
+- [`stores/pg/.../run-fencing.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/stores/pg/src/storage/db/run-fencing.ts): fencing as one atomic conditional write.
+- **More fencing stores (1.77.0 release).** MySQL, MSSQL, Oracle, DSQL and Spanner ([#26421](https://github.com/mastra-ai/mastra/pull/26421)), MongoDB, DynamoDB, Convex and Cloudflare ([#26423](https://github.com/mastra-ai/mastra/pull/26423)), and Redis, Upstash and Valkey ([#26422](https://github.com/mastra-ai/mastra/pull/26422)) now return `true` from `supportsRunFencing()`, for example [`stores/redis/.../workflows/index.ts` L122](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/stores/redis/src/storage/domains/workflows/index.ts#L122). Check the adapter version you install, not just `@mastra/core`.
+- **One resume wins (1.77.0).** Approving, declining or resuming the same suspended tool call twice (a double click, a client retry) now claims the run first. One caller resumes; the others fail with `AGENT_RESUME_ALREADY_CLAIMED`, and durable agents report it as an error chunk ([#26688](https://github.com/mastra-ai/mastra/pull/26688)).
 
 Tests:
 
-- [`execution-fence.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/execution-fence.test.ts)
-- [`durable-operation-ids.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/workflows/durable-operation-ids.test.ts)
-- [`agent/durable/__tests__/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/__tests__)
+- [`execution-fence.test.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/execution-fence.test.ts)
+- [`durable-operation-ids.test.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/workflows/durable-operation-ids.test.ts)
+- [`agent/durable/__tests__/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/__tests__)
 
-The 1.75.0 docs said it plainly: *"Mastra doesn't provide a distributed lease or lock yet. In multi-replica deployments, every replica that starts with `recovery.durableAgents: 'auto'` will race to recover the same runs."* The [1.76.0 docs](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/durable-agents.mdx#L388) replace that with run ownership: *"Every replica can start with `recovery.durableAgents: 'auto'` … This requires a claim that every replica shares: a workflows store that supports run fencing, or a PubSub backend whose lease every replica shares."* Without either, you still need your own leader election. To take over a run held by a hung execution, 1.76.0 adds `recover(runId, { force: true })`.
+The 1.75.0 docs said it plainly: *"Mastra doesn't provide a distributed lease or lock yet. In multi-replica deployments, every replica that starts with `recovery.durableAgents: 'auto'` will race to recover the same runs."* The [1.76.0 docs](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/harness/durable-agents.mdx#L403) replace that with run ownership: *"Every replica can start with `recovery.durableAgents: 'auto'` … This requires a claim that every replica shares: a workflows store that supports run fencing, or a PubSub backend whose lease every replica shares."* Without either, you still need your own leader election. To take over a run held by a hung execution, 1.76.0 adds `recover(runId, { force: true })`.
 
 </DeepDive>
 
@@ -198,11 +200,11 @@ A `DurableAgent` runs the same loop builder as a regular `Agent` (one `AgenticLo
 
 | You configure | On the durable path | Evidence |
 |---|---|---|
-| `stopWhen` / `onIterationComplete` closures | Parked in an **in-process** registry. After recovery in another process, they're gone, and only `maxSteps` bounds the loop | [`preparation.ts` L887–890](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/preparation.ts#L887) |
-| `structuredOutput` | Only the `schema` is persisted and rebuilt on recovery. Options without a schema don't survive | [`durable-agent.ts` L1461–1467](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/durable-agent.ts#L1461) |
-| `RequestContext` entries | Persisted as JSON entries and restored on recovery. Non-JSON values (class instances, functions, clients) don't come back. The auth token is deliberately never persisted | [`resolve-runtime.ts` L105–125](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/utils/resolve-runtime.ts#L105), [`subagents.mdx` L144](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/subagents.mdx#L144) |
-| `eagerToolExecution: true` | Throws: *"not supported by durable agents"* | [`preparation.ts` L348](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/preparation.ts#L348) |
-| Tool context | Has `toolCallId` but no `runId` (verified on 1.75.0 and 1.76.0 by printing the context keys) | Lab 7, [`phase-run.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m07-durability/phase-run.ts) |
+| `stopWhen` / `onIterationComplete` closures | Parked in an **in-process** registry. After recovery in another process, they're gone, and only `maxSteps` bounds the loop | [`preparation.ts` L891–894](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/preparation.ts#L891) |
+| `structuredOutput` | Only the `schema` is persisted and rebuilt on recovery. Options without a schema don't survive | [`durable-agent.ts` L1527–1533](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/durable-agent.ts#L1527) |
+| `RequestContext` entries | Persisted as JSON entries and restored on recovery. Non-JSON values (class instances, functions, clients) don't come back. The auth token is deliberately never persisted | [`resolve-runtime.ts` L105–125](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/utils/resolve-runtime.ts#L105), [`subagents.mdx` L144](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/subagents.mdx#L144) |
+| `eagerToolExecution: true` | Throws: *"not supported by durable agents"* | [`preparation.ts` L349](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/preparation.ts#L349) |
+| Tool context | Has `toolCallId` but no `runId` (verified on 1.75.0 and 1.76.0 by printing the context keys; on 1.77.0 the durable tool step still builds its tool options without it, [`tool-call.ts` L1209](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/workflows/steps/tool-call.ts#L1209)) | Lab 7, [`phase-run.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m07-durability/phase-run.ts) |
 
 <Callout type="warn" title="The crash lab is cross-process, so a stopWhen guard wouldn't survive it">
 
@@ -212,27 +214,27 @@ Module 2's `stopOnRepeat` guard is a closure. A run recovered in a fresh process
 
 ### What `recover()` does, and refuses
 
-From [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/durable/run-recovery.md):
+From [`run-recovery.md`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/durable/run-recovery.md):
 
 - **Restores** the message list, memory, request context (JSON entries) and the tracing span from the last `running` snapshot, raises the memory fence to the new claim's generation, then restarts the workflow. **Every step after the snapshot runs again**, including model and tool calls. Message ids come from the snapshot, so the redo *upserts* rather than appending duplicates.
 - **Doesn't restore** anything that lived only in the dead process: closures, caches, open connections, in-memory signal queues.
 - **Refuses suspended runs.** A run waiting on an approval isn't orphaned: `recover()` throws `DURABLE_AGENT_RECOVER_RUN_SUSPENDED` and you continue it with `resume()`. The server route maps run-state conflicts like this one to **409**.
 - **Skips live runs.** `recoverActiveRuns()` reports `skipped` with reason `run-active` and a `retryAt`. `recoverAllDurableAgents()` re-checks at `retryAt` plus up to 5 s of jitter, so replicas that booted together spread out.
-- **Replays whole delegations.** A sub-agent call is one tool call to the parent, so a replayed delegation restarts the entire sub-agent run, including tool side effects that already completed ([docs warning](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/durable-agents.mdx#L293), [#25194](https://github.com/mastra-ai/mastra/pull/25194)). **Sub-agent tools need idempotency keys too.** Declaring which tools are replay-safe is an open feature request, [#25780](https://github.com/mastra-ai/mastra/issues/25780).
+- **Replays whole delegations.** A sub-agent call is one tool call to the parent, so a replayed delegation restarts the entire sub-agent run, including tool side effects that already completed ([docs warning](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/harness/durable-agents.mdx#L293), [#25194](https://github.com/mastra-ai/mastra/pull/25194)). **Sub-agent tools need idempotency keys too.** Declaring which tools are replay-safe is an open feature request, [#25780](https://github.com/mastra-ai/mastra/issues/25780).
 
 ### Shutdown is part of durability
 
-<Callout type="note" title="The book vs Mastra 1.76: walking away from a durable agent">
+<Callout type="note" title="The book vs Mastra 1.77: walking away from a durable agent">
 
 <BookRef book="principles" chapter="ch. 16, &quot;Harnesses &amp; Claws&quot;" page="92" /> describes durable agents as something you can walk away from and resume later.
 
-That's true at 1.76 only if you opt in. `recovery.durableAgents` defaults to `'off'`.
+That's true at 1.77 only if you opt in. `recovery.durableAgents` defaults to `'off'`.
 
 Without `'auto'`, the only checkpoints are the ones written during a graceful `mastra.shutdown()` drain. A hard kill (OOM, `kill -9`, a reclaimed spot instance) leaves nothing to recover.
 
 </Callout>
 
-`mastra.shutdown({ drainTimeout })` gives in-flight runs up to `drainTimeout` ms (**default 5000**) to settle ([`mastra/index.ts` L7679](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/mastra/index.ts#L7679)). Since 1.76.0 ([#26642](https://github.com/mastra-ai/mastra/pull/26642)), a durable agent writes a `running` checkpoint at each step boundary it reaches during the drain, **even with `recovery.durableAgents: 'off'`**.
+`mastra.shutdown({ drainTimeout })` gives in-flight runs up to `drainTimeout` ms (**default 5000**) to settle ([`mastra/index.ts` L7679](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/mastra/index.ts#L7679)). Since 1.76.0 ([#26642](https://github.com/mastra-ai/mastra/pull/26642)), a durable agent writes a `running` checkpoint at each step boundary it reaches during the drain, **even with `recovery.durableAgents: 'off'`**.
 
 Runs still going at the deadline are abandoned without writing, and their claims are released, so the next boot can recover them right away instead of waiting about 30 s for the claims to lapse. A run stuck inside one long tool call for the whole drain gets no checkpoint.
 
@@ -268,7 +270,7 @@ The starter's `deployKey()` returns `undefined`, so the deploy API can't tell a 
 
 </Callout>
 
-<Quiz module="07" id="key" question="Which key does the job?" :options="q_key" explain="On 1.75.0 and 1.76.0 the durable tool context has no `runId`, so the lab passes it through `RequestContext`, which the snapshot persists." />
+<Quiz module="07" id="key" question="Which key does the job?" :options="q_key" explain="On 1.75.0 through 1.77.0 the durable tool context has no `runId`, so the lab passes it through `RequestContext`, which the snapshot persists." />
 
 <TryIt :cmd="exCmd">
 
@@ -323,7 +325,7 @@ The review a cautious platform team would write before putting this module's pri
 
 **Host:** How do I fix it?
 
-**Loopy:** Give the payments API an idempotency key that's the same every time this exact tool call runs: the run id plus the tool call id. Both survive recovery. On 1.75.0 and 1.76.0 the durable tool context doesn't include the run id, so pass it through the request context.
+**Loopy:** Give the payments API an idempotency key that's the same every time this exact tool call runs: the run id plus the tool call id. Both survive recovery. On 1.75.0 through 1.77.0 the durable tool context doesn't include the run id, so pass it through the request context.
 
 **Host:** What about two replicas?
 

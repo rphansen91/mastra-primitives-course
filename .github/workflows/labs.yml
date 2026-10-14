@@ -10,7 +10,7 @@ on:
 
 jobs:
   stable:
-    name: Labs (pinned @mastra/core 1.76.0)
+    name: Labs (pinned @mastra/core 1.77.0)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,7 +39,7 @@ jobs:
           npm run -s lab:observe
 
   previous:
-    name: Labs (previous stable @mastra/core 1.75.0)
+    name: Labs (pre-claims @mastra/core 1.75.0)
     runs-on: ubuntu-latest
     defaults:
       run:

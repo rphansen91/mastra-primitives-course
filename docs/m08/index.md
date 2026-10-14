@@ -1,8 +1,8 @@
 ---
 verified:
-  core: 1.76.0
-  sha: 81299c921d6f499d4c62f14c38e4d4d88b4fbfae
-  date: '2026-10-11'
+  core: 1.77.0
+  sha: f88217d19b63d362ff97723c1a339fbf89a1bbb0
+  date: '2026-10-14'
 pageClass: lesson
 aside: false
 ---
@@ -28,10 +28,10 @@ const q_which = [
   { text: 'Signals between threads', correct: true, why: 'Each worker keeps its own thread, run and budget. The notice arrives at its next safe point. Nobody waits.' },
 ]
 const mechs = [
-  { name: 'Sub-agent', short: 'agents: { researcher }', detail: 'The supervisor pattern: the model calls `agent-researcher` like any tool, and the whole sub-run is one tool call. By default the subagent gets the parent\'s conversation context; `messageFilter`, `onDelegationStart` and `onDelegationComplete` control it. [`agent/subagent.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/subagent.ts), [docs](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/subagents.mdx).', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/subagent.ts', color: 'sky' },
-  { name: 'Network (deprecated)', short: 'routing agent', detail: '**Deprecated** at the pin, to be removed in a future major. A routing agent picks agents, workflows or tools per iteration, inside one network run. Migrate to a supervisor agent. [`agents/networks.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/agents/networks.mdx), [`agent-network.test.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent-network.test.ts).', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/agents/networks.mdx', color: 'violet' },
-  { name: 'Workflow', short: 'createStepFromAgent', detail: 'An agent becomes a step in `.then / .parallel / .foreach`: snapshots, retries and suspend/resume apply (Module 5). [`workflows/agents-and-tools.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/workflows/agents-and-tools.mdx).', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/workflows/agents-and-tools.mdx', color: 'teal' },
-  { name: 'Signals', short: 'sendSignal + ownership', detail: '`otherAgent.sendSignal(signal, { resourceId, threadId })`, with [`claimThreadOwnership`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9005) and [`discoverThreadPeers`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9042). Delivery in [`thread-stream-runtime.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/thread-stream-runtime.ts#L5515).', href: 'https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9005', color: 'coral' },
+  { name: 'Sub-agent', short: 'agents: { researcher }', detail: 'The supervisor pattern: the model calls `agent-researcher` like any tool, and the whole sub-run is one tool call. By default the subagent gets the parent\'s conversation context; `messageFilter`, `onDelegationStart` and `onDelegationComplete` control it. [`agent/subagent.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/subagent.ts), [docs](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/subagents.mdx).', href: 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/subagent.ts', color: 'sky' },
+  { name: 'Network (deprecated)', short: 'routing agent', detail: '**Deprecated** at the pin, to be removed in a future major. A routing agent picks agents, workflows or tools per iteration, inside one network run. Migrate to a supervisor agent. [`agents/networks.mdx`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/agents/networks.mdx), [`agent-network.test.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/agent-network.test.ts).', href: 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/agents/networks.mdx', color: 'violet' },
+  { name: 'Workflow', short: 'createStepFromAgent', detail: 'An agent becomes a step in `.then / .parallel / .foreach`: snapshots, retries and suspend/resume apply (Module 5). [`workflows/agents-and-tools.mdx`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/workflows/agents-and-tools.mdx).', href: 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/workflows/agents-and-tools.mdx', color: 'teal' },
+  { name: 'Signals', short: 'sendSignal + ownership', detail: '`otherAgent.sendSignal(signal, { resourceId, threadId })`, with [`claimThreadOwnership`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/agent.ts#L9220) and [`discoverThreadPeers`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/agent.ts#L9257). Delivery in [`thread-stream-runtime.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/thread-stream-runtime.ts#L5542).', href: 'https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/agent.ts#L9220', color: 'coral' },
 ]
 const q_idle = [
   { text: 'The signal is dropped: no one is running', why: 'With `wake`, an idle thread gets a new run. With `persist`, it\'s saved for the next one.' },
@@ -131,9 +131,9 @@ A **workflow** is the plating line: same stations, same order, every dish. **Sig
 
 <Callout type="warn" title="Agent networks are deprecated">
 
-<StabilityBadge id="networks" /> The docs at the pin say networks *"are deprecated and will be removed in a future major release. Replace them with supervisor agents that use `agent.stream()` or `agent.generate()`."* There's a [migration guide](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/reference/migrations/network-to-supervisor.mdx). This course keeps networks in the comparison so you can recognize them in existing code. Don't start new work on them.
+<StabilityBadge id="networks" /> The docs at the pin say networks *"are deprecated and will be removed in a future major release. Replace them with supervisor agents that use `agent.stream()` or `agent.generate()`."* There's a [migration guide](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/reference/migrations/network-to-supervisor.mdx). This course keeps networks in the comparison so you can recognize them in existing code. Don't start new work on them.
 
-Also check what a subagent sees. <StabilityBadge id="subagents" /> By default, *"subagents receive the full conversation context from the parent agent"* ([`subagents.mdx` L247](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/subagents.mdx#L247)). That matters for data handling. Use `messageFilter` to drop sensitive or bulky messages before delegation.
+Also check what a subagent sees. <StabilityBadge id="subagents" /> By default, *"subagents receive the full conversation context from the parent agent"* ([`subagents.mdx` L247](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/subagents.mdx#L247)). That matters for data handling. Use `messageFilter` to drop sensitive or bulky messages before delegation.
 
 </Callout>
 
@@ -149,7 +149,7 @@ Networks are also a reminder that primitives get replaced. Mastra's write-up of 
 
 <FounderQuote id="f-flawed">
 
-`AgentNetwork` became `NewAgentNetwork`, then `.network()`. As of 1.76, `.network()` is itself deprecated in favor of supervisor agents. Expect your multi-agent code to move at least once.
+`AgentNetwork` became `NewAgentNetwork`, then `.network()`. As of 1.77, `.network()` is itself deprecated in favor of supervisor agents. Expect your multi-agent code to move at least once.
 
 </FounderQuote>
 
@@ -157,8 +157,8 @@ Networks are also a reminder that primitives get replaced. Mastra's write-up of 
 
 ### Ownership and discovery
 
-- [`claimThreadOwnership`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9005) takes a **lease-backed claim** on a thread and advertises it as a peer with a label.
-- [`discoverThreadPeers`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/packages/core/src/agent/agent.ts#L9042) asks over PubSub (request/reply) who's out there.
+- [`claimThreadOwnership`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/agent.ts#L9220) takes a **lease-backed claim** on a thread and advertises it as a peer with a label.
+- [`discoverThreadPeers`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/packages/core/src/agent/agent.ts#L9257) asks over PubSub (request/reply) who's out there.
 - `sendSignal(…, { ifIdle: { behavior: 'wake', requireClaimedOwner: true } })` wakes a peer **only if** a live owner exists.
 
 <StabilityBadge id="thread-ownership" /> Treat ownership and discovery as experimental. The methods are public, but the docs don't cover them, and the one product feature built on them (cross-agent communication in Mastra Code) is *"experimental and off by default"*. Pin exact versions if you build on them.
@@ -195,14 +195,14 @@ The production version, as a recipe:
 
 <DeepDive title="Case study: mastracode agent connections">
 
-mastracode (the coding agent in [`mastracode/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/mastracode)) lets separate sessions on one machine message each other. [`createMastraCodeAgentController`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/mastracode/sdk/src/index.ts#L504) wires:
+mastracode (the coding agent in [`mastracode/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/mastracode)) lets separate sessions on one machine message each other. [`createMastraCodeAgentController`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/mastracode/sdk/src/index.ts#L510) wires:
 
-- [`agent-connections/tools.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/mastracode/sdk/src/agent-connections/tools.ts): `agent_connections_list`, `agent_connect` / `agent_disconnect`, and `agent_signal_send`, which sends a **notification** (`source: 'agent-connection'`, `kind: 'peer-signal'`, with `expectsReply`, `messageId`, `replyTo`) and wakes the peer only with `requireClaimedOwner` (or persists, for low priority);
-- [`session-advertisement.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/mastracode/sdk/src/agent-connections/session-advertisement.ts): each session claims its thread and advertises a peer label, and yields ownership on exit;
-- [`messaging-processor.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/mastracode/sdk/src/agent-connections/messaging-processor.ts): an **output processor** that reminds/retries when a peer expected a reply and the agent didn't send one;
-- [`untrusted-text.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/mastracode/sdk/src/agent-connections/untrusted-text.ts): peer text is framed as **untrusted data**;
-- [`utils/signals-pubsub.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/mastracode/sdk/src/utils/signals-pubsub.ts): a `UnixSocketPubSub` per resource, plus a shared directory for cross-project discovery;
-- [`plugins/signal-lane.ts`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/mastracode/sdk/src/plugins/signal-lane.ts): plugin-contributed signal providers kept out of the constructor so they can be hot-removed.
+- [`agent-connections/tools.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/mastracode/sdk/src/agent-connections/tools.ts): `agent_connections_list`, `agent_connect` / `agent_disconnect`, and `agent_signal_send`, which sends a **notification** (`source: 'agent-connection'`, `kind: 'peer-signal'`, with `expectsReply`, `messageId`, `replyTo`) and wakes the peer only with `requireClaimedOwner` (or persists, for low priority);
+- [`session-advertisement.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/mastracode/sdk/src/agent-connections/session-advertisement.ts): each session claims its thread and advertises a peer label, and yields ownership on exit;
+- [`messaging-processor.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/mastracode/sdk/src/agent-connections/messaging-processor.ts): an **output processor** that reminds/retries when a peer expected a reply and the agent didn't send one;
+- [`untrusted-text.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/mastracode/sdk/src/agent-connections/untrusted-text.ts): peer text is framed as **untrusted data**;
+- [`utils/signals-pubsub.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/mastracode/sdk/src/utils/signals-pubsub.ts): a `UnixSocketPubSub` per resource, plus a shared directory for cross-project discovery;
+- [`plugins/signal-lane.ts`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/mastracode/sdk/src/plugins/signal-lane.ts): plugin-contributed signal providers kept out of the constructor so they can be hot-removed.
 
 Every piece is an existing primitive (notifications, ownership, processors, PubSub). No new core API was needed: the house rules working as intended.
 </DeepDive>
@@ -324,6 +324,6 @@ The review a cautious platform team would write before putting this module's pri
 
 - **[Lab 8: relay and ping-pong](./lab):** the coordinator relay and Exercise 8.1.
 - **[Module 9: Observability and evals](/m09/):** see every one of these runs as a trace, and score them.
-- Read the tests: [`agent-connections/__tests__/`](https://github.com/mastra-ai/mastra/tree/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/mastracode/sdk/src/agent-connections/__tests__) includes a real cross-process Unix-socket suite (ownership fencing, lease takeover, request/reply).
+- Read the tests: [`agent-connections/__tests__/`](https://github.com/mastra-ai/mastra/tree/f88217d19b63d362ff97723c1a339fbf89a1bbb0/mastracode/sdk/src/agent-connections/__tests__) includes a real cross-process Unix-socket suite (ownership fencing, lease takeover, request/reply).
 
 </Callout>

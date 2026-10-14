@@ -113,7 +113,7 @@ const story = computed(() => {
   if (p === 'running' || p === 'paused') return 'The run is executing. Every lightning bolt is a side effect the outside world can see.';
   if (p === 'finished') return 'No crash, so everything happened exactly once. Boring in production, which is the goal. Now replay and kill it.';
   if (p === 'dead') return `**SIGKILL** at ${Math.round((killedAt.value! / N) * 100)}% through the run. No cleanup, no finally blocks. Now press **Restart process**.`;
-  if (p === 'waiting') return `The dead process still holds the **run claim**. On 1.76.0, recovery skips the run until the claim expires (TTL 30 s). ${claimLeft.value} s left…`;
+  if (p === 'waiting') return `The dead process still holds the **run claim**. Since 1.76.0, recovery skips the run until the claim expires (TTL 30 s). ${claimLeft.value} s left…`;
   const inflight = SEGS.findIndex((_, i) => k.value > i && k.value < i + 1);
   if (mode.value === 'plain')
     return props.variant === 'durable'
@@ -150,7 +150,7 @@ const pct = (x: number) => `${(x / N) * 100}%`;
       <div class="mpc-toggle-group" role="radiogroup" aria-label="Mastra version" v-if="variant === 'durable' && mode === 'durable'">
         <span class="label">@mastra/core</span>
         <button type="button" role="radio" class="mpc-toggle" :aria-checked="version === '1.75'" @click="version = '1.75'">1.75.0 (no claims)</button>
-        <button type="button" role="radio" class="mpc-toggle" :aria-checked="version === '1.76'" @click="version = '1.76'">1.76.0 (pinned, claims)</button>
+        <button type="button" role="radio" class="mpc-toggle" :aria-checked="version === '1.76'" @click="version = '1.76'">1.76.0+ (claims)</button>
       </div>
     </div>
 

@@ -1,7 +1,7 @@
 // One source of truth for the stability badges. Every entry cites the Mastra docs or source
-// at the course's pinned commit (the @mastra/core@1.76.0 release tag), or a lab output that
+// at the course's pinned commit (the @mastra/core@1.77.0 release commit), or a lab output that
 // demonstrates the behavior. Re-check this file whenever the pin moves.
-export const SHA = '81299c921d6f499d4c62f14c38e4d4d88b4fbfae';
+export const SHA = 'f88217d19b63d362ff97723c1a339fbf89a1bbb0';
 const DOCS = `https://github.com/mastra-ai/mastra/blob/${SHA}/docs/src/content/en/docs/`;
 const SRC = `https://github.com/mastra-ai/mastra/blob/${SHA}/`;
 const LABS = 'https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/';
@@ -33,7 +33,7 @@ export const STABILITY: Record<string, Entry> = {
   'temporal-runner': { name: '@mastra/temporal runner', status: 'experimental', note: '"experimental and not ready for production use".', href: DOCS + 'deployment/workflow-runners.mdx#L22', source: 'docs: deployment/workflow-runners L22' },
   workers: { name: 'Workers', status: 'beta', note: 'Marked beta in the docs.', href: DOCS + 'deployment/workers.mdx#L18', source: 'docs: deployment/workers L18' },
   signals: { name: 'Signals', status: 'stable', since: '@mastra/core 1.39.0', note: 'No beta marker; relatively new.', href: DOCS + 'harness/signals.mdx#L12', source: 'docs: harness/signals L12' },
-  notifications: { name: 'Notification signals', status: 'changed', since: '@mastra/core 1.39.0', note: 'On 1.76.0 a pending summary is drained into the woken run\'s first request (one model call instead of two), and tag attributes are sorted.', href: LABS + 'expected-output/core-1.75.0/m06-notifications.txt', source: 'lab output, 1.75.0 vs 1.76.0' },
+  notifications: { name: 'Notification signals', status: 'changed', since: '@mastra/core 1.39.0', note: 'Since 1.76.0 a pending summary is drained into the woken run\'s first request (one model call instead of two), and tag attributes are sorted.', href: LABS + 'expected-output/core-1.75.0/m06-notifications.txt', source: 'lab output, 1.75.0 vs 1.76.0' },
   'signal-providers': { name: 'Signal providers', status: 'stable', since: '@mastra/core 1.42.0', note: 'Newer API.', href: DOCS + 'harness/signal-providers.mdx#L10', source: 'docs: harness/signal-providers L10' },
   'cross-agent': { name: 'Cross-agent communication (Mastra Code)', status: 'experimental', note: '"experimental and off by default".', href: DOCS + 'harness/signals.mdx#L373', source: 'docs: harness/signals L373' },
   'durable-agents': { name: 'Durable agents', status: 'beta', since: '@mastra/core 1.45.0', note: 'Marked beta ("breaking changes may occur without a major version bump"). The signals page calls durable and evented agents "experimental".', href: DOCS + 'harness/durable-agents.mdx#L11', source: 'docs: harness/durable-agents L11-13' },

@@ -54,7 +54,7 @@ accepted → { action: 'persist' } | persisted resolves: true
 Read it carefully:
 
 - The signal was accepted **during** the tool but reached the model **after** the tool result: cooperative delivery.
-- It arrived as a **user-role XML-tagged** message. (On 1.76.0 the tag attributes are sorted alphabetically; on 1.75.0 they kept insertion order, `source` first. Don't string-match the exact tag in your tests.)
+- It arrived as a **user-role XML-tagged** message. (On 1.76.0 and later the tag attributes are sorted alphabetically; on 1.75.0 they kept insertion order, `source` first. Don't string-match the exact tag in your tests.)
 - The woken run (#3) has **no history**: this agent has no memory. Module 4's point, observed.
 - `persist` didn't call the model (3 model calls total), but one `subscribeToThread` subscription saw all **3 runs**, including the persisted signal's `data-signal` chunk.
 
@@ -90,7 +90,7 @@ On 1.75.0 the woken run made two model calls, the urgent item first and the summ
 
 ## 6.3 Write your own signal source
 
-Build a provider for an event source you actually have (a CI webhook, a chat socket, a queue). Copy [`notifications.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m06-signals/notifications.ts) as a template and meet this contract (from [`signal-providers.mdx`](https://github.com/mastra-ai/mastra/blob/81299c921d6f499d4c62f14c38e4d4d88b4fbfae/docs/src/content/en/docs/harness/signal-providers.mdx)):
+Build a provider for an event source you actually have (a CI webhook, a chat socket, a queue). Copy [`notifications.ts`](https://github.com/rphansen91/mastra-primitives-course/blob/main/labs/m06-signals/notifications.ts) as a template and meet this contract (from [`signal-providers.mdx`](https://github.com/mastra-ai/mastra/blob/f88217d19b63d362ff97723c1a339fbf89a1bbb0/docs/src/content/en/docs/harness/signal-providers.mdx)):
 
 1. `extends SignalProvider<'my-source'>`. Do async setup in `start()`. If you override `stop()`, call `super.stop()` so polling stops and the registry clears.
 2. Poll, or override `handleWebhook(request)`. It is **not** an auto-mounted route: call it from your own endpoint.
@@ -116,7 +116,7 @@ export const decide = ({ record }) => {
   return undefined; // fall through to sources → priorities → default → built-in
 };
 ```
-Observed statuses on 1.75.0 and 1.76.0: `calendar-medium: delivered`, `chat-low: pending` (no `summaryAt`), `spam-high: discarded`.
+Observed statuses on 1.75.0 through 1.77.0: `calendar-medium: delivered`, `chat-low: pending` (no `summaryAt`), `spam-high: discarded`.
 
 </Reveal>
 
