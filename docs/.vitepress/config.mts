@@ -57,6 +57,7 @@ export default defineConfig({
   title: 'Mastra Primitives',
   description: DESCRIPTION,
   base: BASE,
+  srcExclude: ['audio/**'], // narration scripts are included into lessons, not published as pages
   cleanUrls: true,
   lastUpdated: true,
   head: [
