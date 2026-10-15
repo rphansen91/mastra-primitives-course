@@ -1,4 +1,5 @@
 <script setup lang="ts">
+function listen() { window.dispatchEvent(new CustomEvent('mpc-listen')); }
 withDefaults(
   defineProps<{
     module: string;
@@ -19,7 +20,7 @@ withDefaults(
       <span class="mod"><ModuleArt :module="module" :size="22" /> Module {{ Number(module) }}</span>
       <span><Icon name="clock" :size="14" /> ~{{ minutes }} min</span>
       <span v-if="lab"><Icon name="flask" :size="14" /> {{ lab }}</span>
-      <span v-if="recap"><Icon name="headphones" :size="14" /> Listen-friendly recap</span>
+      <a v-if="recap" class="listen" href="#listen" data-listen-link aria-label="Listen to the lesson recap (jumps to the player)" @click.prevent="listen"><Icon name="headphones" :size="14" /> Listen</a>
     </p>
     <div class="grid">
       <div class="story">
@@ -41,8 +42,10 @@ withDefaults(
 .hero { margin: 12px 0 8px; }
 .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; margin: 0 0 20px !important; font-size: var(--fs-sm); color: var(--vp-c-text-2); }
 .meta span { display: inline-flex; align-items: center; gap: 5px; }
-.meta span + span::before { content: '·'; margin: 0 10px; color: var(--vp-c-text-3); }
+.meta span + a.listen::before, .meta span + span::before { content: '·'; margin: 0 10px; color: var(--vp-c-text-3); }
 .meta :deep(svg.mpc-icon) { color: var(--vp-c-text-3); }
+.meta .listen { display: inline-flex; align-items: center; gap: 5px; font-weight: var(--fw-semibold); color: var(--mod-accent); text-decoration: underline; text-underline-offset: 3px; min-height: 28px; cursor: pointer; }
+.meta .listen:hover { text-decoration-thickness: 2px; }
 .meta .mod { font-weight: var(--fw-semibold); color: var(--mod-accent); }
 .grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; }
 .story, .outcomes { border-radius: var(--r-lg); padding: 16px 20px; }
@@ -57,5 +60,5 @@ withDefaults(
 .tick { width: 18px; height: 18px; border-radius: 50%; background: var(--mod-accent); color: #fff; display: grid; place-items: center; flex: none; margin-top: 3px; }
 .dark .tick { color: #14112b; }
 @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
-@media (max-width: 560px) { .meta { gap: 4px 14px; } .meta span + span::before { content: none; } }
+@media (max-width: 560px) { .meta { gap: 4px 14px; } .meta span + a.listen::before, .meta span + span::before { content: none; } }
 </style>

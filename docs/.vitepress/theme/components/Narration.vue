@@ -6,7 +6,7 @@ import manifest from '../../../audio/manifest.json';
 // Narrated audio for a lesson. The transcript comes from the manifest, which build-audio.mjs writes from the
 // same script file (audio tags like [curious] stripped), so spoken and written text cannot drift. Audio is never loaded or played until the
 // reader asks (preload="none", no autoplay).
-const props = defineProps<{ id: string; label?: string }>();
+const props = defineProps<{ id: string; label?: string; bare?: boolean }>();
 const clip = computed(() => (manifest as Record<string, any>)[props.id]);
 const src = computed(() => (clip.value ? withBase(`/audio/${clip.value.file}`) : ''));
 const mins = computed(() => (clip.value ? Math.max(1, Math.round(clip.value.seconds / 60)) : 0));
@@ -23,12 +23,15 @@ onMounted(() => {
 });
 function save() { try { if (audio.value) localStorage.setItem(KEY, String(audio.value.ended ? 0 : audio.value.currentTime)); } catch { /* ignore */ } }
 function setRate() { if (audio.value) audio.value.playbackRate = parseFloat(rate.value); }
+function play() { return audio.value?.play(); }
+function pauseIt() { audio.value?.pause(); }
+defineExpose({ play, pause: pauseIt, el: audio });
 function back() { if (audio.value) audio.value.currentTime = Math.max(0, audio.value.currentTime - 15); }
 </script>
 
 <template>
-  <section v-if="clip" class="nar mpc-card" :aria-labelledby="uid + '-t'" data-narration>
-    <div class="mpc-kicker"><Icon name="headphones" :size="15" /> {{ label ?? 'Listen' }} · about {{ mins }} min</div>
+  <section v-if="clip" :class="['nar', bare ? 'bare' : 'mpc-card']" :aria-labelledby="uid + '-t'" data-narration>
+    <div v-if="!bare" class="mpc-kicker"><Icon name="headphones" :size="15" /> {{ label ?? 'Listen' }} · about {{ mins }} min</div>
     <strong :id="uid + '-t'">{{ clip.title }}</strong>
     <audio ref="audio" :src="src" controls preload="none" :aria-label="clip.title" @timeupdate="save" @pause="save" @ratechange="() => {}" data-narration-audio></audio>
     <div class="row">
@@ -49,6 +52,7 @@ function back() { if (audio.value) audio.value.currentTime = Math.max(0, audio.v
 
 <style scoped>
 .nar { background: var(--mpc-surface-2); margin: 18px 0; }
+.nar.bare { background: none; margin: 0; padding: 0; }
 .nar strong { display: block; font-size: var(--fs-body); margin: 2px 0 10px; }
 audio { width: 100%; height: 44px; display: block; }
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 10px; }

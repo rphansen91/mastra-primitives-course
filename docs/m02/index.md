@@ -359,9 +359,7 @@ The review a cautious platform team would write before putting this module's pri
 
 ## Wrap-up
 
-<Narration id="m02-summary" label="Listen to the wrap-up" />
-
-<Podcast title="The agent loop, as a conversation" :minutes="2">
+<Podcast title="The agent loop, in two minutes" narration="m02-summary">
 
 **Host:** So I call `agent.stream()` and text comes back. What's actually happening?
 
