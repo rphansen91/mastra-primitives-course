@@ -1,9 +1,10 @@
 {
   "name": "River (ElevenLabs premade stock voice)",
   "voice_id": "SAz9YHcvj6GT2YYXdXww",
-  "model_id": "eleven_multilingual_v2",
-  "settings": { "stability": 0.6, "similarity_boost": 0.75, "style": 0.0, "use_speaker_boost": true, "speed": 1.0 },
+  "model_id": "eleven_v3",
+  "settings": { "stability": 0.5, "similarity_boost": 0.75, "style": 0.5, "use_speaker_boost": true, "speed": 1.08 },
   "seed": 7,
   "output_format": "mp3_44100_64",
-  "pipeline": "concat+loudnorm-16LUFS+mono+64k"
+  "max_chunk_chars": 1200,
+  "pipeline": "v3-segments+concat+loudnorm-16LUFS+mono+64k"
 }
