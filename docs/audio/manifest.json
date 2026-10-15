@@ -1,0 +1,24 @@
+{
+  "m02-loop-visualizer": {
+    "hash": "21084387",
+    "file": "m02-loop-visualizer.21084387.mp3",
+    "seconds": 86.1,
+    "bytes": 689403,
+    "chars": 1352,
+    "voice": "River (ElevenLabs premade stock voice)",
+    "model": "eleven_multilingual_v2",
+    "title": "Walkthrough: the loop visualizer",
+    "verifiedCore": "1.77.0"
+  },
+  "m02-summary": {
+    "hash": "a235a50d",
+    "file": "m02-summary.a235a50d.mp3",
+    "seconds": 136.4,
+    "bytes": 1091896,
+    "chars": 2084,
+    "voice": "River (ElevenLabs premade stock voice)",
+    "model": "eleven_multilingual_v2",
+    "title": "The agent loop, in two minutes",
+    "verifiedCore": "1.77.0"
+  }
+}
