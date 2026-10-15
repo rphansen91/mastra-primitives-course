@@ -95,6 +95,15 @@ function print() {
       <button type="button" class="mpc-btn small" :disabled="busy" @click="download"><Icon name="download" :size="15" /> Download PNG</button>
       <button type="button" class="mpc-btn small" @click="print"><Icon name="print" :size="15" /> Print</button>
     </div>
+    <!-- Phones: the SVG is scaled to about a third of its size (text about 5px), so show the same content as real HTML text instead.
+         The SVG stays in the DOM (hidden) because Download PNG serializes it. -->
+    <div class="card-html" :aria-label="title">
+      <div class="ch-head"><div class="ch-kick">Mastra Primitives · Module {{ Number(module) }} · Cheat card</div><div class="ch-title">{{ title }}</div><div v-if="subtitle" class="ch-sub">{{ subtitle }}</div></div>
+      <div v-for="(c, i) in cells" :key="i" class="ch-cell" :style="{ background: C[c.color ?? 'sky'] }">
+        <div class="ch-ct"><span class="ch-n">{{ i + 1 }}</span>{{ c.title }}</div>
+        <ul><li v-for="(l, j) in c.lines" :key="j">{{ clean(l) }}</li></ul>
+      </div>
+    </div>
     <svg ref="svgEl" class="card-svg" xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${W} ${layout.height}`" :width="W" :height="layout.height"
       role="img" :aria-label="`${title}. ${cells.map((c) => c.title + ': ' + c.lines.map(clean).join('; ')).join('. ')}`"
       font-family="Inter, 'Segoe UI', system-ui, -apple-system, sans-serif">
@@ -135,7 +144,20 @@ function print() {
 .sp { flex: 1; }
 /* Target the card by class: a bare `svg` selector in scoped CSS also matches the root <svg> of child
    components (Vue stamps the parent's scope id on a child's root), which blew <Icon> up to 100% width. */
-.card-svg { width: 100%; height: auto; display: block; filter: drop-shadow(4px 4px 0 var(--mpc-shadow)); }
+.card-svg { width: 100%; height: auto; display: block; }
+/* No CSS filter on the SVG: filter + large viewBox SVGs can paint blank in WebKit. The shadow is a box-shadow on the figure's card instead. */
+.card-svg, .card-html { box-shadow: 4px 4px 0 var(--mpc-shadow); border-radius: 22px; }
+.card-html { display: none; background: #fff; color: #221d45; border: 3px solid #221d45; padding: 14px; }
+.ch-head { background: #ece7ff; border: 2px solid #221d45; border-radius: 14px; padding: 12px 14px; margin-bottom: 12px; }
+.ch-kick { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #5b5680; }
+.ch-title { font-size: 22px; font-weight: 600; line-height: 1.2; margin-top: 4px; }
+.ch-sub { font-size: 14px; color: #5b5680; margin-top: 2px; }
+.ch-cell { border: 2px solid #221d45; border-radius: 14px; padding: 12px 14px; margin-top: 10px; }
+.ch-ct { font-weight: 600; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+.ch-n { width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 2px solid #221d45; display: inline-grid; place-items: center; font-size: 14px; flex: none; }
+.ch-cell ul { margin: 8px 0 0 !important; padding-left: 20px !important; }
+.ch-cell li { font-size: 15px; line-height: 1.5; margin: 4px 0 !important; color: #221d45; }
+@media (max-width: 640px) { .card-html { display: block; } .card-svg { display: none; } }
 .tools .mpc-kicker { display: inline-flex; align-items: center; gap: 6px; }
 .tools .mpc-btn { white-space: nowrap; }
 @media (max-width: 520px) { .tools .mpc-kicker { flex-basis: 100%; } .sp { display: none; } }
