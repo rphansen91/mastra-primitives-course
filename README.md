@@ -19,12 +19,12 @@ Every primitive is taught in **four passes**:
 | 1 | First principles: agent loop from scratch, journals/idempotency/fencing, events vs requests | full: lesson, lab, break-it, solutions, quiz |
 | 2 | The agent loop | full |
 | 3 | Processors | full |
-| 4 | Memory | lesson + lab spec |
-| 5 | Workflows | lesson + lab spec |
+| 4 | Memory | lesson + built lab + visualizer |
+| 5 | Workflows | lesson + built lab + visualizer |
 | 6 | Signals and notifications | lesson + built labs + break-it |
 | 7 | Durability | lesson + built kill -9 crash lab + break-it |
-| 8 | Multi-agent coordination | lesson + built relay lab + lab spec |
-| 9 | Evals and observability | lesson + lab spec |
+| 8 | Multi-agent coordination | lesson + built relay lab |
+| 9 | Evals and observability | lesson + built lab + visualizer |
 | 10 | Capstone: building primitives | RFC template, candidate primitives, rubric |
 
 ## Run the labs
