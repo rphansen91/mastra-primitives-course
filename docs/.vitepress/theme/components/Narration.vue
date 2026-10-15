@@ -3,8 +3,8 @@ import { ref, computed, onMounted, useId } from 'vue';
 import { withBase } from 'vitepress';
 import manifest from '../../../audio/manifest.json';
 
-// Narrated audio for a lesson. The transcript is the script file itself (slot, via markdown include),
-// so the spoken text and the written text cannot drift. Audio is never loaded or played until the
+// Narrated audio for a lesson. The transcript comes from the manifest, which build-audio.mjs writes from the
+// same script file (audio tags like [curious] stripped), so spoken and written text cannot drift. Audio is never loaded or played until the
 // reader asks (preload="none", no autoplay).
 const props = defineProps<{ id: string; label?: string }>();
 const clip = computed(() => (manifest as Record<string, any>)[props.id]);
@@ -42,7 +42,7 @@ function back() { if (audio.value) audio.value.currentTime = Math.max(0, audio.v
     <p class="disc">Narrated by a synthetic AI voice (an ElevenLabs stock voice). It is not a recording of a real person. The script follows the course text. This is an independent course and is not endorsed by Mastra or its founders.</p>
     <details class="tx">
       <summary>Read the transcript</summary>
-      <div class="body"><slot /></div>
+      <div class="body"><p v-for="(para, k) in clip.transcript" :key="k">{{ para }}</p></div>
     </details>
   </section>
 </template>

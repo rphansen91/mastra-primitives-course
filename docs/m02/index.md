@@ -135,11 +135,7 @@ An inspector can see exactly which step you're on. That's what Mastra wants for 
 
 Here is one real run, the exact one Lab 2 checks against the published package. Press **Next** (or use your arrow keys) and watch the message list grow.
 
-<Narration id="m02-loop-visualizer" label="Visualizer tour">
-
-<!--@include: ../audio/m02-loop-visualizer.script.md-->
-
-</Narration>
+<Narration id="m02-loop-visualizer" label="Visualizer tour" />
 
 <LoopVisualizer />
 
@@ -363,11 +359,7 @@ The review a cautious platform team would write before putting this module's pri
 
 ## Wrap-up
 
-<Narration id="m02-summary" label="Listen to the wrap-up">
-
-<!--@include: ../audio/m02-summary.script.md-->
-
-</Narration>
+<Narration id="m02-summary" label="Listen to the wrap-up" />
 
 <Podcast title="The agent loop, as a conversation" :minutes="2">
 
